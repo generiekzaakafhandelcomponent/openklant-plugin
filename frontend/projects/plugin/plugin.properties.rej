@@ -1,5 +1,5 @@
 diff a/frontend/projects/plugin/plugin.properties b/frontend/projects/plugin/plugin.properties	(rejected hunks)
 @@ -1,2 +1,2 @@
  pluginArtifactId=openklant
--pluginVersion=1.1.2
-+pluginVersion=1.0.0
+-pluginVersion=1.0.0
++pluginVersion=2.0.0
