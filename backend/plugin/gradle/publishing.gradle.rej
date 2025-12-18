@@ -1,0 +1,12 @@
+diff a/backend/plugin/gradle/publishing.gradle b/backend/plugin/gradle/publishing.gradle	(rejected hunks)
+@@ -23,8 +23,8 @@ pluginManager.withPlugin("maven-publish") {
+                 version = pluginProperties.pluginVersion
+ 
+                 pom {
+-                    name = "Openklant Plugin"
+-                    description = "Openklant plugin for Valtimo"
++                    name = "Sample Plugin"
++                    description = "A sample plugin for Valtimo"
+                     developers {
+                         developer {
+                             id = "team-valtimo"

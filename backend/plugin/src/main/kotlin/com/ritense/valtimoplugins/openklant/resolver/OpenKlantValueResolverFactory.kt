@@ -39,7 +39,10 @@ class OpenKlantValueResolverFactory(
         processInstanceId: String,
         variableScope: VariableScope,
     ): Function<String, Any?> {
+<<<<<<< ours
         // TODO OperatonProcessInstanceId CHANGES TO OperatonProcessInstanceId in v13
+=======
+>>>>>>> theirs
         val document = processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope)
         return createResolver(document.id().toString())
     }

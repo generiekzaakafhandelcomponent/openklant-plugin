@@ -100,6 +100,7 @@ class OpenKlantPlugin(
 
     companion object {
         private const val OUTPUT_PARTIJ_UUID = "partijUuid"
+        private const val OUTPUT_FAILED_WITH_EXCEPTION = "failedWithException"
         private val logger = KotlinLogging.logger { }
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< ours
 import {
   Component,
   EventEmitter,
@@ -24,6 +25,16 @@ import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
   selector: 'open-klant-plugin-configuration',
+=======
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {PluginConfigurationComponent, PluginConfigurationData} from '@valtimo/plugin';
+import {BehaviorSubject, combineLatest, Observable, Subscription, take} from 'rxjs';
+import {Config} from '../../models';
+
+@Component({
+  selector: 'app-open-klant-plugin-configuration',
+  standalone: false,
+>>>>>>> theirs
   templateUrl: './open-klant-plugin-configuration.component.html',
   styleUrl: './open-klant-plugin-configuration.component.scss',
   imports: [

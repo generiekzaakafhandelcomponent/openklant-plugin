@@ -1,0 +1,10 @@
+diff a/frontend/projects/plugin/src/lib/components/open-klant-store-contactinfo/open-klant-store-contactinfo.component.html b/frontend/projects/plugin/src/lib/components/open-klant-store-contactinfo/open-klant-store-contactinfo.component.html	(rejected hunks)
+@@ -24,7 +24,7 @@
+             [title]="'inFix' | pluginTranslate: pluginId | async"
+             [defaultValue]="obs.prefill?.inFix"
+             [disabled]="obs.disabled"
+-            [required]="false"
++            [required]="true"
+     ></v-input>
+     <v-input
+             name="lastName"
