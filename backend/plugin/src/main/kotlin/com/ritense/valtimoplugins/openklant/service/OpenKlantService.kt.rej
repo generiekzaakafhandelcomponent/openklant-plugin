@@ -1,0 +1,20 @@
+diff a/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/service/OpenKlantService.kt b/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/service/OpenKlantService.kt	(rejected hunks)
+@@ -11,5 +14,15 @@ interface OpenKlantService {
+         contactInformation: ContactInformation,
+     ): String
+ 
+-    suspend fun getAllKlantContacten(properties: KlantContactOptions): List<KlantContact>
+-}
+\ No newline at end of file
++    suspend fun getOrCreatePartij(
++        properties: OpenKlantProperties,
++        partijInformation: PartijInformation,
++    ): Partij
++
++    suspend fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
++
++    suspend fun postKlantcontact(
++        properties: OpenKlantProperties,
++        klantcontactCreationInformation: KlantcontactCreationInformation,
++    )
++}

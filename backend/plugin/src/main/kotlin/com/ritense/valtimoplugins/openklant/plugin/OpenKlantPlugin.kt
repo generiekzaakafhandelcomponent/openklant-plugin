@@ -6,8 +6,10 @@ import com.ritense.plugin.annotation.PluginActionProperty
 import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
-import com.ritense.valtimoplugins.openklant.model.KlantContactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
+import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
+import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
 import kotlinx.coroutines.runBlocking
@@ -32,9 +34,9 @@ class OpenKlantPlugin(
     lateinit var token: String
 
     @PluginAction(
-        key = "store-contactinfo",
+        key = "store-contact-info",
         title = "Store Contactinfo",
-        description = "Store contact info in OpenKlant",
+        description = "Store contact info in Open Klant",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun storeContactInformation(
@@ -44,18 +46,18 @@ class OpenKlantPlugin(
         @PluginActionProperty inFix: String,
         @PluginActionProperty lastName: String,
         @PluginActionProperty emailAddress: String,
-        @PluginActionProperty caseNumber: String,
+        @PluginActionProperty caseUuid: String,
     ) = runBlocking {
-        logger.info { "Store Contactinformation in OpenKlant - ${execution.processBusinessKey}" }
+        logger.info { "Store Contactinformation in Open Klant - ${execution.processBusinessKey}" }
 
         val contactInformation =
-            ContactInformation(
+            ContactInformation.fromActionProperties(
                 bsn = bsn,
-                firstName = firstName,
-                inFix = inFix,
-                lastName = lastName,
-                emailAddress = emailAddress,
-                caseNumber = caseNumber,
+                voornaam = firstName,
+                voorvoegselAchternaam = inFix,
+                achternaam = lastName,
+                emailadres = emailAddress,
+                zaaknummer = caseUuid,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
         val partijUuid = openKlantPluginService.storeContactInformation(properties, contactInformation)

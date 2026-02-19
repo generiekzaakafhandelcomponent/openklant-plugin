@@ -1,0 +1,39 @@
+diff a/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/dto/Partij.kt b/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/dto/Partij.kt	(rejected hunks)
+@@ -69,33 +70,11 @@ data class Partij(
+         EXPAND_PARTIJ,
+     }
+ 
+-    data class Adres(
+-        @JsonProperty("nummeraanduidingId")
+-        val nummeraanduidingId: String?,
+-        @JsonProperty("straatnaam")
+-        val straatnaam: String?,
+-        @JsonProperty("huisnummer")
+-        val huisnummer: Int?,
+-        @JsonProperty("huisnummertoevoeging")
+-        val huisnummertoevoeging: String?,
+-        @JsonProperty("postcode")
+-        val postcode: String?,
+-        @JsonProperty("stad")
+-        val stad: String?,
+-        @JsonProperty("adresregel1")
+-        val adresregel1: String?,
+-        @JsonProperty("adresregel2")
+-        val adresregel2: String?,
+-        @JsonProperty("adresregel3")
+-        val adresregel3: String?,
+-        @JsonProperty("land")
+-        val land: String?,
+-    )
+-
++    @JsonInclude(JsonInclude.Include.NON_NULL)
+     data class PartijIdentificatie(
+         @JsonProperty("contactnaam")
+         val contactnaam: Contactnaam?,
+         @JsonProperty("volledigeNaam")
+-        val volledigeNaam: String?,
++        val volledigeNaam: String? = null,
+     )
+-}
+\ No newline at end of file
++}
