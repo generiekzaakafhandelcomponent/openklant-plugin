@@ -1,20 +1,30 @@
 diff a/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/service/OpenKlantService.kt b/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/service/OpenKlantService.kt	(rejected hunks)
-@@ -11,5 +14,15 @@ interface OpenKlantService {
+@@ -9,19 +11,24 @@ import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
+ import com.ritense.valtimoplugins.openklant.model.PartijInformation
+ 
+ interface OpenKlantService {
+-    suspend fun storeContactInformation(
++    fun storeContactInformation(
+         properties: OpenKlantProperties,
          contactInformation: ContactInformation,
      ): String
  
--    suspend fun getAllKlantContacten(properties: KlantContactOptions): List<KlantContact>
--}
-\ No newline at end of file
-+    suspend fun getOrCreatePartij(
+-    suspend fun getOrCreatePartij(
++    fun getOrCreatePartij(
+         properties: OpenKlantProperties,
+         partijInformation: PartijInformation,
+     ): Partij
+ 
+-    suspend fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
++    fun setDefaultDigitaalAdres(
 +        properties: OpenKlantProperties,
-+        partijInformation: PartijInformation,
-+    ): Partij
++        adresInformation: AdresInformation,
++    ): DigitaalAdres
 +
-+    suspend fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
-+
-+    suspend fun postKlantcontact(
-+        properties: OpenKlantProperties,
-+        klantcontactCreationInformation: KlantcontactCreationInformation,
-+    )
-+}
++    fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
+ 
+-    suspend fun postKlantcontact(
++    fun postKlantcontact(
+         properties: OpenKlantProperties,
+         klantcontactCreationInformation: KlantcontactCreationInformation,
+     )

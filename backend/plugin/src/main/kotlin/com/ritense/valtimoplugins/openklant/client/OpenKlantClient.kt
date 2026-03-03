@@ -33,56 +33,57 @@ class OpenKlantClient(
                         .queryParam(OK_SOORT_PARTIJ_PARAM, "persoon")
                         .build()
                 }.retrieve()
-                .awaitBody<Page<Partij>>()
-                .results
-                .firstOrNull()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<Page<Partij>>()
+                ?.results
+                ?.firstOrNull()
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error fetching Partij")
         }
 
-    suspend fun createPartij(
+    fun createPartij(
         request: CreatePartijRequest,
         properties: OpenKlantProperties,
     ): Partij =
         try {
-            webClient(properties)
+            restClient(properties)
                 .post()
                 .uri(OK_PARTIJEN_PATH)
-                .bodyValue(request)
+                .body(request)
                 .retrieve()
-                .awaitBody<Partij>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<Partij>() ?: throw IllegalStateException("Error creating Partij: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error creating Partij")
         }
 
-    suspend fun patchPartij(
+    fun patchPartij(
         id: String,
         patchData: Map<String, Any>,
         properties: OpenKlantProperties,
     ): Partij =
         try {
-            webClient(properties)
+            restClient(properties)
                 .patch()
                 .uri("$OK_PARTIJEN_PATH/$id")
-                .bodyValue(patchData)
+                .body(patchData)
                 .retrieve()
-                .awaitBody<Partij>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<Partij>()
+                ?: throw IllegalStateException("Error patching Partij: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error patching Partij")
         }
 
-    suspend fun getDigitaleAdressenByPartijByUuid(
+    fun getDigitaleAdressenByPartijByUuid(
         uuid: String,
         properties: OpenKlantProperties,
     ): List<DigitaalAdres> =
         try {
-            webClient(properties)
+            restClient(properties)
                 .get()
                 .uri { uriBuilder ->
                     uriBuilder
@@ -90,48 +91,99 @@ class OpenKlantClient(
                         .queryParam(OK_VERSTREKT_DOOR_PARTIJ_ID_PARAM, uuid)
                         .build()
                 }.retrieve()
-                .awaitBody<Page<DigitaalAdres>>()
-                .results
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<Page<DigitaalAdres>>()
+                ?.results
+                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
-            handleResponseException(e, "Error fetching DigitaalAdres(by partij, by uuid)")
+        } catch (e: RestClientResponseException) {
+            handleResponseException(e, "Error fetching DigitaalAdres for partij: $uuid")
         }
 
-    suspend fun getDigitaalAdresByUuid(
-        uuid: String,
+    fun getDigitaalAdresByUuid(
+        digitaalAdresUuid: String,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {
-            webClient(properties)
+            restClient(properties)
                 .get()
-                .uri("$OK_DIGITALE_ADRESSEN_PATH/$uuid")
+                .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
                 .retrieve()
-                .awaitBody<DigitaalAdres>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<DigitaalAdres>()
+                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
-            handleResponseException(e, "Error fetching DigitaalAdres(by uuid)")
+        } catch (e: RestClientResponseException) {
+            handleResponseException(e, "Error fetching DigitaalAdres with uuid: $digitaalAdresUuid")
         }
 
-    suspend fun createDigitaalAdres(
+    fun getDefaultAdressenBySoort(
+        partijUuid: String,
+        soortDigitaalAdres: SoortDigitaalAdres,
+        referentie: String,
+        properties: OpenKlantProperties,
+    ): List<DigitaalAdres> =
+        try {
+            restClient(properties)
+                .get()
+                .uri { uriBuilder ->
+                    uriBuilder
+                        .path(OK_DIGITALE_ADRESSEN_PATH)
+                        .queryParam(OK_VERSTREKT_DOOR_PARTIJ_ID_PARAM, partijUuid)
+                        .queryParam(OK_SOORT_DIGITAAL_ADRES_PARAM, soortDigitaalAdres.value)
+                        .queryParam(OK_REFERENTIE_PARAM, referentie)
+                        .build()
+                }.retrieve()
+                .body<Page<DigitaalAdres>>()
+                ?.results
+                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
+
+        } catch (e: HttpServerErrorException.InternalServerError) {
+            handleInternalServerError(e)
+        } catch (e: RestClientResponseException) {
+            handleResponseException(
+                e,
+                "Error fetching Default ${soortDigitaalAdres.value} Adressen for partij: $partijUuid"
+            )
+        }
+
+    fun patchDigitaalAdres(
+        digitaalAdresUuid: String,
+        patchData: Map<String, Any>,
+        properties: OpenKlantProperties,
+    ) = try {
+        restClient(properties)
+            .patch()
+            .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
+            .body(patchData)
+            .retrieve()
+            .body<DigitaalAdres>()
+            ?: throw IllegalStateException("Error patching DigitaalAdres: response body was null")
+    } catch (e: HttpServerErrorException.InternalServerError) {
+        handleInternalServerError(e)
+    } catch (e: RestClientResponseException) {
+        handleResponseException(e, "Error patching DigitaalAdres with uuid: $digitaalAdresUuid")
+    }
+
+    fun createDigitaalAdres(
         request: CreateDigitaalAdresRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {
-            webClient(properties)
+            restClient(properties)
                 .post()
                 .uri(OK_DIGITALE_ADRESSEN_PATH)
-                .bodyValue(request)
+                .body(request)
                 .retrieve()
-                .awaitBody<DigitaalAdres>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<DigitaalAdres>()
+                ?: throw IllegalStateException("Error creating DigitaalAdres: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error creating DigitaalAdres")
         }
 
-    suspend fun getKlantcontacten(klantContactOptions: KlantcontactOptions): Page<Klantcontact> {
+    fun getKlantcontacten(klantContactOptions: KlantcontactOptions): Page<Klantcontact> {
         if (klantContactOptions.bsn.isNullOrBlank() &&
             klantContactOptions.objectUuid.isNullOrBlank() &&
             klantContactOptions.partijUuid.isNullOrBlank()
@@ -140,39 +192,40 @@ class OpenKlantClient(
         }
 
         try {
-            return webClient(klantContactOptions)
+            return restClient(klantContactOptions)
                 .get()
                 .uri { uriBuilder ->
                     buildOpenKlantUri(uriBuilder, klantContactOptions)
                 }.retrieve()
-                .awaitBody<Page<Klantcontact>>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .body<Page<Klantcontact>>()
+                ?: throw IllegalStateException("Error fetching Klantcontacten: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error fetching Klantcontacten")
         }
     }
 
-    suspend fun postKlantcontact(
+    fun postKlantcontact(
         @Valid @RequestBody request: KlantcontactCreationRequest,
         properties: OpenKlantProperties,
     ) {
         try {
-            webClient(properties)
+            restClient(properties)
                 .post()
                 .uri(OK_MAAK_KLANTCONTACT_PATH)
-                .bodyValue(request)
+                .body(request)
                 .retrieve()
-                .awaitBody<Unit>()
-        } catch (e: WebClientResponseException.InternalServerError) {
+                .toBodilessEntity()
+        } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
-        } catch (e: WebClientResponseException) {
+        } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error creating Klantcontact")
         }
     }
 
-    private fun webClient(properties: OpenKlantProperties): WebClient =
-        openKlantWebClientBuilder
+    private fun restClient(properties: OpenKlantProperties): RestClient =
+        openKlantRestClientBuilder
             .clone()
             .baseUrl(properties.klantinteractiesUrl.toASCIIString())
             .defaultHeader("Authorization", "Token ${properties.token}")
@@ -200,7 +253,7 @@ class OpenKlantClient(
             .build()
     }
 
-    private fun handleInternalServerError(e: WebClientResponseException.InternalServerError): Nothing {
+    private fun handleInternalServerError(e: HttpServerErrorException.InternalServerError): Nothing {
         logger.warn { "Response body:  ${e.responseBodyAsString}" }
         logger.error(e) { "Internal Server Error calling Open Klant" }
         throw ResponseStatusException(
@@ -211,7 +264,7 @@ class OpenKlantClient(
     }
 
     private fun handleResponseException(
-        e: WebClientResponseException,
+        e: RestClientResponseException,
         reason: String,
     ): Nothing {
         logger.warn(e) { "Client error calling Open Klant" }

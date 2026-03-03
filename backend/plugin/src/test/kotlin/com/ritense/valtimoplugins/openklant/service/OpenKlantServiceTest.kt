@@ -8,15 +8,15 @@ import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
+import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.verify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -106,6 +106,7 @@ class OpenKlantServiceTest {
             voorvoegselAchternaam = "D",
             voornaam = "John",
             bsn = "123456789",
+            voorletters = "",
         )
 
     private val partijInformation =
@@ -115,6 +116,15 @@ class OpenKlantServiceTest {
             voornaam = "John",
             voorvoegselAchternaam = "",
             achternaam = "Doe",
+        )
+
+    private val adresInformation =
+        AdresInformation(
+            partijUuid = "partij-123",
+            adres = "test@example.com",
+            soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            referentie = "ref-1",
+            verificatieDatum = "2024-01-01",
         )
 
     @BeforeEach
