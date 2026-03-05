@@ -3,8 +3,8 @@ diff a/frontend/projects/plugin/package.json b/frontend/projects/plugin/package.
  {
    "name": "@valtimo-plugins/openklant",
    "license": "EUPL-1.2",
--  "version": "1.1.1",
-+  "version": "2.0.0",
+-  "version": "2.3.0",
++  "version": "2.3.1",
    "scripts": {
      "build": "ng-packagr -p ng-package.json"
    },
