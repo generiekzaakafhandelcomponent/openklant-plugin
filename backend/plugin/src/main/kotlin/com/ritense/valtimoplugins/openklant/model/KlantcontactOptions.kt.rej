@@ -1,0 +1,10 @@
+diff a/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/model/KlantcontactOptions.kt b/backend/plugin/src/main/kotlin/com/ritense/valtimoplugins/openklant/model/KlantcontactOptions.kt	(rejected hunks)
+@@ -20,7 +20,7 @@ data class KlantcontactOptions(
+             partijUuid: String? = null,
+         ) = KlantcontactOptions(
+             klantinteractiesUrl,
+-            token = token,
++            token = token.trim(),
+             bsn = bsn?.trim(),
+             partijUuid = partijUuid?.trim(),
+             objectTypeId = objectTypeId?.trim(),
