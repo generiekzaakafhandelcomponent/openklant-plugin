@@ -1,7 +1,7 @@
 package com.ritense.valtimoplugins.openklant.resolver
 
 import com.ritense.document.domain.impl.JsonSchemaDocumentId
-import com.ritense.processdocument.domain.impl.CamundaProcessInstanceId
+import com.ritense.processdocument.domain.impl.OperatonProcessInstanceId
 import com.ritense.processdocument.service.ProcessDocumentService
 import com.ritense.valtimoplugins.openklant.dto.KlantContact
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
@@ -11,7 +11,7 @@ import com.ritense.zakenapi.domain.ZaakResponse
 import com.ritense.zakenapi.service.ZaakDocumentService
 import io.mockk.*
 import io.mockk.junit5.MockKExtension
-import org.camunda.bpm.engine.delegate.VariableScope
+import org.operaton.bpm.engine.delegate.VariableScope
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
@@ -166,7 +166,7 @@ class OpenKlantValueResolverFactoryTest {
 
         val mockDocument = mockk<com.ritense.document.domain.Document>()
         every { mockDocument.id() } returns JsonSchemaDocumentId.newId(documentId)
-        every { processDocumentService.getDocument(CamundaProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
+        every { processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns zaakUuid
@@ -201,7 +201,7 @@ class OpenKlantValueResolverFactoryTest {
 
         // Assert
         assertEquals(reflectedResult, result)
-        verify { processDocumentService.getDocument(CamundaProcessInstanceId(processInstanceId), variableScope) }
+        verify { processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope) }
         verify { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) }
         coVerify { openKlantService.getAllKlantContacten(any()) }
     }
@@ -215,7 +215,7 @@ class OpenKlantValueResolverFactoryTest {
 
         val mockDocument = mockk<com.ritense.document.domain.Document>()
         every { mockDocument.id() } returns JsonSchemaDocumentId.newId(documentId)
-        every { processDocumentService.getDocument(CamundaProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
+        every { processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns zaakUuid
@@ -260,7 +260,7 @@ class OpenKlantValueResolverFactoryTest {
 
         val mockDocument = mockk<com.ritense.document.domain.Document>()
         every { mockDocument.id() } returns JsonSchemaDocumentId.newId(documentId)
-        every { processDocumentService.getDocument(CamundaProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
+        every { processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope) } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns UUID.randomUUID()
