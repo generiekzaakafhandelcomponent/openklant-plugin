@@ -9,7 +9,11 @@ import {
 } from "@angular/core";
 import {
   PluginConfigurationComponent,
+<<<<<<< ours
   PluginConfigurationData,
+=======
+  PluginConfigurationData, 
+>>>>>>> theirs
   PluginTranslatePipeModule,
 } from '@valtimo/plugin';
 import {
@@ -25,6 +29,7 @@ import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
   selector: 'open-klant-plugin-configuration',
+<<<<<<< ours
 =======
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {PluginConfigurationComponent, PluginConfigurationData} from '@valtimo/plugin';
@@ -34,6 +39,8 @@ import {Config} from '../../models';
 @Component({
   selector: 'app-open-klant-plugin-configuration',
   standalone: false,
+>>>>>>> theirs
+=======
 >>>>>>> theirs
   templateUrl: './open-klant-plugin-configuration.component.html',
   styleUrl: './open-klant-plugin-configuration.component.scss',
