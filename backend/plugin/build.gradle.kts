@@ -14,14 +14,14 @@ dockerCompose {
 }
 
 dependencies {
-    implementation("com.ritense.valtimo:core")
-    implementation("com.ritense.valtimo:plugin-valtimo")
-    implementation("com.ritense.valtimo:valtimo-gzac-dependencies")
-    implementation("org.springframework:spring-webflux:$springWebfluxVersion")
+    compileOnly("com.ritense.valtimo:core")
+    compileOnly("com.ritense.valtimo:plugin-valtimo")
+    compileOnly("com.ritense.valtimo:valtimo-gzac-dependencies")
+    compileOnly("org.springframework:spring-webflux:$springWebfluxVersion")
     implementation("io.projectreactor.netty:reactor-netty-core:$reactorNettyVersion")
     implementation("io.projectreactor.netty:reactor-netty-http:$reactorNettyVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
-    implementation("io.github.microutils:kotlin-logging:$kotlinLoggingMicroutilsVersion")
+    compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingMicroutilsVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.mockk:mockk:$mockkVersion")
 }
