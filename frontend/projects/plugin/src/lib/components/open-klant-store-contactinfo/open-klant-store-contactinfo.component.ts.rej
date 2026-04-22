@@ -1,9 +1,0 @@
-diff a/frontend/projects/plugin/src/lib/components/open-klant-store-contactinfo/open-klant-store-contactinfo.component.ts b/frontend/projects/plugin/src/lib/components/open-klant-store-contactinfo/open-klant-store-contactinfo.component.ts	(rejected hunks)
-@@ -6,6 +6,7 @@ import {OpenKlantStoreContactinfoConfig} from '../../models/open-klant-store-con
- 
- @Component({
-   selector: 'app-store-contact-info',
-+  standalone: false,
-   templateUrl: './open-klant-store-contactinfo.component.html',
-   styleUrls: ['./open-klant-store-contactinfo.component.scss']
- })

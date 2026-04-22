@@ -3,27 +3,35 @@ package com.ritense.valtimoplugins.openklant.client
 import com.ritense.valtimoplugins.openklant.dto.CreateDigitaalAdresRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.KlantContact
+import com.ritense.valtimoplugins.openklant.dto.Klantcontact
+import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.model.KlantContactOptions
+import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.zgw.Page
+import jakarta.validation.Valid
 import mu.KotlinLogging
+import org.jetbrains.annotations.VisibleForTesting
 import org.springframework.http.HttpStatus
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClientResponseException
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.body
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.util.UriBuilder
+import java.net.URI
 
 class OpenKlantClient(
-    private val openKlantWebClientBuilder: WebClient.Builder,
+    private val openKlantRestClientBuilder: RestClient.Builder,
 ) {
-    suspend fun getPartijByBsn(
+    fun getPartijByBsn(
         bsn: String,
         properties: OpenKlantProperties,
     ): Partij? =
         try {
-            webClient(properties)
+            restClient(properties)
                 .get()
                 .uri { uriBuilder ->
                     uriBuilder
@@ -286,8 +294,12 @@ class OpenKlantClient(
         private const val OK_SOORT_PARTIJ_IDENTIFICATOR_PARAM = "partijIdentificator__codeSoortObjectId"
         private const val OK_PARTIJ_IDENTIFICATOR_PARAM = "partijIdentificator__objectId"
         private const val OK_SOORT_PARTIJ_PARAM = "soortPartij"
+        private const val OK_SOORT_DIGITAAL_ADRES_PARAM = "soortDigitaalAdres"
+        private const val OK_REFERENTIE_PARAM = "referentie"
         private const val OK_OBJECTTYPE_PARAM = "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype"
         private const val OK_OBJECT_ID_PARAM = "onderwerpobject__onderwerpobjectidentificatorObjectId"
+        private const val OK_BSN_PARAM = "hadBetrokkene__wasPartij__partijIdentificator__objectId"
+        private const val OK_PARTIJ_UUID_PARAM = "hadBetrokkene__wasPartij__uuid"
 
         private val logger = KotlinLogging.logger { }
     }

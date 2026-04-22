@@ -2,9 +2,29 @@ package com.ritense.valtimoplugins.openklant.model
 
 import java.net.URI
 
-data class KlantContactOptions(
+data class KlantcontactOptions(
     override val klantinteractiesUrl: URI,
     override val token: String,
     val objectTypeId: String? = null,
     val objectUuid: String? = null,
-) : OpenKlantProperties(klantinteractiesUrl, token)
+    val bsn: String? = null,
+    val partijUuid: String? = null,
+) : OpenKlantProperties(klantinteractiesUrl, token) {
+    companion object {
+        fun fromActionProperties(
+            klantinteractiesUrl: URI,
+            token: String,
+            objectTypeId: String? = null,
+            objectUuid: String? = null,
+            bsn: String? = null,
+            partijUuid: String? = null,
+        ) = KlantcontactOptions(
+            klantinteractiesUrl,
+            token = token.trim(),
+            bsn = bsn?.trim(),
+            partijUuid = partijUuid?.trim(),
+            objectTypeId = objectTypeId?.trim(),
+            objectUuid = objectUuid?.trim(),
+        )
+    }
+}

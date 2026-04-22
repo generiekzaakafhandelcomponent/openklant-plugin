@@ -6,9 +6,5 @@ interface Referable {
 
     fun getObjectReference(): ObjectReference = ObjectReference(uuid, url)
 
-<<<<<<< ours
-    fun makeUuidReference(): UuidReference = UuidReference(uuid)
-=======
     fun getUuidReference(): UuidReference = UuidReference(uuid)
->>>>>>> theirs
 }

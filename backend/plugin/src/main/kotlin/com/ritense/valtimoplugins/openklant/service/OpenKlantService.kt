@@ -11,10 +11,25 @@ import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
 
 interface OpenKlantService {
-    suspend fun storeContactInformation(
+    fun storeContactInformation(
         properties: OpenKlantProperties,
         contactInformation: ContactInformation,
     ): String
 
-    suspend fun getAllKlantContacten(properties: KlantContactOptions): List<KlantContact>
+    fun getOrCreatePartij(
+        properties: OpenKlantProperties,
+        partijInformation: PartijInformation,
+    ): Partij
+
+    fun setDefaultDigitaalAdres(
+        properties: OpenKlantProperties,
+        adresInformation: AdresInformation,
+    ): DigitaalAdres
+
+    fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
+
+    fun postKlantcontact(
+        properties: OpenKlantProperties,
+        klantcontactCreationInformation: KlantcontactCreationInformation,
+    )
 }

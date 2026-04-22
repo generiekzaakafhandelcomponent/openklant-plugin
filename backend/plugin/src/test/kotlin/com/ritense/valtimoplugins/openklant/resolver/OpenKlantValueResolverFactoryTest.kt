@@ -3,7 +3,7 @@ package com.ritense.valtimoplugins.openklant.resolver
 import com.ritense.document.domain.impl.JsonSchemaDocumentId
 import com.ritense.processdocument.domain.impl.OperatonProcessInstanceId
 import com.ritense.processdocument.service.ProcessDocumentService
-import com.ritense.valtimoplugins.openklant.dto.KlantContact
+import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
@@ -16,13 +16,13 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import org.operaton.bpm.engine.delegate.VariableScope
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.operaton.bpm.engine.delegate.VariableScope
 import java.net.URI
 import java.util.UUID
 
@@ -163,7 +163,7 @@ class OpenKlantValueResolverFactoryTest {
             assertThrows<IllegalArgumentException> {
                 resolver.apply("unknownValue")
             }
-        assertEquals("Unknown openklant column with name: unknownValue", exception.message)
+        assertEquals("Unknown Open Klant column with name: unknownValue", exception.message)
     }
 
     @Test
@@ -180,14 +180,13 @@ class OpenKlantValueResolverFactoryTest {
                 OperatonProcessInstanceId(processInstanceId),
                 variableScope,
             )
-        } returns
-            mockDocument
+        } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns zaakUuid
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) } returns mockZaak
 
-        val klantContact = mockk<KlantContact>()
+        val klantContact = mockk<Klantcontact>()
         every { klantContact.uuid } returns "test-uuid"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
@@ -218,7 +217,7 @@ class OpenKlantValueResolverFactoryTest {
         assertEquals(reflectedResult, result)
         verify { processDocumentService.getDocument(OperatonProcessInstanceId(processInstanceId), variableScope) }
         verify { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) }
-        coVerify { openKlantService.getAllKlantContacten(any()) }
+        coVerify { openKlantService.getAllKlantcontacten(any()) }
     }
 
     @Test
@@ -235,14 +234,13 @@ class OpenKlantValueResolverFactoryTest {
                 OperatonProcessInstanceId(processInstanceId),
                 variableScope,
             )
-        } returns
-            mockDocument
+        } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns zaakUuid
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) } returns mockZaak
 
-        val klantContact = mockk<KlantContact>()
+        val klantContact = mockk<Klantcontact>()
         every { klantContact.uuid } returns "test-uuid"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
@@ -286,8 +284,7 @@ class OpenKlantValueResolverFactoryTest {
                 OperatonProcessInstanceId(processInstanceId),
                 variableScope,
             )
-        } returns
-            mockDocument
+        } returns mockDocument
 
         val mockZaak = mockk<ZaakResponse>()
         every { mockZaak.uuid } returns UUID.randomUUID()
@@ -299,7 +296,7 @@ class OpenKlantValueResolverFactoryTest {
             assertThrows<IllegalArgumentException> {
                 resolver.apply("unknownValue")
             }
-        assertEquals("Unknown openklant column with name: unknownValue", exception.message)
+        assertEquals("Unknown Open Klant column with name: unknownValue", exception.message)
     }
 
     @Test

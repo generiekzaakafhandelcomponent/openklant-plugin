@@ -36,14 +36,14 @@ class PartijFactory {
         return mapOf("partijIdentificator" to identificator)
     }
 
-    private fun getPartijIdentificatie(contactInformation: ContactInformation): Partij.PartijIdentificatie {
+    private fun getPartijIdentificatie(partijInformation: PartijInformation): Partij.PartijIdentificatie {
         val contactnaam =
             Contactnaam(
-                voorletters = "",
-                voornaam = contactInformation.firstName,
-                voorvoegselAchternaam = contactInformation.inFix,
-                achternaam = contactInformation.lastName,
+                voorletters = partijInformation.voorletters,
+                voornaam = partijInformation.voornaam,
+                voorvoegselAchternaam = partijInformation.voorvoegselAchternaam,
+                achternaam = partijInformation.achternaam,
             )
-        return Partij.PartijIdentificatie(contactnaam, contactInformation.fullName)
+        return Partij.PartijIdentificatie(contactnaam)
     }
 }

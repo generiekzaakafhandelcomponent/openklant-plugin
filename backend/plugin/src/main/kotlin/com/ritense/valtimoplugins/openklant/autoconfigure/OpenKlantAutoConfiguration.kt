@@ -16,27 +16,33 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.client.RestClient
+
 import java.net.URI
 
 @Configuration
 @EnableConfigurationProperties
 class OpenKlantAutoConfiguration {
     @Bean
-    fun openKlantPluginClient(openKlantWebClientBuilder: WebClient.Builder): OpenKlantClient =
-        OpenKlantClient(openKlantWebClientBuilder)
+    fun openKlantPluginClient(openKlantRestClientBuilder: RestClient.Builder): OpenKlantClient =
+        OpenKlantClient(openKlantRestClientBuilder)
 
     @Bean
     fun partijFactory(): PartijFactory = PartijFactory()
 
     @Bean
+    fun klantContactFactory(): KlantcontactFactory = KlantcontactFactory()
+
+    @Bean
     fun openKlantService(
         openKlantClient: OpenKlantClient,
         partijFactory: PartijFactory,
+        klantcontactFactory: KlantcontactFactory,
     ): OpenKlantService =
         DefaultOpenKlantService(
             openKlantClient,
             partijFactory,
+            klantcontactFactory,
         )
 
     @Bean

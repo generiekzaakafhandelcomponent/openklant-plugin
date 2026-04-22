@@ -23,13 +23,13 @@ pluginManager.withPlugin("maven-publish") {
                 version = pluginProperties.pluginVersion
 
                 pom {
-                    name = "Open Klant Plugin"
-                    description = "Open Klant plugin for Valtimo"
+                    name = "Openklant Plugin"
+                    description = "Openklant plugin for Valtimo"
                     developers {
                         developer {
-                            id = "risa-it"
-                            name = "RISA IT"
-                            email = "gzac@risa-it.nl"
+                            id = "team-valtimo"
+                            name = "Team Valtimo"
+                            email = "team-valtimo@ritense.com"
                         }
                     }
                 }
