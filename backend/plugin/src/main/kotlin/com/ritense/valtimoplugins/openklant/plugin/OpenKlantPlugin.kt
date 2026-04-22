@@ -140,7 +140,9 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info { "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}" }
+        logger.info {
+            "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
+        }
 
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
@@ -159,15 +161,19 @@ class OpenKlantPlugin(
     @PluginAction(
         key = "get-contact-moments-by-bsn",
         title = "Get contact history by BSN",
-        description = "Get contact history by BSN from Open Klant. Queries the API using the 'partij-identificator object-ID' parameter.",
+        description =
+            "Get contact history by BSN from Open Klant. " +
+                "Queries the API using the 'partij-identificator object-ID' parameter.",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getContactMomentsByBsn(
         @PluginActionProperty bsn: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ): Unit {
-        logger.info { "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}" }
+    ) {
+        logger.info {
+            "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}"
+        }
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
                 klantinteractiesUrl,
@@ -192,8 +198,10 @@ class OpenKlantPlugin(
         @PluginActionProperty partijUuid: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ): Unit {
-        logger.info { "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}" }
+    ) {
+        logger.info {
+            "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
+        }
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
                 klantinteractiesUrl,

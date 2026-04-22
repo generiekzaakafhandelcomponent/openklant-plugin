@@ -11,10 +11,8 @@ data class KlantcontactCreationRequest(
     @JsonProperty("klantcontact")
     @field:NotBlank
     val klantcontact: KlantcontactRequest,
-
     @JsonProperty("betrokkene")
     val betrokkene: BetrokkeneRequest? = null,
-
     @JsonProperty("onderwerobject")
     val onderwerpobject: OnderwerpobjectRequest? = null,
 ) {
@@ -23,36 +21,29 @@ data class KlantcontactCreationRequest(
         @JsonProperty("nummer")
         @field:Size(max = 10)
         val nummer: String? = null,
-
         @JsonProperty("kanaal")
         @field:NotBlank
         @field:Size(max = 50)
         val kanaal: String,
-
         @JsonProperty("onderwerp")
         @field:NotBlank
         @field:Size(max = 200)
         val onderwerp: String,
-
         @JsonProperty("inhoud")
         @field:Size(max = 1000)
         val inhoud: String?,
-
         @JsonProperty("indicatieContactGelukt")
         val indicateContactGelukt: Boolean? = null,
-
         @JsonProperty("taal")
         @field:NotBlank
         @field:Pattern(
             regexp = "^[A-Za-z]{3}$",
-            message = "taal must be of 3 letters (ISO 639-2/B)"
+            message = "taal must be of 3 letters (ISO 639-2/B)",
         )
         val taal: String,
-
         @JsonProperty("vertrouwelijk")
         @field:NotBlank
         val vertrouwelijk: Boolean,
-
         @JsonProperty("plaatsgevondenOp")
         val plaatsgevondenOp: String? = null,
     )
@@ -61,24 +52,18 @@ data class KlantcontactCreationRequest(
     data class BetrokkeneRequest(
         @JsonProperty("wasPartij")
         val wasPartij: UuidReference? = null,
-
         @JsonProperty("bezoekadres")
         val bezoekadres: Adres? = null,
-
         @JsonProperty("correspondentieadres")
         val correspondentieadres: Adres? = null,
-
         @JsonProperty("contactnaam")
         val contactnaam: Contactnaam? = null,
-
         @JsonProperty("rol")
         @field:NotBlank
         val rol: Betrokkene.Rol,
-
         @JsonProperty("organisatienaam")
         @field:Size(max = 200)
         val organisatienaam: String? = null,
-
         @JsonProperty("initiator")
         @field:NotBlank
         val initiator: Boolean,

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class UuidAndUrlReference(
     @JsonProperty("uuid")
     override val uuid: String,
-
     @JsonProperty("url")
-    override val url: String
+    override val url: String,
 ) : Referable

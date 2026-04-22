@@ -14,9 +14,9 @@ import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import io.mockk.MockKAnnotations
 import io.mockk.every
-import io.mockk.verify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -138,11 +138,11 @@ class OpenKlantServiceTest {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
         every { client.getDigitaalAdresByUuid(any(), testProperties) } returns
-                defaultDigitaalAdres.copy(
-                    adres = "email@adres.nl",
-                    isStandaardAdres = true,
-                    soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
-                )
+            defaultDigitaalAdres.copy(
+                adres = "email@adres.nl",
+                isStandaardAdres = true,
+                soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            )
 
         // ACT:
         service.storeContactInformation(
@@ -163,11 +163,11 @@ class OpenKlantServiceTest {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
         every { client.getDigitaalAdresByUuid(any(), testProperties) } returns
-                defaultDigitaalAdres.copy(
-                    adres = "email2@adres.nl",
-                    isStandaardAdres = true,
-                    soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
-                )
+            defaultDigitaalAdres.copy(
+                adres = "email2@adres.nl",
+                isStandaardAdres = true,
+                soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            )
         every { client.getDigitaleAdressenByPartijByUuid(defaultPartij.uuid, testProperties) } returns listOf()
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
         every { client.createDigitaalAdres(any(), testProperties) } returns newDigitaalAdres
@@ -186,8 +186,8 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 match<CreateDigitaalAdresRequest> {
                     it.adres == contactInformation.emailadres &&
-                            it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                            it.referentie == contactInformation.zaaknummer
+                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
+                        it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
@@ -229,8 +229,8 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 match<CreateDigitaalAdresRequest> {
                     it.adres == contactInformation.emailadres &&
-                            it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                            it.referentie == contactInformation.zaaknummer
+                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
+                        it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
@@ -328,10 +328,10 @@ class OpenKlantServiceTest {
                 request =
                     match {
                         it.verstrektDoorPartij?.uuid == adresInformation.partijUuid &&
-                                it.adres == adresInformation.adres &&
-                                it.soortDigitaalAdres == adresInformation.soortDigitaalAdres &&
-                                it.isStandaardAdres == true &&
-                                it.referentie == adresInformation.referentie
+                            it.adres == adresInformation.adres &&
+                            it.soortDigitaalAdres == adresInformation.soortDigitaalAdres &&
+                            it.isStandaardAdres == true &&
+                            it.referentie == adresInformation.referentie
                     },
                 properties = testProperties,
             )

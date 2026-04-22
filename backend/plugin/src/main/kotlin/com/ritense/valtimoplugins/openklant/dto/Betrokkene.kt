@@ -28,13 +28,11 @@ data class Betrokkene(
     @JsonProperty("initiator")
     val initiator: Boolean,
 ) : Referable {
-
     enum class Rol {
         @JsonProperty("vertegenwoordiger")
         VERTEGENWOORDIGER,
 
         @JsonProperty("klant")
-        KLANT
+        KLANT,
     }
-
 }
