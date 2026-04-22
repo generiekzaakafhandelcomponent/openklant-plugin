@@ -22,8 +22,13 @@ dependencies {
     implementation("io.projectreactor.netty:reactor-netty-http:$reactorNettyVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingMicroutilsVersion")
+    testImplementation("com.ritense.valtimo:case")
+    testImplementation("com.ritense.valtimo:process-document")
+    testImplementation("com.ritense.valtimo:value-resolver")
+    testImplementation("com.ritense.valtimo:zaken-api")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
 }
 
 apply(from = "gradle/publishing.gradle")

@@ -74,7 +74,9 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) = runBlocking {
-        logger.info { "Fetch Contactmomenten from OpenKlant by case UUID: $objectUuid - ${execution.processBusinessKey}" }
+        logger.info {
+            "Fetch Contactmomenten from OpenKlant by case UUID: $objectUuid - ${execution.processBusinessKey}"
+        }
 
         val pluginProperties =
             KlantContactOptions(
