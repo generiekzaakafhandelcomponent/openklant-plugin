@@ -9,7 +9,7 @@ dockerCompose {
     isRequiredBy(project.tasks.integrationTesting)
 
     tasks.integrationTesting {
-        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
+        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml")
     }
 }
 
@@ -22,11 +22,22 @@ dependencies {
     implementation("io.projectreactor.netty:reactor-netty-http:$reactorNettyVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     compileOnly("io.github.microutils:kotlin-logging:$kotlinLoggingMicroutilsVersion")
-    testImplementation("com.ritense.valtimo:case")
-    testImplementation("com.ritense.valtimo:process-document")
-    testImplementation("com.ritense.valtimo:value-resolver")
-    testImplementation("com.ritense.valtimo:zaken-api")
+
+    // Testing
+    testImplementation("com.ritense.valtimo:building-block")
+    testImplementation("com.ritense.valtimo:contract")
+    testImplementation("com.ritense.valtimo:core")
+    testImplementation("com.ritense.valtimo:plugin")
+    testImplementation("com.ritense.valtimo:temporary-resource-storage")
+    testImplementation("com.ritense.valtimo:test-utils-common")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation("org.postgresql:postgresql")
+
+    testImplementation("com.ritense.valtimo:plugin-valtimo")
+    testImplementation("com.ritense.valtimo:valtimo-gzac-dependencies")
+
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
 }

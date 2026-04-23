@@ -3,7 +3,7 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:54342/openklant-test
+    url: jdbc:postgresql://localhost:54353/openklant-test
     username: test-user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -32,3 +32,15 @@ spring-actuator:
 valtimo:
   plugin:
     encryption-secret: "abcdefghijklmnop"
+
+operaton:
+  bpm:
+    database:
+      type: postgres
+    generic-properties:
+      properties:
+        deploy-changed-only: true
+        enforceHistoryTimeToLive: false
+
+AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_KLANTINTERACTIES_URL: http://localhost:8080
+AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN: test-token

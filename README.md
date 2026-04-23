@@ -6,3 +6,7 @@ Klantgegevens beheren in Open Klant (v2).
 
 - [Getting Started](documentation/getting-started.md) — setup, running, and development instructions
 - [Plugin Documentation](documentation/plugin.md) — plugin details and configuration
+
+## Contact
+
+Risa IT (gzac@risa-it.nl)

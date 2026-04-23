@@ -20,6 +20,7 @@ import {
 import { StoreContactInfoConfig } from "../../models/store-contact-info-config";
 
 @Component({
+  standalone: false,
   selector: "store-contact-info",
   templateUrl: "./open-klant-store-contact-info.component.html"
 })
