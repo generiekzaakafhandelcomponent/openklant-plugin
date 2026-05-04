@@ -23,7 +23,6 @@ import {FormModule, InputModule} from '@valtimo/components';
 import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
-  standalone: true,
   selector: 'open-klant-plugin-configuration',
   templateUrl: './open-klant-plugin-configuration.component.html',
   styleUrl: './open-klant-plugin-configuration.component.scss',
