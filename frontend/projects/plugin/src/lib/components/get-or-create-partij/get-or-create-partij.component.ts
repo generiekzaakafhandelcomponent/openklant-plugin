@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FunctionConfigurationComponent, FunctionConfigurationData, PluginTranslatePipeModule} from "@valtimo/plugin";
-import {BehaviorSubject, combineLatest, Observable, Subscription, take} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription, take} from "rxjs";
 import {GetOrCreatePartijConfig} from "../../models/get-or-create-partij-config";
-import {FormModule, InputModule} from "@valtimo/components";
+import {FormModule, FormOutput, InputModule} from "@valtimo/components";
 import {AsyncPipe, NgIf} from "@angular/common";
 
 @Component({
@@ -28,7 +28,7 @@ export class GetOrCreatePartijComponent
   @Output() configuration = new EventEmitter<FunctionConfigurationData>();
 
   private readonly formValue$ =
-    new BehaviorSubject<GetOrCreatePartijConfig | null>(null);
+    new ReplaySubject<GetOrCreatePartijConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
   private saveSubscription: Subscription;
 
@@ -40,9 +40,9 @@ export class GetOrCreatePartijComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: GetOrCreatePartijConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as GetOrCreatePartijConfig);
+    this.handleValid(formValue as GetOrCreatePartijConfig);
   }
 
   private handleValid(formValue: GetOrCreatePartijConfig): void {

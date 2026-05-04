@@ -14,12 +14,12 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
 import { AsyncPipe, NgIf } from "@angular/common";
-import { FormModule, InputModule } from "@valtimo/components";
+import {FormModule, FormOutput, InputModule} from "@valtimo/components";
 import { GetContactMomentsByCaseUuidConfig } from "../../models/get-contact-moments-by-case-uuid-config";
 
 @Component({
@@ -49,7 +49,7 @@ export class GetContactMomentsByCaseUuidComponent
   private saveSubscription!: Subscription;
 
   private readonly formValue$ =
-    new BehaviorSubject<GetContactMomentsByCaseUuidConfig | null>(null);
+    new ReplaySubject<GetContactMomentsByCaseUuidConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -60,9 +60,9 @@ export class GetContactMomentsByCaseUuidComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: GetContactMomentsByCaseUuidConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as GetContactMomentsByCaseUuidConfig);
+    this.handleValid(formValue as GetContactMomentsByCaseUuidConfig);
   }
 
   private handleValid(formValue: GetContactMomentsByCaseUuidConfig): void {

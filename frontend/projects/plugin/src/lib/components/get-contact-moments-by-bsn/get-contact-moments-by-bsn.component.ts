@@ -14,12 +14,12 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
 import { AsyncPipe, NgIf } from "@angular/common";
-import { FormModule, InputModule, TooltipModule } from "@valtimo/components";
+import {FormModule, FormOutput, InputModule, TooltipModule} from "@valtimo/components";
 import { GetContactMomentsByBsnConfig } from "../../models/get-contact-moments-by-bsn-config";
 
 @Component({
@@ -48,7 +48,7 @@ export class GetContactMomentsByBsnComponent
   private saveSubscription!: Subscription;
 
   private readonly formValue$ =
-    new BehaviorSubject<GetContactMomentsByBsnConfig | null>(null);
+    new ReplaySubject<GetContactMomentsByBsnConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -59,9 +59,9 @@ export class GetContactMomentsByBsnComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: GetContactMomentsByBsnConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as GetContactMomentsByBsnConfig);
+    this.handleValid(formValue as GetContactMomentsByBsnConfig);
   }
 
   private handleValid(formValue: GetContactMomentsByBsnConfig): void {

@@ -7,9 +7,9 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {
-  FormModule,
+  FormModule, FormOutput,
   InputModule,
   RadioModule,
   RadioValue,
@@ -19,18 +19,18 @@ import {
   FunctionConfigurationData,
   PluginTranslatePipeModule,
 } from "@valtimo/plugin";
-import { AsyncPipe } from "@angular/common";
+import {AsyncPipe} from "@angular/common";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { RegisterKlantcontactConfig } from "../../models/register-klantcontact-config";
-import { ToggleModule } from "carbon-components-angular";
-import { Toggle } from "carbon-components-angular";
+import {RegisterKlantcontactConfig} from "../../models/register-klantcontact-config";
+import {ToggleModule} from "carbon-components-angular";
+import {Toggle} from "carbon-components-angular";
 
 @Component({
   selector: "register-klantcontact",
@@ -62,7 +62,7 @@ export class RegisterKlantcontactComponent
 
   private saveSubscription: Subscription;
   private readonly formValue$ =
-    new BehaviorSubject<RegisterKlantcontactConfig | null>(null);
+    new ReplaySubject<RegisterKlantcontactConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -73,9 +73,9 @@ export class RegisterKlantcontactComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: RegisterKlantcontactConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as RegisterKlantcontactConfig);
+    this.handleValid(formValue as RegisterKlantcontactConfig);
   }
 
   private handleValid(formValue: RegisterKlantcontactConfig): void {

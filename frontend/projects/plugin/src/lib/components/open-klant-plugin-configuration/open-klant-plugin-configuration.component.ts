@@ -8,18 +8,18 @@ import {
 } from "@angular/core";
 import {
   PluginConfigurationComponent,
-  PluginConfigurationData, 
+  PluginConfigurationData,
   PluginTranslatePipeModule,
 } from '@valtimo/plugin';
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { Config } from "../../models/config";
-import {FormModule, InputModule} from '@valtimo/components';
+import { Config } from "../../models";
+import {FormModule, FormOutput, InputModule} from '@valtimo/components';
 import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
@@ -48,7 +48,7 @@ export class OpenKlantPluginConfigurationComponent
 
   private saveSubscription: Subscription;
 
-  private readonly formValue$ = new BehaviorSubject<Config | null>(null);
+  private readonly formValue$ = new ReplaySubject<Config>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -59,9 +59,9 @@ export class OpenKlantPluginConfigurationComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: any): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as Config);
+    this.handleValid(formValue as Config);
   }
 
   private handleValid(formValue: Config): void {

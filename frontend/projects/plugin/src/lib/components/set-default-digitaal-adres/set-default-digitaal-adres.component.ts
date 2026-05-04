@@ -4,10 +4,10 @@ import {
   FunctionConfigurationData,
   PluginTranslatePipeModule
 } from "@valtimo/plugin";
-import {BehaviorSubject, combineLatest, Observable, Subscription, take} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription, take} from "rxjs";
 import {SetDefaultDigitaalAdresConfig} from "../../models/set-default-digitaal-adres-config";
 import {AsyncPipe, NgIf} from "@angular/common";
-import {FormModule, InputModule} from "@valtimo/components";
+import {FormModule, FormOutput, InputModule} from "@valtimo/components";
 
 @Component({
   selector: 'set-default-digitaal-adres',
@@ -34,7 +34,7 @@ export class SetDefaultDigitaalAdresComponent
   private saveSubscription!: Subscription;
 
   private readonly formValue$ =
-    new BehaviorSubject<SetDefaultDigitaalAdresConfig | null>(null);
+    new ReplaySubject<SetDefaultDigitaalAdresConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -45,9 +45,9 @@ export class SetDefaultDigitaalAdresComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: SetDefaultDigitaalAdresConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as SetDefaultDigitaalAdresConfig);
+    this.handleValid(formValue as SetDefaultDigitaalAdresConfig);
   }
 
   private handleValid(formValue: SetDefaultDigitaalAdresConfig): void {

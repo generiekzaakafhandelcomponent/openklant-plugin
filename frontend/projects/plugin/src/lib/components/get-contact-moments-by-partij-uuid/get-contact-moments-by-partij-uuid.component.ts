@@ -14,13 +14,13 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { AsyncPipe, NgIf } from "@angular/common";
-import { FormModule, InputModule, TooltipModule } from "@valtimo/components";
-import { GetContactMomentsByPartijUuidConfig } from "../../models/get-contact-moments-by-partij-uuid-config";
+import {AsyncPipe, NgIf} from "@angular/common";
+import {FormModule, FormOutput, InputModule, TooltipModule} from "@valtimo/components";
+import {GetContactMomentsByPartijUuidConfig} from "../../models/get-contact-moments-by-partij-uuid-config";
 
 @Component({
   selector: "get-contact-moments-by-partij-uuid",
@@ -48,7 +48,7 @@ export class GetContactMomentsByPartijUuidComponent
   private saveSubscription!: Subscription;
 
   private readonly formValue$ =
-    new BehaviorSubject<GetContactMomentsByPartijUuidConfig | null>(null);
+    new ReplaySubject<GetContactMomentsByPartijUuidConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -59,9 +59,9 @@ export class GetContactMomentsByPartijUuidComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: GetContactMomentsByPartijUuidConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as GetContactMomentsByPartijUuidConfig);
+    this.handleValid(formValue as GetContactMomentsByPartijUuidConfig);
   }
 
   private handleValid(formValue: GetContactMomentsByPartijUuidConfig): void {

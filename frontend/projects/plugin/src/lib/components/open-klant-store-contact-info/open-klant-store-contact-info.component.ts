@@ -7,32 +7,32 @@ import {
   Output,
 } from "@angular/core";
 import {
-    FunctionConfigurationComponent,
-    FunctionConfigurationData,
-    PluginTranslatePipeModule,
+  FunctionConfigurationComponent,
+  FunctionConfigurationData,
+  PluginTranslatePipeModule,
 } from '@valtimo/plugin';
 import {
   Observable,
   BehaviorSubject,
   Subscription,
   combineLatest,
-  take,
+  take, ReplaySubject,
 } from "rxjs";
-import { StoreContactInfoConfig } from '../../models/store-contact-info-config';
-import { FormModule, InputModule } from '@valtimo/components';
-import { AsyncPipe, NgIf } from '@angular/common';
+import {StoreContactInfoConfig} from '../../models/store-contact-info-config';
+import {FormModule, FormOutput, InputModule} from '@valtimo/components';
+import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
-    selector: 'store-contact-info',
-    standalone: true,
-    imports: [
-        FormModule,
-        NgIf,
-        InputModule,
-        PluginTranslatePipeModule,
-        AsyncPipe
-    ],
-    templateUrl: './open-klant-store-contact-info.component.html'
+  selector: 'store-contact-info',
+  standalone: true,
+  imports: [
+    FormModule,
+    NgIf,
+    InputModule,
+    PluginTranslatePipeModule,
+    AsyncPipe
+  ],
+  templateUrl: './open-klant-store-contact-info.component.html'
 })
 export class StoreContactInfoComponent
   implements FunctionConfigurationComponent, OnInit, OnDestroy {
@@ -45,7 +45,7 @@ export class StoreContactInfoComponent
   @Output() configuration = new EventEmitter<FunctionConfigurationData>();
 
   private readonly formValue$ =
-    new BehaviorSubject<StoreContactInfoConfig | null>(null);
+    new ReplaySubject<StoreContactInfoConfig>(1);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
   private saveSubscription: Subscription;
 
@@ -57,9 +57,9 @@ export class StoreContactInfoComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: StoreContactInfoConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formValue: FormOutput): void {
+    this.formValue$.next(formValue as StoreContactInfoConfig);
+    this.handleValid(formValue as StoreContactInfoConfig);
   }
 
   private handleValid(formValue: StoreContactInfoConfig): void {
