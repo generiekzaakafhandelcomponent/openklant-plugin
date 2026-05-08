@@ -65,7 +65,7 @@
     }
 
     summary {
-      color: black;
+      color: var(--cds-text-primary);
       padding: 0 2em 1em 2em;
     }
 
@@ -80,7 +80,7 @@
   }
 
   .klantcontact-property-name {
-    color: black;
+    color: var(--cds-text-primary);
   }
 
   .failed {
