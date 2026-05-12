@@ -47,8 +47,8 @@ export class GetContactMomentsByPartijUuidComponent
 
   private saveSubscription!: Subscription;
 
-  private readonly formValue$ =
-    new ReplaySubject<GetContactMomentsByPartijUuidConfig>(1);
+  private readonly config$ =
+    new BehaviorSubject<GetContactMomentsByPartijUuidConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -59,13 +59,13 @@ export class GetContactMomentsByPartijUuidComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: FormOutput): void {
-    this.formValue$.next(formValue as GetContactMomentsByPartijUuidConfig);
-    this.handleValid(formValue as GetContactMomentsByPartijUuidConfig);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as GetContactMomentsByPartijUuidConfig);
+    this.handleValid(formOutput as GetContactMomentsByPartijUuidConfig);
   }
 
-  private handleValid(formValue: GetContactMomentsByPartijUuidConfig): void {
-    const valid = !!formValue.resultPvName && !!formValue.partijUuid;
+  private handleValid(formOutput: GetContactMomentsByPartijUuidConfig): void {
+    const valid = !!formOutput.resultPvName && !!formOutput.partijUuid;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -73,11 +73,11 @@ export class GetContactMomentsByPartijUuidComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe((save) => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
-          if (valid && formValue) {
-            this.configuration.emit(formValue);
+        .subscribe(([config, valid]) => {
+          if (valid && config) {
+            this.configuration.emit(config);
           }
         });
     });

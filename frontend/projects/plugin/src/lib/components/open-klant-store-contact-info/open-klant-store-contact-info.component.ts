@@ -44,8 +44,8 @@ export class StoreContactInfoComponent
   @Output() valid = new EventEmitter<boolean>();
   @Output() configuration = new EventEmitter<FunctionConfigurationData>();
 
-  private readonly formValue$ =
-    new ReplaySubject<StoreContactInfoConfig>(1);
+  private readonly config$ =
+    new BehaviorSubject<StoreContactInfoConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
   private saveSubscription: Subscription;
 
@@ -57,19 +57,19 @@ export class StoreContactInfoComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: FormOutput): void {
-    this.formValue$.next(formValue as StoreContactInfoConfig);
-    this.handleValid(formValue as StoreContactInfoConfig);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as StoreContactInfoConfig);
+    this.handleValid(formOutput as StoreContactInfoConfig);
   }
 
-  private handleValid(formValue: StoreContactInfoConfig): void {
+  private handleValid(formOutput: StoreContactInfoConfig): void {
     const valid =
-      !!formValue.bsn &&
-      !!formValue.firstName &&
-      !!formValue.inFix &&
-      !!formValue.lastName &&
-      !!formValue.emailAddress &&
-      !!formValue.caseUuid;
+      !!formOutput.bsn &&
+      !!formOutput.firstName &&
+      !!formOutput.inFix &&
+      !!formOutput.lastName &&
+      !!formOutput.emailAddress &&
+      !!formOutput.caseUuid;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -77,11 +77,11 @@ export class StoreContactInfoComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe(() => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });

@@ -61,8 +61,8 @@ export class RegisterKlantcontactComponent
   @ViewChild("hasBetrokkene") hasBetrokkene: Toggle;
 
   private saveSubscription: Subscription;
-  private readonly formValue$ =
-    new ReplaySubject<RegisterKlantcontactConfig>(1);
+  private readonly config$ =
+    new BehaviorSubject<RegisterKlantcontactConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -73,23 +73,23 @@ export class RegisterKlantcontactComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: FormOutput): void {
-    this.formValue$.next(formValue as RegisterKlantcontactConfig);
-    this.handleValid(formValue as RegisterKlantcontactConfig);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as RegisterKlantcontactConfig);
+    this.handleValid(formOutput as RegisterKlantcontactConfig);
   }
 
-  private handleValid(formValue: RegisterKlantcontactConfig): void {
+  private handleValid(formOutput: RegisterKlantcontactConfig): void {
     const valid =
-      !!formValue.kanaal &&
-      !!formValue.onderwerp &&
-      !!formValue.vertrouwelijk &&
-      !!formValue.taal &&
-      !!formValue.plaatsgevondenOp &&
-      !!(!formValue.hasBetrokkene || formValue.partijUuid) &&
-      !!(!formValue.hasBetrokkene || formValue.voorletters) &&
-      !!(!formValue.hasBetrokkene || formValue.voornaam) &&
-      !!(!formValue.hasBetrokkene || formValue.voorvoegselAchternaam) &&
-      !!(!formValue.hasBetrokkene || formValue.achternaam);
+      !!formOutput.kanaal &&
+      !!formOutput.onderwerp &&
+      !!formOutput.vertrouwelijk &&
+      !!formOutput.taal &&
+      !!formOutput.plaatsgevondenOp &&
+      !!(!formOutput.hasBetrokkene || formOutput.partijUuid) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voorletters) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voornaam) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voorvoegselAchternaam) &&
+      !!(!formOutput.hasBetrokkene || formOutput.achternaam);
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -97,11 +97,11 @@ export class RegisterKlantcontactComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe(() => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });

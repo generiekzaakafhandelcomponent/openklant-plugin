@@ -27,8 +27,8 @@ export class GetOrCreatePartijComponent
   @Output() valid = new EventEmitter<boolean>();
   @Output() configuration = new EventEmitter<FunctionConfigurationData>();
 
-  private readonly formValue$ =
-    new ReplaySubject<GetOrCreatePartijConfig>(1);
+  private readonly config$ =
+    new BehaviorSubject<GetOrCreatePartijConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
   private saveSubscription: Subscription;
 
@@ -40,18 +40,18 @@ export class GetOrCreatePartijComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: FormOutput): void {
-    this.formValue$.next(formValue as GetOrCreatePartijConfig);
-    this.handleValid(formValue as GetOrCreatePartijConfig);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as GetOrCreatePartijConfig);
+    this.handleValid(formOutput as GetOrCreatePartijConfig);
   }
 
-  private handleValid(formValue: GetOrCreatePartijConfig): void {
+  private handleValid(formOutput: GetOrCreatePartijConfig): void {
     const valid =
-      !!formValue.bsn &&
-      !!formValue.voorletters &&
-      !!formValue.voornaam &&
-      !!formValue.voorvoegselAchternaam &&
-      !!formValue.achternaam
+      !!formOutput.bsn &&
+      !!formOutput.voorletters &&
+      !!formOutput.voornaam &&
+      !!formOutput.voorvoegselAchternaam &&
+      !!formOutput.achternaam
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -59,11 +59,11 @@ export class GetOrCreatePartijComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe(() => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });

@@ -18,9 +18,9 @@ import {
   Subscription,
   take,
 } from "rxjs";
-import { AsyncPipe, NgIf } from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {FormModule, FormOutput, InputModule, TooltipModule} from "@valtimo/components";
-import { GetContactMomentsByBsnConfig } from "../../models/get-contact-moments-by-bsn-config";
+import {GetContactMomentsByBsnConfig} from "../../models/get-contact-moments-by-bsn-config";
 
 @Component({
   selector: "get-contact-moments-by-bsn",
@@ -47,8 +47,8 @@ export class GetContactMomentsByBsnComponent
 
   private saveSubscription!: Subscription;
 
-  private readonly formValue$ =
-    new ReplaySubject<GetContactMomentsByBsnConfig>(1);
+  private readonly config$ =
+    new BehaviorSubject<GetContactMomentsByBsnConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -59,13 +59,13 @@ export class GetContactMomentsByBsnComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: FormOutput): void {
-    this.formValue$.next(formValue as GetContactMomentsByBsnConfig);
-    this.handleValid(formValue as GetContactMomentsByBsnConfig);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as GetContactMomentsByBsnConfig);
+    this.handleValid(formOutput as GetContactMomentsByBsnConfig);
   }
 
-  private handleValid(formValue: GetContactMomentsByBsnConfig): void {
-    const valid = !!formValue.resultPvName && !!formValue.bsn;
+  private handleValid(formOutput: GetContactMomentsByBsnConfig): void {
+    const valid = !!formOutput.resultPvName && !!formOutput.bsn;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -73,11 +73,11 @@ export class GetContactMomentsByBsnComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe((save) => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
-          if (valid && formValue) {
-            this.configuration.emit(formValue);
+        .subscribe(([config, valid]) => {
+          if (valid && config) {
+            this.configuration.emit(config);
           }
         });
     });
