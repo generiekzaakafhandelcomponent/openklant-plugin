@@ -478,7 +478,7 @@ services:
       - ./imports/open-formulieren/private_media:/private_media
 
   open-klant:
-    image: maykinmedia/open-klant:2.10.0
+    image: maykinmedia/open-klant:2.16.0
     container_name: plugin-docker-compose-open-klant
     platform: linux/amd64
     environment:

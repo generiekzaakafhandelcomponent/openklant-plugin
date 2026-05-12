@@ -1,77 +1,85 @@
 [
-    {
-        "activityId": "StartEvent_1",
-        "activityType": "bpmn:StartEvent:start",
-        "formDefinitionName": "open-klant-start",
-        "viewModelEnabled": false,
-        "formDisplayType": "modal",
-        "formSize": "medium",
-        "subtitles": [],
-        "processLinkType": "form"
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "open-klant-start",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "verstuurKlantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "register-klantcontact",
+    "actionProperties": {
+      "hasBetrokkene": true,
+      "referentienummer": "doc:/klantcontact/referentienummer",
+      "kanaal": "doc:/klantcontact/kanaal",
+      "onderwerp": "doc:/klantcontact/onderwerp",
+      "inhoud": "doc:/klantcontact/inhoud",
+      "reactie": "doc:/klantcontact/reactie",
+      "indicatieContactGelukt": "doc:/klantcontact/indicatieContactGelukt",
+      "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
+      "taal": "doc:/klantcontact/taal",
+      "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp",
+      "metadata": "doc:/klantcontact/metadata",
+      "partijUuid": "doc:/partijUuid",
+      "voorletters": "doc:/klantcontact/betrokkene/voorletters",
+      "voornaam": "doc:/klantcontact/betrokkene/voornaam",
+      "voorvoegselAchternaam": "doc:/klantcontact/betrokkene/voorvoegselAchternaam",
+      "achternaam": "doc:/klantcontact/betrokkene/achternaam"
     },
-    {
-        "activityId": "verstuurKlantcontact",
-        "activityType": "bpmn:ServiceTask:start",
-        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-        "pluginActionDefinitionKey": "register-klantcontact",
-        "actionProperties": {
-            "hasBetrokkene": true,
-            "kanaal": "doc:/klantcontact/kanaal",
-            "onderwerp": "doc:/klantcontact/onderwerp",
-            "inhoud": "doc:/klantcontact/inhoud",
-            "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
-            "taal": "doc:/klantcontact/taal",
-            "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp",
-            "partijUuid": "doc:/partijUuid",
-            "voorletters": "doc:/klantcontact/betrokkene/voorletters",
-            "voornaam": "doc:/klantcontact/betrokkene/voornaam",
-            "voorvoegselAchternaam": "doc:/klantcontact/betrokkene/voorvoegselAchternaam",
-            "achternaam": "doc:/klantcontact/betrokkene/achternaam"
-        },
-        "processLinkType": "plugin"
+    "processLinkType": "plugin"
+  },
+  {
+    "activityId": "verstuurKlantcontactZonderBetrokkene",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "register-klantcontact",
+    "actionProperties": {
+      "hasBetrokkene": false,
+      "referentienummer": "doc:/klantcontact/referentienummer",
+      "kanaal": "doc:/klantcontact/kanaal",
+      "onderwerp": "doc:/klantcontact/onderwerp",
+      "inhoud": "doc:/klantcontact/inhoud",
+      "reactie": "doc:/klantcontact/reactie",
+      "indicatieContactGelukt": "doc:/klantcontact/indicatieContactGelukt",
+      "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
+      "taal": "doc:/klantcontact/taal",
+      "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp",
+      "metadata": "doc:/klantcontact/metadata"
     },
-    {
-        "activityId": "verstuurKlantcontactZonderBetrokkene",
-        "activityType": "bpmn:ServiceTask:start",
-        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-        "pluginActionDefinitionKey": "register-klantcontact",
-        "actionProperties": {
-            "hasBetrokkene": false,
-            "kanaal": "doc:/klantcontact/kanaal",
-            "onderwerp": "doc:/klantcontact/onderwerp",
-            "inhoud": "doc:/klantcontact/inhoud",
-            "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
-            "taal": "doc:/klantcontact/taal",
-            "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp"
-        },
-        "processLinkType": "plugin"
+    "processLinkType": "plugin"
+  },
+  {
+    "activityId": "haalPartijOpOfMaakNieuwe",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-or-create-partij",
+    "actionProperties": {
+      "bsn": "doc:/bsn",
+      "voorletters": "doc:/partij/voorletters",
+      "voornaam": "doc:/partij/voornaam",
+      "voorvoegselAchternaam": "doc:/partij/voorvoegselAchternaam",
+      "achternaam": "doc:/partij/achternaam"
     },
-    {
-        "activityId": "haalPartijOpOfMaakNieuwe",
-        "activityType": "bpmn:ServiceTask:start",
-        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-        "pluginActionDefinitionKey": "get-or-create-partij",
-        "actionProperties": {
-            "bsn": "doc:/bsn",
-            "voorletters": "doc:/partij/voorletters",
-            "voornaam": "doc:/partij/voornaam",
-            "voorvoegselAchternaam": "doc:/partij/voorvoegselAchternaam",
-            "achternaam": "doc:/partij/achternaam"
-        },
-        "processLinkType": "plugin"
+    "processLinkType": "plugin"
+  },
+  {
+    "activityId": "zetStandaardDigitaalAdres",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "set-default-digitaal-adres",
+    "actionProperties": {
+      "resultPvName": "digitaalAdresUuid",
+      "partijUuid": "doc:/partijUuid",
+      "adres": "doc:/digitaalAdres/adres",
+      "soortDigitaalAdres": "doc:/digitaalAdres/soortDigitaalAdres",
+      "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
     },
-    {
-        "activityId": "zetStandaardDigitaalAdres",
-        "activityType": "bpmn:ServiceTask:start",
-        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-        "pluginActionDefinitionKey": "set-default-digitaal-adres",
-        "actionProperties": {
-            "resultPvName": "digitaalAdresUuid",
-            "partijUuid": "doc:/partijUuid",
-            "adres": "doc:/digitaalAdres/adres",
-            "soortDigitaalAdres": "doc:/digitaalAdres/soortDigitaalAdres",
-            "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
-        },
-        "processLinkType": "plugin"
-    }
+    "processLinkType": "plugin"
+  }
 ]

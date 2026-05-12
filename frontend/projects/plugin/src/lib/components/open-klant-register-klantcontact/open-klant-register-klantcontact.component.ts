@@ -7,9 +7,9 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {
-  FormModule,
+  FormModule, FormOutput,
   InputModule,
   RadioModule,
   RadioValue,
@@ -19,18 +19,18 @@ import {
   FunctionConfigurationData,
   PluginTranslatePipeModule,
 } from "@valtimo/plugin";
-import { AsyncPipe } from "@angular/common";
+import {AsyncPipe} from "@angular/common";
 import {
   BehaviorSubject,
   combineLatest,
   map,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { RegisterKlantcontactConfig } from "../../models/register-klantcontact-config";
-import { ToggleModule } from "carbon-components-angular";
-import { Toggle } from "carbon-components-angular";
+import {RegisterKlantcontactConfig} from "../../models/register-klantcontact-config";
+import {ToggleModule} from "carbon-components-angular";
+import {Toggle} from "carbon-components-angular";
 
 @Component({
   selector: "register-klantcontact",
@@ -61,7 +61,7 @@ export class RegisterKlantcontactComponent
   @ViewChild("hasBetrokkene") hasBetrokkene: Toggle;
 
   private saveSubscription: Subscription;
-  private readonly formValue$ =
+  private readonly config$ =
     new BehaviorSubject<RegisterKlantcontactConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
@@ -73,24 +73,23 @@ export class RegisterKlantcontactComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: RegisterKlantcontactConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as RegisterKlantcontactConfig);
+    this.handleValid(formOutput as RegisterKlantcontactConfig);
   }
 
-  private handleValid(formValue: RegisterKlantcontactConfig): void {
+  private handleValid(formOutput: RegisterKlantcontactConfig): void {
     const valid =
-      !!formValue.kanaal &&
-      !!formValue.onderwerp &&
-      !!formValue.inhoud &&
-      !!formValue.vertrouwelijk &&
-      !!formValue.taal &&
-      !!formValue.plaatsgevondenOp &&
-      !!(!formValue.hasBetrokkene || formValue.partijUuid) &&
-      !!(!formValue.hasBetrokkene || formValue.voorletters) &&
-      !!(!formValue.hasBetrokkene || formValue.voornaam) &&
-      !!(!formValue.hasBetrokkene || formValue.voorvoegselAchternaam) &&
-      !!(!formValue.hasBetrokkene || formValue.achternaam);
+      !!formOutput.kanaal &&
+      !!formOutput.onderwerp &&
+      !!formOutput.vertrouwelijk &&
+      !!formOutput.taal &&
+      !!formOutput.plaatsgevondenOp &&
+      !!(!formOutput.hasBetrokkene || formOutput.partijUuid) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voorletters) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voornaam) &&
+      !!(!formOutput.hasBetrokkene || formOutput.voorvoegselAchternaam) &&
+      !!(!formOutput.hasBetrokkene || formOutput.achternaam);
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -98,11 +97,11 @@ export class RegisterKlantcontactComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe(() => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });

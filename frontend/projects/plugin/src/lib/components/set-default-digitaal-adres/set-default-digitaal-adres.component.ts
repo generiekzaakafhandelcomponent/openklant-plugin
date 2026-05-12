@@ -4,10 +4,10 @@ import {
   FunctionConfigurationData,
   PluginTranslatePipeModule
 } from "@valtimo/plugin";
-import {BehaviorSubject, combineLatest, Observable, Subscription, take} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription, take} from "rxjs";
 import {SetDefaultDigitaalAdresConfig} from "../../models/set-default-digitaal-adres-config";
 import {AsyncPipe, NgIf} from "@angular/common";
-import {FormModule, InputModule} from "@valtimo/components";
+import {FormModule, FormOutput, InputModule} from "@valtimo/components";
 
 @Component({
   selector: 'set-default-digitaal-adres',
@@ -33,7 +33,7 @@ export class SetDefaultDigitaalAdresComponent
 
   private saveSubscription!: Subscription;
 
-  private readonly formValue$ =
+  private readonly config$ =
     new BehaviorSubject<SetDefaultDigitaalAdresConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
@@ -45,17 +45,17 @@ export class SetDefaultDigitaalAdresComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: SetDefaultDigitaalAdresConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as SetDefaultDigitaalAdresConfig);
+    this.handleValid(formOutput as SetDefaultDigitaalAdresConfig);
   }
 
-  private handleValid(formValue: SetDefaultDigitaalAdresConfig): void {
-    const valid = !!formValue.resultPvName &&
-      !!formValue.partijUuid &&
-      !!formValue.adres &&
-      !!formValue.soortDigitaalAdres &&
-      !!formValue.verificatieDatum;
+  private handleValid(formOutput: SetDefaultDigitaalAdresConfig): void {
+    const valid = !!formOutput.resultPvName &&
+      !!formOutput.partijUuid &&
+      !!formOutput.adres &&
+      !!formOutput.soortDigitaalAdres &&
+      !!formOutput.verificatieDatum;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -63,11 +63,11 @@ export class SetDefaultDigitaalAdresComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe((save) => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
-          if (valid && formValue) {
-            this.configuration.emit(formValue);
+        .subscribe(([config, valid]) => {
+          if (valid && config) {
+            this.configuration.emit(config);
           }
         });
     });

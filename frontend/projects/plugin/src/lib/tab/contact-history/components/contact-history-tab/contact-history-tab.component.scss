@@ -65,7 +65,7 @@
     }
 
     summary {
-      color: black;
+      color: var(--cds-text-primary);
       padding: 0 2em 1em 2em;
     }
 
@@ -77,6 +77,10 @@
   .klantcontact-number {
     font-size: 0.9em;
     font-style: normal;
+  }
+
+  .klantcontact-property-name {
+    color: var(--cds-text-primary);
   }
 
   .failed {

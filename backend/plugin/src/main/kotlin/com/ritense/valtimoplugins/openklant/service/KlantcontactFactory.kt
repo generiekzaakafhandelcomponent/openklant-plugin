@@ -7,9 +7,7 @@ import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 
 class KlantcontactFactory {
-    fun createKlantcontactRequest(
-        klantContactCreationInformation: KlantcontactCreationInformation,
-    ): KlantcontactCreationRequest =
+    fun createKlantcontactRequest(klantContactCreationInformation: KlantcontactCreationInformation): KlantcontactCreationRequest =
         if (klantContactCreationInformation.hasBetrokkene) {
             KlantcontactCreationRequest(
                 klantcontact = klantcontactRequest(klantContactCreationInformation),
@@ -23,14 +21,16 @@ class KlantcontactFactory {
 
     private fun klantcontactRequest(klantContactCreationInformation: KlantcontactCreationInformation) =
         KlantcontactCreationRequest.KlantcontactRequest(
-            nummer = null,
+            referentienummer = klantContactCreationInformation.referentienummer,
             kanaal = klantContactCreationInformation.kanaal,
             onderwerp = klantContactCreationInformation.onderwerp,
             inhoud = klantContactCreationInformation.inhoud,
-            indicateContactGelukt = true,
+            reactie = klantContactCreationInformation.reactie,
+            indicatieContactGelukt = klantContactCreationInformation.indicatieContactGelukt,
             taal = klantContactCreationInformation.taal,
             vertrouwelijk = klantContactCreationInformation.vertrouwelijk,
             plaatsgevondenOp = klantContactCreationInformation.plaatsgevondenOp,
+            metadata = klantContactCreationInformation.metadata,
         )
 
     private fun betrokkeneRequest(klantContactCreationInformation: KlantcontactCreationInformation) =
@@ -39,9 +39,7 @@ class KlantcontactFactory {
                 UuidReference(
                     uuid =
                         klantContactCreationInformation.partijUuid
-                            ?: throw IllegalArgumentException(
-                                "No partijUuid was specified to create a betrokkene request",
-                            ),
+                            ?: throw IllegalArgumentException("No partijUuid was specified to create a betrokkene request"),
                 ),
             bezoekadres = null,
             correspondentieadres = null,
