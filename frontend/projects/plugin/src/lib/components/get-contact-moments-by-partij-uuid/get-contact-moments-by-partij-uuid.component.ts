@@ -14,13 +14,13 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { AsyncPipe, NgIf } from "@angular/common";
-import { FormModule, InputModule, TooltipModule } from "@valtimo/components";
-import { GetContactMomentsByPartijUuidConfig } from "../../models/get-contact-moments-by-partij-uuid-config";
+import {AsyncPipe, NgIf} from "@angular/common";
+import {FormModule, FormOutput, InputModule, TooltipModule} from "@valtimo/components";
+import {GetContactMomentsByPartijUuidConfig} from "../../models/get-contact-moments-by-partij-uuid-config";
 
 @Component({
   selector: "get-contact-moments-by-partij-uuid",
@@ -47,7 +47,7 @@ export class GetContactMomentsByPartijUuidComponent
 
   private saveSubscription!: Subscription;
 
-  private readonly formValue$ =
+  private readonly config$ =
     new BehaviorSubject<GetContactMomentsByPartijUuidConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
@@ -59,13 +59,13 @@ export class GetContactMomentsByPartijUuidComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: GetContactMomentsByPartijUuidConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as GetContactMomentsByPartijUuidConfig);
+    this.handleValid(formOutput as GetContactMomentsByPartijUuidConfig);
   }
 
-  private handleValid(formValue: GetContactMomentsByPartijUuidConfig): void {
-    const valid = !!formValue.resultPvName && !!formValue.partijUuid;
+  private handleValid(formOutput: GetContactMomentsByPartijUuidConfig): void {
+    const valid = !!formOutput.resultPvName && !!formOutput.partijUuid;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -73,11 +73,11 @@ export class GetContactMomentsByPartijUuidComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe((save) => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
-          if (valid && formValue) {
-            this.configuration.emit(formValue);
+        .subscribe(([config, valid]) => {
+          if (valid && config) {
+            this.configuration.emit(config);
           }
         });
     });

@@ -64,6 +64,7 @@ import {DashboardManagementModule} from "@valtimo/dashboard-management";
 import {DashboardModule} from "@valtimo/dashboard";
 import {DecisionModule} from "@valtimo/decision";
 import {
+  CASE_TAB_TOKEN,
   CaseDetailTabAuditComponent,
   CaseDetailTabDocumentsComponent,
   CaseDetailTabProgressComponent,
@@ -98,7 +99,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {environment} from "../environments/environment";
 import {registerDocumentenApiFormioUploadComponent, ZgwModule} from "@valtimo/zgw";
 
-import {OpenKlantPluginModule, openKlantPluginSpecification,} from "@valtimo-plugins/openklant";
+import {ContactHistoryTabComponent, OpenKlantPluginModule, openKlantPluginSpecification,} from "@valtimo-plugins/openklant";
 
 export function tabsFactory() {
   return new Map<string, object>([
@@ -194,6 +195,12 @@ export function tabsFactory() {
         zakenApiPluginSpecification,
       ],
     },
+    {
+      provide: CASE_TAB_TOKEN,
+      useValue: {
+        "generieke-contactgeschiedenis": ContactHistoryTabComponent,
+      }
+    }
   ],
   bootstrap: [AppComponent],
 })

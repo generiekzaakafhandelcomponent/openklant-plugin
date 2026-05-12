@@ -140,9 +140,7 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info {
-            "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
-        }
+        logger.info { "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}" }
 
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
@@ -161,9 +159,7 @@ class OpenKlantPlugin(
     @PluginAction(
         key = "get-contact-moments-by-bsn",
         title = "Get contact history by BSN",
-        description =
-            "Get contact history by BSN from Open Klant. " +
-                "Queries the API using the 'partij-identificator object-ID' parameter.",
+        description = "Get contact history by BSN from Open Klant. Queries the API using the 'partij-identificator object-ID' parameter.",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getContactMomentsByBsn(
@@ -171,9 +167,7 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info {
-            "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}"
-        }
+        logger.info { "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}" }
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
                 klantinteractiesUrl,
@@ -199,9 +193,7 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info {
-            "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
-        }
+        logger.info { "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}" }
         val pluginProperties =
             KlantcontactOptions.fromActionProperties(
                 klantinteractiesUrl,
@@ -223,9 +215,12 @@ class OpenKlantPlugin(
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun postKlantContact(
+        @PluginActionProperty referentienummer: String?,
         @PluginActionProperty kanaal: String,
         @PluginActionProperty onderwerp: String,
-        @PluginActionProperty inhoud: String,
+        @PluginActionProperty inhoud: String?,
+        @PluginActionProperty reactie: String?,
+        @PluginActionProperty indicatieContactGelukt: String?,
         @PluginActionProperty vertrouwelijk: String,
         @PluginActionProperty taal: String,
         @PluginActionProperty plaatsgevondenOp: String,
@@ -235,15 +230,19 @@ class OpenKlantPlugin(
         @PluginActionProperty voornaam: String?,
         @PluginActionProperty voorvoegselAchternaam: String?,
         @PluginActionProperty achternaam: String?,
+        @PluginActionProperty metadata: Map<String, String>?,
         execution: DelegateExecution,
     ) {
         logger.info { "Registering klantcontact - ${execution.processBusinessKey}" }
 
         val klantcontactCreationInformation =
             KlantcontactCreationInformation.fromActionProperties(
+                referentienummer = referentienummer,
                 kanaal = kanaal,
                 onderwerp = onderwerp,
                 inhoud = inhoud,
+                reactie = reactie,
+                indicatieContactGelukt = indicatieContactGelukt,
                 vertrouwelijk = vertrouwelijk,
                 taal = taal,
                 plaatsgevondenOp = plaatsgevondenOp,
@@ -253,6 +252,7 @@ class OpenKlantPlugin(
                 voornaam = voornaam,
                 voorvoegselAchternaam = voorvoegselAchternaam,
                 achternaam = achternaam,
+                metadata = metadata,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
 

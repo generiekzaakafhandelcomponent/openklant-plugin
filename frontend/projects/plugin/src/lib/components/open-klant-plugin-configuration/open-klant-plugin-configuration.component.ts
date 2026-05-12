@@ -8,22 +8,21 @@ import {
 } from "@angular/core";
 import {
   PluginConfigurationComponent,
-  PluginConfigurationData, 
+  PluginConfigurationData,
   PluginTranslatePipeModule,
 } from '@valtimo/plugin';
 import {
   BehaviorSubject,
   combineLatest,
-  Observable,
+  Observable, ReplaySubject,
   Subscription,
   take,
 } from "rxjs";
-import { Config } from "../../models/config";
-import {FormModule, InputModule} from '@valtimo/components';
+import {Config} from "../../models";
+import {FormModule, FormOutput, InputModule} from '@valtimo/components';
 import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
-  standalone: true,
   selector: 'open-klant-plugin-configuration',
   templateUrl: './open-klant-plugin-configuration.component.html',
   styleUrl: './open-klant-plugin-configuration.component.scss',
@@ -36,8 +35,7 @@ import {AsyncPipe, NgIf} from '@angular/common';
   ]
 })
 export class OpenKlantPluginConfigurationComponent
-  implements PluginConfigurationComponent, OnInit, OnDestroy
-{
+  implements PluginConfigurationComponent, OnInit, OnDestroy {
   @Input() save$: Observable<void>;
   @Input() disabled$: Observable<boolean>;
   @Input() pluginId: string;
@@ -49,7 +47,7 @@ export class OpenKlantPluginConfigurationComponent
 
   private saveSubscription: Subscription;
 
-  private readonly formValue$ = new BehaviorSubject<Config | null>(null);
+  private readonly config$ = new BehaviorSubject<Config | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
@@ -60,17 +58,17 @@ export class OpenKlantPluginConfigurationComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: any): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as Config);
+    this.handleValid(formOutput as Config);
   }
 
-  private handleValid(formValue: Config): void {
+  private handleValid(formOutput: Config): void {
     // The configuration is valid when a configuration title and url are defined
     const valid = !!(
-      formValue.configurationTitle &&
-      formValue.klantinteractiesUrl &&
-      formValue.token
+      formOutput.configurationTitle &&
+      formOutput.klantinteractiesUrl &&
+      formOutput.token
     );
 
     this.valid$.next(valid);
@@ -79,11 +77,11 @@ export class OpenKlantPluginConfigurationComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe((save) => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });

@@ -9,20 +9,30 @@ import {
 import {
   FunctionConfigurationComponent,
   FunctionConfigurationData,
-} from "@valtimo/plugin";
+  PluginTranslatePipeModule,
+} from '@valtimo/plugin';
 import {
   Observable,
   BehaviorSubject,
   Subscription,
   combineLatest,
-  take,
+  take, ReplaySubject,
 } from "rxjs";
-import { StoreContactInfoConfig } from "../../models/store-contact-info-config";
+import {StoreContactInfoConfig} from '../../models/store-contact-info-config';
+import {FormModule, FormOutput, InputModule} from '@valtimo/components';
+import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
-  standalone: false,
-  selector: "store-contact-info",
-  templateUrl: "./open-klant-store-contact-info.component.html"
+  selector: 'store-contact-info',
+  standalone: true,
+  imports: [
+    FormModule,
+    NgIf,
+    InputModule,
+    PluginTranslatePipeModule,
+    AsyncPipe
+  ],
+  templateUrl: './open-klant-store-contact-info.component.html'
 })
 export class StoreContactInfoComponent
   implements FunctionConfigurationComponent, OnInit, OnDestroy {
@@ -34,7 +44,7 @@ export class StoreContactInfoComponent
   @Output() valid = new EventEmitter<boolean>();
   @Output() configuration = new EventEmitter<FunctionConfigurationData>();
 
-  private readonly formValue$ =
+  private readonly config$ =
     new BehaviorSubject<StoreContactInfoConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
   private saveSubscription: Subscription;
@@ -47,19 +57,19 @@ export class StoreContactInfoComponent
     this.saveSubscription?.unsubscribe();
   }
 
-  formValueChange(formValue: StoreContactInfoConfig): void {
-    this.formValue$.next(formValue);
-    this.handleValid(formValue);
+  formValueChange(formOutput: FormOutput): void {
+    this.config$.next(formOutput as StoreContactInfoConfig);
+    this.handleValid(formOutput as StoreContactInfoConfig);
   }
 
-  private handleValid(formValue: StoreContactInfoConfig): void {
+  private handleValid(formOutput: StoreContactInfoConfig): void {
     const valid =
-      !!formValue.bsn &&
-      !!formValue.firstName &&
-      !!formValue.inFix &&
-      !!formValue.lastName &&
-      !!formValue.emailAddress &&
-      !!formValue.caseUuid;
+      !!formOutput.bsn &&
+      !!formOutput.firstName &&
+      !!formOutput.inFix &&
+      !!formOutput.lastName &&
+      !!formOutput.emailAddress &&
+      !!formOutput.caseUuid;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
@@ -67,11 +77,11 @@ export class StoreContactInfoComponent
 
   private openSaveSubscription(): void {
     this.saveSubscription = this.save$?.subscribe(() => {
-      combineLatest([this.formValue$, this.valid$])
+      combineLatest([this.config$, this.valid$])
         .pipe(take(1))
-        .subscribe(([formValue, valid]) => {
+        .subscribe(([config, valid]) => {
           if (valid) {
-            this.configuration.emit(formValue);
+            this.configuration.emit(config);
           }
         });
     });
