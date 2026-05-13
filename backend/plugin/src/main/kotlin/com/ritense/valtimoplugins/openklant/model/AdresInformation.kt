@@ -1,6 +1,8 @@
 package com.ritense.valtimoplugins.openklant.model
 
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import mu.KotlinLogging
 
 data class AdresInformation(
