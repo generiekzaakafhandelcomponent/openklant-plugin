@@ -1,6 +1,7 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
@@ -23,7 +24,7 @@ interface OpenKlantService {
 
     fun setDefaultDigitaalAdres(
         properties: OpenKlantProperties,
-        adresInformation: AdresInformation,
+        digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
     ): DigitaalAdres
 
     fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
