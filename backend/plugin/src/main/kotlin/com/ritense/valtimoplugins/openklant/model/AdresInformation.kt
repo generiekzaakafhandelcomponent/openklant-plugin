@@ -32,5 +32,29 @@ data class AdresInformation(
             referentie = referentie.trim(),
             verificatieDatum = verificatieDatum.trim(),
         )
+
+        fun toDigitaalAdresCreationRequest(
+            adresInformation: AdresInformation,
+            isStandaardAdres: Boolean = true
+        ): DigitaalAdresCreationRequest {
+            return DigitaalAdresCreationRequest(
+                verstrektDoorPartij = UuidReference(adresInformation.partijUuid),
+                adres = adresInformation.adres,
+                soortDigitaalAdres = adresInformation.soortDigitaalAdres,
+                isStandaardAdres = isStandaardAdres,
+                referentie = adresInformation.referentie,
+                verificatieDatum = adresInformation.verificatieDatum,
+            )
+        }
+
+        fun fromDigitaalAdresCreationRequest(request: DigitaalAdresCreationRequest): AdresInformation {
+            return AdresInformation(
+                partijUuid = request.verstrektDoorPartij.toString(),
+                adres = request.adres,
+                soortDigitaalAdres = request.soortDigitaalAdres,
+                referentie = request.referentie ?: "",
+                verificatieDatum = request.verificatieDatum ?: ""
+                )
+        }
     }
 }
