@@ -1,10 +1,11 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class DigitaalAdres(
     @JsonProperty("uuid")
-    override val uuid: String,
+    override val uuid: UUID,
     @JsonProperty("url")
     override val url: String,
     @JsonProperty("verstrektDoorBetrokkene")
