@@ -1,6 +1,6 @@
 package com.ritense.valtimoplugins.openklant.client
 
-import com.ritense.valtimoplugins.openklant.dto.CreateDigitaalAdresRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
@@ -174,7 +174,7 @@ class OpenKlantClient(
     }
 
     fun createDigitaalAdres(
-        request: CreateDigitaalAdresRequest,
+        request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {

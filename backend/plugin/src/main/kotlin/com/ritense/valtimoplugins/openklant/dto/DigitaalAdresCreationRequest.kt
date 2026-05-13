@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class CreateDigitaalAdresRequest(
+data class DigitaalAdresCreationRequest(
     @JsonProperty("verstrektDoorBetrokkene")
     val verstrektDoorBetrokkene: UuidReference? = null,
     @JsonProperty("verstrektDoorPartij")

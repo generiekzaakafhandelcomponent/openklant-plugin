@@ -1,7 +1,7 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.CreateDigitaalAdresRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
@@ -48,7 +48,7 @@ class DefaultOpenKlantService(
         clearDefaultForCurrentDigitaalAdressen(adresInformation, properties)
 
         val request =
-            CreateDigitaalAdresRequest(
+            DigitaalAdresCreationRequest(
                 verstrektDoorPartij = UuidReference(adresInformation.partijUuid),
                 adres = adresInformation.adres,
                 soortDigitaalAdres = adresInformation.soortDigitaalAdres,
@@ -112,7 +112,7 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         openKlantClient.createDigitaalAdres(
-            CreateDigitaalAdresRequest(
+            DigitaalAdresCreationRequest(
                 verstrektDoorPartij = partij.getUuidReference(),
                 adres = contactInformation.emailadres,
                 soortDigitaalAdres = SoortDigitaalAdres.EMAIL,

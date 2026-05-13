@@ -1,7 +1,7 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.CreateDigitaalAdresRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.ObjectReference
@@ -184,7 +184,7 @@ class OpenKlantServiceTest {
         verify { client.getDigitaleAdressenByPartijByUuid(defaultPartij.uuid, testProperties) }
         verify {
             client.createDigitaalAdres(
-                match<CreateDigitaalAdresRequest> {
+                match<DigitaalAdresCreationRequest> {
                     it.adres == contactInformation.emailadres &&
                         it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
                         it.referentie == contactInformation.zaaknummer
@@ -227,7 +227,7 @@ class OpenKlantServiceTest {
         verify { client.createPartij(defaultCreatePartijRequest, testProperties) }
         verify {
             client.createDigitaalAdres(
-                match<CreateDigitaalAdresRequest> {
+                match<DigitaalAdresCreationRequest> {
                     it.adres == contactInformation.emailadres &&
                         it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
                         it.referentie == contactInformation.zaaknummer
