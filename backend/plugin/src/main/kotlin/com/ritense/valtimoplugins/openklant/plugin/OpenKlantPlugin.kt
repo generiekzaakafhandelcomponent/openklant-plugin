@@ -5,6 +5,8 @@ import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
 import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
@@ -98,6 +100,15 @@ class OpenKlantPlugin(
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
 
+    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres{
+
+        val properties = OpenKlantProperties(klantinteractiesUrl, token)
+
+        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(properties, digitaalAdresCreationRequest)
+
+        return digitaalAdres
+    }
+
     @PluginAction(
         key = "set-default-digitaal-adres",
         title = "Set default Digitaal Adres",
@@ -122,12 +133,14 @@ class OpenKlantPlugin(
                 referentie = DEFAULT_DIGITALE_ADRES_REFERENCE,
                 verificatieDatum = verificatieDatum,
             )
-        val properties = OpenKlantProperties(klantinteractiesUrl, token)
+        val request = AdresInformation.toDigitaalAdresCreationRequest(adresInformation)
 
-        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(properties, adresInformation)
+        val digitaalAdres = setDefaultDigitaalAdres(request)
 
         execution.setVariable(resultPvName, digitaalAdres.uuid)
     }
+
+
 
     @PluginAction(
         key = "get-contact-moments-by-case-uuid",
