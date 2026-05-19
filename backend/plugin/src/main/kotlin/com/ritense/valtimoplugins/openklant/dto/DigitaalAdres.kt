@@ -1,27 +1,50 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.UUID
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Size
 
 data class DigitaalAdres(
     @JsonProperty("uuid")
-    override val uuid: UUID,
+    @field:NotNull
+    override val uuidReference: UuidReference,
+
     @JsonProperty("url")
+    @field:NotNull
+    @field:Size(min = 1, max = 1000)
     override val url: String,
+
     @JsonProperty("verstrektDoorBetrokkene")
-    val verstrektDoorBetrokkene: ObjectReference?,
+    val verstrektDoorBetrokkene: ObjectReference? = null,
+
     @JsonProperty("verstrektDoorPartij")
-    val verstrektDoorPartij: ObjectReference?,
+    val verstrektDoorPartij: ObjectReference? = null,
+
     @JsonProperty("adres")
+    @field:NotNull
+    @field:Size(max = 80)
     val adres: String,
+
     @JsonProperty("soortDigitaalAdres")
+    @field:NotNull
+    @field:Pattern(
+        regexp = "email|telefoonnummer|overig", message = "Does not match either 'email', 'telefoonnummer', or 'overig'"
+    )
     val soortDigitaalAdres: SoortDigitaalAdres,
+
     @JsonProperty("isStandaardAdres")
-    val isStandaardAdres: Boolean?,
+    val isStandaardAdres: Boolean? = null,
+
     @JsonProperty("omschrijving")
-    val omschrijving: String?,
+    @field:Size(max = 40)
+    val omschrijving: String? = null,
+
     @JsonProperty("referentie")
-    val referentie: String?,
-    @JsonProperty("_expand")
-    val expand: Any?,
+    @field:Size(max = 50)
+    @field:Pattern(regexp = "^[-a-zA-Z0-9_]+$")
+    val referentie: String? = null,
+
+    @JsonProperty("verificatieDatum")
+    val verificatieDatum: String? = null,
 ) : Referable
