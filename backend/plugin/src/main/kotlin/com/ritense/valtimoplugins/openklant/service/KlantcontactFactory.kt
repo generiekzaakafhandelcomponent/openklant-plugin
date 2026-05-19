@@ -5,6 +5,7 @@ import com.ritense.valtimoplugins.openklant.dto.Contactnaam
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
+import java.util.UUID
 
 class KlantcontactFactory {
     fun createKlantcontactRequest(klantContactCreationInformation: KlantcontactCreationInformation): KlantcontactCreationRequest =
@@ -38,7 +39,7 @@ class KlantcontactFactory {
             wasPartij =
                 UuidReference(
                     uuid =
-                        klantContactCreationInformation.partijUuid
+                        UUID.fromString(klantContactCreationInformation.partijUuid)
                             ?: throw IllegalArgumentException("No partijUuid was specified to create a betrokkene request"),
                 ),
             bezoekadres = null,

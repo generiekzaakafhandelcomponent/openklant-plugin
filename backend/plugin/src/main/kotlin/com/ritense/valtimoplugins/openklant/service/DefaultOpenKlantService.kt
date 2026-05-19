@@ -27,7 +27,7 @@ class DefaultOpenKlantService(
             if (!isPreferredAddress(contactInformation.emailadres, partij, properties)) {
                 updateExistingPartij(partij, contactInformation, properties)
             }
-            partij.uuid
+            partij.uuid.toString()
         } else {
             createAndStoreNewPartij(contactInformation, properties)
         }
@@ -75,18 +75,25 @@ class DefaultOpenKlantService(
         adresInformation: AdresInformation,
         properties: OpenKlantProperties,
     ) {
-        openKlantClient.getDefaultAdressenBySoort(
-                partijUuid = adresInformation.partijUuid,
-                soortDigitaalAdres = adresInformation.soortDigitaalAdres,
-                referentie = adresInformation.referentie,
+        require(adresInformation.verstrektDoorPartij != null) {
+            "Cannot get DefaultAdressen without Partij(UUID)"
+        }
+        require(adresInformation.referentie != null) {
+            "Cannot get DefaultAdressen without 'referentie'"
+        }
+
+        return openKlantClient.getDefaultAdressenBySoort(
+            partijUuid = adresInformation.verstrektDoorPartij.uuid.toString(),
+            soortDigitaalAdres = adresInformation.soortDigitaalAdres,
+            referentie = adresInformation.referentie,
+            properties = properties,
+        ).forEach {
+            openKlantClient.patchDigitaalAdres(
+                digitaalAdresUuid = it.uuid.toString(),
+                patchData = mapOf("referentie" to ""),
                 properties = properties,
-            ).forEach {
-                openKlantClient.patchDigitaalAdres(
-                    digitaalAdresUuid = it.uuid,
-                    patchData = mapOf("referentie" to ""),
-                    properties = properties,
-                )
-            }
+            )
+        }
     }
 
     private fun isPreferredAddress(
@@ -95,7 +102,7 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ): Boolean {
         val voorkeursAdresUuid = partij.voorkeursDigitaalAdres?.uuid ?: return false
-        val voorkeursAdres = openKlantClient.getDigitaalAdresByUuid(voorkeursAdresUuid, properties)
+        val voorkeursAdres = openKlantClient.getDigitaalAdresByUuid(voorkeursAdresUuid.toString(), properties)
         return voorkeursAdres.adres == emailAddress
     }
 
@@ -127,9 +134,9 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ) {
         val digitaleAdressen = openKlantClient.getDigitaleAdressenByPartijByUuid(
-                partij.getObjectReference().uuid,
-                properties,
-            ).toMutableList()
+            partij.getObjectReference().uuid.toString(),
+            properties,
+        ).toMutableList()
 
         val digitaleUniekeReferenties = digitaleAdressen.map {
             "${it.verstrektDoorPartij?.uuid},${it.referentie},${it.soortDigitaalAdres}"
@@ -152,13 +159,13 @@ class DefaultOpenKlantService(
             if (!isPreferredAddress(contactInformation.emailadres, partij, properties)) {
                 updateExistingPartij(partij, contactInformation, properties)
             }
-            partij.uuid
+            partij.uuid.toString()
         } else {
             val nieuwePartij = createNewPartij(contactInformation, properties)
             val nieuweDigitaleAdress = createDigitalAddress(nieuwePartij, contactInformation, properties)
 
             updateDigitaleAdressenForPartij(nieuwePartij, nieuweDigitaleAdress, properties)
-            return nieuwePartij.uuid
+            return nieuwePartij.uuid.toString()
         }
     }
 
@@ -170,7 +177,7 @@ class DefaultOpenKlantService(
         val patchData = mapOf(
             "digitaleAdressen" to digitaleAdressen.map { it.getUuidReference() },
         )
-        openKlantClient.patchPartij(partij.uuid, patchData, properties)
+        openKlantClient.patchPartij(partij.uuid.toString(), patchData, properties)
     }
 
     private fun updateDigitaleAdressenForPartij(

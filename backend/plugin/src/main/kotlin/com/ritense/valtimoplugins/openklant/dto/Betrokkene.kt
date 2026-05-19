@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Betrokkene(
     @JsonProperty("uuid")
-    override val uuid: String,
+    override val uuid: UuidReference,
     @JsonProperty("url")
     override val url: String,
     @JsonProperty("wasPartij")

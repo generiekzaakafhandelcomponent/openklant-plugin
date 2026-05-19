@@ -4,9 +4,10 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import mu.KotlinLogging
+import java.util.UUID
 
 data class AdresInformation(
-    val partijUuid: String,
+    val partijReference: UuidReference,
     val adres: String,
     val soortDigitaalAdres: SoortDigitaalAdres,
     val referentie: String,
@@ -22,7 +23,7 @@ data class AdresInformation(
             referentie: String,
             verificatieDatum: String,
         ) = AdresInformation(
-            partijUuid = partijUuid.trim(),
+            partijReference = UuidReference(UUID.fromString(partijUuid.trim())),
             adres = adres.trim(),
             soortDigitaalAdres =
                 SoortDigitaalAdres.entries
@@ -40,7 +41,7 @@ data class AdresInformation(
             isStandaardAdres: Boolean = true
         ): DigitaalAdresCreationRequest {
             return DigitaalAdresCreationRequest(
-                verstrektDoorPartij = UuidReference(adresInformation.partijUuid),
+                verstrektDoorPartij = UuidReference(adresInformation.partijReference.uuid),
                 adres = adresInformation.adres,
                 soortDigitaalAdres = adresInformation.soortDigitaalAdres,
                 isStandaardAdres = isStandaardAdres,
