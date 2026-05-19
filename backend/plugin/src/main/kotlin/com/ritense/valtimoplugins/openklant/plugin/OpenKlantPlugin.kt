@@ -103,17 +103,12 @@ class OpenKlantPlugin(
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
 
-    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres{
-
-        val properties = OpenKlantProperties(klantinteractiesUrl, token)
-
-        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(
+    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
+        openKlantPluginService.setDefaultDigitaalAdres(
             digitaalAdresCreationRequest = digitaalAdresCreationRequest,
-            properties = properties,
+            properties = OpenKlantProperties(klantinteractiesUrl, token),
         )
 
-        return digitaalAdres
-    }
 
     @PluginAction(
         key = "set-default-digitaal-adres",
