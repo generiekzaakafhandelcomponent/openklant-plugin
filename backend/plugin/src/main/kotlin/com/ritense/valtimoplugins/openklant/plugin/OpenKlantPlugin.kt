@@ -108,7 +108,11 @@ class OpenKlantPlugin(
         openKlantPluginService.setDefaultDigitaalAdres(
             digitaalAdresCreationRequest = digitaalAdresCreationRequest,
             properties = OpenKlantProperties(klantinteractiesUrl, token),
-        )
+        ).also {
+            logger.info {
+                "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+            }
+        }
 
 
     @PluginAction(
@@ -125,8 +129,6 @@ class OpenKlantPlugin(
         @PluginActionProperty soortDigitaalAdres: String,
         @PluginActionProperty verificatieDatum: String,
     ) {
-        logger.info { "Setting a default Digitaal Adres in Open Klant - ${execution.processBusinessKey}" }
-
         val adresInformation =
             AdresInformation.fromActionProperties(
                 partijUuid = partijUuid,
