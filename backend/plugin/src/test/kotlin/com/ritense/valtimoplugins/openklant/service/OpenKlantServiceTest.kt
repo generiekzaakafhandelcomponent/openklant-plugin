@@ -8,7 +8,6 @@ import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
-import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
@@ -53,8 +52,7 @@ class OpenKlantServiceTest {
             isStandaardAdres = false,
             omschrijving = null,
             referentie = null,
-            expand = null,
-        )
+            )
     private val defaultPartij =
         Partij(
             uuidReference = UuidReference.fromString("24c482c7-acec-410f-95e6-72781a9f3064"),
@@ -126,6 +124,7 @@ class OpenKlantServiceTest {
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = "ref-1",
             verificatieDatum = "2024-01-01",
+            expand = null
         )
 
     @BeforeEach
@@ -303,7 +302,6 @@ class OpenKlantServiceTest {
                 isStandaardAdres = true,
                 omschrijving = null,
                 referentie = "old-ref",
-                expand = null,
             )
 
         every {

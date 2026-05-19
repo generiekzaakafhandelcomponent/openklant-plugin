@@ -6,7 +6,6 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
@@ -116,6 +115,7 @@ class DefaultOpenKlantService(
             adres = contactInformation.emailadres,
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = contactInformation.zaaknummer,
+            expand = null
         ),
         properties,
     )

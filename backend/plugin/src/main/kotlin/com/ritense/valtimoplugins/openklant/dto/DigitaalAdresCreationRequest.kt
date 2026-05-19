@@ -21,4 +21,6 @@ data class DigitaalAdresCreationRequest(
     val referentie: String?,
     @JsonProperty("verificatieDatum")
     val verificatieDatum: String? = null,
+    @JsonProperty("_expand")
+    val expand: Any?,
 )
