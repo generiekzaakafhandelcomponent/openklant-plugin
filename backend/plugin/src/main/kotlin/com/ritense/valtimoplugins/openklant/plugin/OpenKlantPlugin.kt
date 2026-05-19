@@ -8,6 +8,7 @@ import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
@@ -155,6 +156,50 @@ class OpenKlantPlugin(
             digitaalAdresPatchRequest = digitaalAdresPatchRequest,
             properties = OpenKlantProperties(klantinteractiesUrl, token)
         )
+
+    @PluginAction(
+        key = "update-digitaal-adres",
+        title = "Update Digitaal Adres",
+        description = "Update any value of the digitaal adres in Open Klant",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun updateDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty digitaalAdresUuid: String,
+        @PluginActionProperty verstrektDoorBetrokkene: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
+        @PluginActionProperty adres: String? = null,
+        @PluginActionProperty soortDigitaalAdres: String? = null,
+        @PluginActionProperty isStandaardAdres: Boolean? = null,
+        @PluginActionProperty omschrijving: String? = null,
+        @PluginActionProperty referentie: String? = null,
+        @PluginActionProperty verificatieDatum: String? = null,
+
+        ) {
+
+        val patchRequest = DigitaalAdresPatchRequest(
+            verstrektDoorBetrokkene = verstrektDoorBetrokkene?.let { UuidReference.fromString(it) },
+            verstrektDoorPartij = verstrektDoorPartij?.let { UuidReference.fromString(it) },
+            adres = adres,
+            soortDigitaalAdres = SoortDigitaalAdres.entries.firstOrNull {
+                it.name == soortDigitaalAdres
+            },
+            isStandaardAdres = isStandaardAdres,
+            omschrijving = omschrijving,
+            referentie = referentie,
+            verificatieDatum = verificatieDatum,
+
+            )
+
+        val digitaalAdres = updateDigitaalAdres(
+            digitaalAdresUuid = UuidReference.fromString(digitaalAdresUuid),
+            digitaalAdresPatchRequest = patchRequest
+        )
+
+        execution.setVariable(resultPvName, digitaalAdres.uuidReference.toString())
+
+    }
 
 
     @PluginAction(
