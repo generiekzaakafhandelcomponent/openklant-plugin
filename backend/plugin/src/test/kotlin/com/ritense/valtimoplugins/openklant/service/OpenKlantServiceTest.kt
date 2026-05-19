@@ -146,8 +146,8 @@ class OpenKlantServiceTest {
 
         // ACT:
         service.storeContactInformation(
-            testProperties,
-            contactInformation,
+            contactInformation = contactInformation,
+            properties = testProperties,
         )
 
         // ASSERT:
@@ -180,8 +180,8 @@ class OpenKlantServiceTest {
 
         // ACT:
         service.storeContactInformation(
-            testProperties,
-            contactInformation,
+            contactInformation = contactInformation,
+            properties = testProperties,
         )
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
@@ -224,8 +224,8 @@ class OpenKlantServiceTest {
 
         // ACT:
         service.storeContactInformation(
-            testProperties,
-            contactInformation,
+            contactInformation = contactInformation,
+            properties = testProperties,
         )
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
@@ -330,7 +330,10 @@ class OpenKlantServiceTest {
         } returns adjustedAdres
 
         // ACT
-        val result = service.setDefaultDigitaalAdres(testProperties, adresInformation)
+        val result = service.setDefaultDigitaalAdres(
+            digitaalAdresCreationRequest = adresInformation,
+            properties = testProperties,
+        )
 
         // ASSERT
         verify {
