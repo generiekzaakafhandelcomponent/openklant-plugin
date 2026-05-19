@@ -155,7 +155,11 @@ class OpenKlantPlugin(
             digitaalAdresUuid = digitaalAdresUuid,
             digitaalAdresPatchRequest = digitaalAdresPatchRequest,
             properties = OpenKlantProperties(klantinteractiesUrl, token)
-        )
+        ).also {
+            logger.info {
+                "Updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+            }
+        }
 
     @PluginAction(
         key = "update-digitaal-adres",
