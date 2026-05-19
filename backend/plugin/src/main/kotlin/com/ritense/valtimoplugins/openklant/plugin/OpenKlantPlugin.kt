@@ -52,8 +52,6 @@ class OpenKlantPlugin(
         @PluginActionProperty emailAddress: String,
         @PluginActionProperty caseUuid: String,
     ) {
-        logger.info { "Store Contactinformation in Open Klant - ${execution.processBusinessKey}" }
-
         val contactInformation =
             ContactInformation.fromActionProperties(
                 bsn = bsn,
@@ -67,7 +65,11 @@ class OpenKlantPlugin(
         val partijUuid = openKlantPluginService.storeContactInformation(
             contactInformation = contactInformation,
             properties = properties
-        )
+        ).also {
+            logger.info{
+                "Successfully stored contact information in Open Klant - ${execution.processBusinessKey}"
+            }
+        }
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
