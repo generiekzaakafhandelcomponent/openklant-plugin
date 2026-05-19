@@ -3,9 +3,11 @@ package com.ritense.valtimoplugins.openklant.service
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
@@ -54,6 +56,18 @@ class DefaultOpenKlantService(
         )
     }
 
+    override fun updateDigitaalAdres(
+        digitaalAdresUuid: UuidReference,
+        digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres =
+        openKlantClient.updateDigitaalAdres(
+            digitaalAdresUuid = digitaalAdresUuid,
+            patchData = digitaalAdresPatchRequest,
+            properties = properties
+        )
+
+
     override fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact> =
         openKlantClient.getKlantcontacten(properties).results
 
@@ -87,7 +101,7 @@ class DefaultOpenKlantService(
         ).forEach {
             openKlantClient.updateDigitaalAdres(
                 digitaalAdresUuid = it.uuidReference,
-                patchData = mapOf("referentie" to ""),
+                patchData = DigitaalAdresPatchRequest(referentie = ""),
                 properties = properties,
             )
         }
