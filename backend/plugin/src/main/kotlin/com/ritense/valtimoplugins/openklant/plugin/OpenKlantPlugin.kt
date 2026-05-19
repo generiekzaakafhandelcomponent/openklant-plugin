@@ -62,7 +62,10 @@ class OpenKlantPlugin(
                 zaaknummer = caseUuid,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
-        val partijUuid = openKlantPluginService.storeContactInformation(properties, contactInformation)
+        val partijUuid = openKlantPluginService.storeContactInformation(
+            contactInformation = contactInformation,
+            properties = properties
+        )
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
@@ -94,7 +97,7 @@ class OpenKlantPlugin(
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
         val partijUuid =
             openKlantPluginService
-                .getOrCreatePartij(properties, partijInformation)
+                .getOrCreatePartij(partijInformation = partijInformation, properties = properties)
                 .uuidReference
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
@@ -104,7 +107,10 @@ class OpenKlantPlugin(
 
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
 
-        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(properties, digitaalAdresCreationRequest)
+        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(
+            digitaalAdresCreationRequest = digitaalAdresCreationRequest,
+            properties = properties,
+        )
 
         return digitaalAdres
     }
@@ -270,8 +276,8 @@ class OpenKlantPlugin(
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
 
         openKlantPluginService.postKlantcontact(
-            properties,
-            klantcontactCreationInformation,
+            klantcontactCreationInformation = klantcontactCreationInformation,
+            properties = properties,
         )
     }
 
