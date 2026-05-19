@@ -18,8 +18,8 @@ class DefaultOpenKlantService(
     private val klantcontactFactory: KlantcontactFactory,
 ) : OpenKlantService {
     override fun storeContactInformation(
-        properties: OpenKlantProperties,
         contactInformation: ContactInformation,
+        properties: OpenKlantProperties,
     ): String {
         val partij = openKlantClient.getPartijByBsn(contactInformation.bsn, properties)
         return if (partij != null) {
@@ -33,16 +33,16 @@ class DefaultOpenKlantService(
     }
 
     override fun getOrCreatePartij(
-        properties: OpenKlantProperties,
         partijInformation: PartijInformation,
+        properties: OpenKlantProperties,
     ): Partij = openKlantClient.getPartijByBsn(partijInformation.bsn, properties) ?: createNewPartij(
         partijInformation,
         properties
     )
 
     override fun setDefaultDigitaalAdres(
-        properties: OpenKlantProperties,
         digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties,
     ): DigitaalAdres {
         clearDefaultForCurrentDigitaalAdressen(
             digitaalAdresCreationRequest, properties
@@ -58,8 +58,8 @@ class DefaultOpenKlantService(
         openKlantClient.getKlantcontacten(properties).results
 
     override fun postKlantcontact(
-        properties: OpenKlantProperties,
         klantcontactCreationInformation: KlantcontactCreationInformation,
+        properties: OpenKlantProperties,
     ) {
         val klantContactRequest = klantcontactFactory.createKlantcontactRequest(klantcontactCreationInformation)
         openKlantClient.postKlantcontact(
