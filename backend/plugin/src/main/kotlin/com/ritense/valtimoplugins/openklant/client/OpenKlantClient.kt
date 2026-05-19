@@ -31,7 +31,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): Partij? =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
                     uriBuilder
@@ -55,7 +55,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): Partij =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .post()
                 .uri(OK_PARTIJEN_PATH)
                 .body(request)
@@ -73,7 +73,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): Partij =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .patch()
                 .uri("$OK_PARTIJEN_PATH/$id")
                 .body(patchData)
@@ -91,7 +91,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): List<DigitaalAdres> =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
                     uriBuilder
@@ -113,7 +113,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .get()
                 .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
                 .retrieve()
@@ -132,7 +132,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): List<DigitaalAdres> =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
                     uriBuilder
@@ -160,7 +160,7 @@ class OpenKlantClient(
         patchData: Map<String, Any>,
         properties: OpenKlantProperties,
     ) = try {
-        restClient(properties)
+        restClient(properties = properties)
             .patch()
             .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
             .body(patchData)
@@ -178,7 +178,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .post()
                 .uri(OK_DIGITALE_ADRESSEN_PATH)
                 .body(request)
@@ -200,7 +200,7 @@ class OpenKlantClient(
         }
 
         try {
-            return restClient(klantContactOptions)
+            return restClient(properties = klantContactOptions)
                 .get()
                 .uri { uriBuilder ->
                     buildOpenKlantUri(uriBuilder, klantContactOptions)
@@ -219,7 +219,7 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ) {
         try {
-            restClient(properties)
+            restClient(properties = properties)
                 .post()
                 .uri(OK_MAAK_KLANTCONTACT_PATH)
                 .body(request)
