@@ -97,12 +97,11 @@ class OpenKlantPlugin(
                 achternaam = achternaam,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
-        val partijUuid =
+        val partij =
             openKlantPluginService
                 .getOrCreatePartij(partijInformation = partijInformation, properties = properties)
-                .uuidReference
 
-        execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
+        execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuidReference.toString())
     }
 
     fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
@@ -140,7 +139,7 @@ class OpenKlantPlugin(
 
         val digitaalAdres = setDefaultDigitaalAdres(request)
 
-        execution.setVariable(resultPvName, digitaalAdres.uuidReference)
+        execution.setVariable(resultPvName, digitaalAdres.uuidReference.toString())
     }
 
     fun updateDigitaalAdres(
