@@ -45,9 +45,7 @@ class DefaultOpenKlantService(
         digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
     ): DigitaalAdres {
         clearDefaultForCurrentDigitaalAdressen(
-            AdresInformation.fromDigitaalAdresCreationRequest(
-                digitaalAdresCreationRequest
-            ), properties
+            digitaalAdresCreationRequest, properties
         )
 
         return openKlantClient.createDigitaalAdres(
@@ -71,7 +69,7 @@ class DefaultOpenKlantService(
     }
 
     private fun clearDefaultForCurrentDigitaalAdressen(
-        adresInformation: AdresInformation,
+        adresInformation: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ) {
         require(adresInformation.verstrektDoorPartij != null) {
