@@ -123,7 +123,7 @@ class OpenKlantPlugin(
         @PluginActionProperty soortDigitaalAdres: String,
         @PluginActionProperty verificatieDatum: String,
     ) {
-        logger.info { "Sets a default Digitaal Adres in Open Klant - ${execution.processBusinessKey}" }
+        logger.info { "Setting a default Digitaal Adres in Open Klant - ${execution.processBusinessKey}" }
 
         val adresInformation =
             AdresInformation.fromActionProperties(
