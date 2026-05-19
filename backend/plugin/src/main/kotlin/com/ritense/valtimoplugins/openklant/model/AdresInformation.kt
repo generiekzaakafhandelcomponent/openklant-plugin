@@ -49,15 +49,5 @@ data class AdresInformation(
                 verificatieDatum = adresInformation.verificatieDatum,
             )
         }
-
-        fun fromDigitaalAdresCreationRequest(request: DigitaalAdresCreationRequest): AdresInformation {
-            return AdresInformation(
-                partijUuid = request.verstrektDoorPartij.toString(),
-                adres = request.adres,
-                soortDigitaalAdres = request.soortDigitaalAdres,
-                referentie = request.referentie ?: "",
-                verificatieDatum = request.verificatieDatum ?: ""
-                )
-        }
     }
 }
