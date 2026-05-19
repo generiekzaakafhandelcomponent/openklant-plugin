@@ -2,8 +2,6 @@ package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 
 @JsonInclude(JsonInclude.Include.NON_NULL) // Will only include non-null values in patch request
 data class DigitaalAdresPatchRequest(
