@@ -3,6 +3,7 @@ package com.ritense.valtimoplugins.openklant.client
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.Partij
@@ -176,7 +177,7 @@ class OpenKlantClient(
 
     fun updateDigitaalAdres(
         digitaalAdresUuid: UuidReference,
-        patchData: Map<String, Any>,
+        patchData: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ) = try {
         restClient(properties = properties)
