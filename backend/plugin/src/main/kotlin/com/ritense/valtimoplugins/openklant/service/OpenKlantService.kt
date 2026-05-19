@@ -1,9 +1,11 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
+import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
@@ -23,6 +25,12 @@ interface OpenKlantService {
 
     fun setDefaultDigitaalAdres(
         digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres
+
+    fun updateDigitaalAdres(
+        digitaalAdresUuid: UuidReference,
+        digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres
 
