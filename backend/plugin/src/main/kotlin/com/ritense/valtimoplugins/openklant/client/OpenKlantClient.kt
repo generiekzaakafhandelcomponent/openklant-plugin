@@ -155,24 +155,6 @@ class OpenKlantClient(
             )
         }
 
-    fun patchDigitaalAdres(
-        digitaalAdresUuid: String,
-        patchData: Map<String, Any>,
-        properties: OpenKlantProperties,
-    ) = try {
-        restClient(properties = properties)
-            .patch()
-            .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
-            .body(patchData)
-            .retrieve()
-            .body<DigitaalAdres>()
-            ?: throw IllegalStateException("Error patching DigitaalAdres: response body was null")
-    } catch (e: HttpServerErrorException.InternalServerError) {
-        handleInternalServerError(e)
-    } catch (e: RestClientResponseException) {
-        handleResponseException(e, "Error patching DigitaalAdres with uuid: $digitaalAdresUuid")
-    }
-
     fun createDigitaalAdres(
         request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
@@ -190,6 +172,24 @@ class OpenKlantClient(
         } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error creating DigitaalAdres")
         }
+
+    fun updateDigitaalAdres(
+        digitaalAdresUuid: String,
+        patchData: Map<String, Any>,
+        properties: OpenKlantProperties,
+    ) = try {
+        restClient(properties = properties)
+            .patch()
+            .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
+            .body(patchData)
+            .retrieve()
+            .body<DigitaalAdres>()
+            ?: throw IllegalStateException("Error patching DigitaalAdres: response body was null")
+    } catch (e: HttpServerErrorException.InternalServerError) {
+        handleInternalServerError(e)
+    } catch (e: RestClientResponseException) {
+        handleResponseException(e, "Error patching DigitaalAdres with uuid: $digitaalAdresUuid")
+    }
 
     fun getKlantcontacten(klantContactOptions: KlantcontactOptions): Page<Klantcontact> {
         if (klantContactOptions.bsn.isNullOrBlank() &&

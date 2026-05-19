@@ -326,7 +326,7 @@ class OpenKlantServiceTest {
 
         val adjustedAdres = existingAdres.copy(referentie = "")
         every {
-            client.patchDigitaalAdres(any(), any(), any())
+            client.updateDigitaalAdres(any(), any(), any())
         } returns adjustedAdres
 
         // ACT

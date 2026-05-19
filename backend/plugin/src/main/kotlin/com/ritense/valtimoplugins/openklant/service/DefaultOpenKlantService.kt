@@ -85,7 +85,7 @@ class DefaultOpenKlantService(
             referentie = adresInformation.referentie,
             properties = properties,
         ).forEach {
-            openKlantClient.patchDigitaalAdres(
+            openKlantClient.updateDigitaalAdres(
                 digitaalAdresUuid = it.uuidReference.toString(),
                 patchData = mapOf("referentie" to ""),
                 properties = properties,
