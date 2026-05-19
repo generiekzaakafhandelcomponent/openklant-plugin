@@ -95,7 +95,7 @@ class OpenKlantPlugin(
         val partijUuid =
             openKlantPluginService
                 .getOrCreatePartij(properties, partijInformation)
-                .uuid
+                .uuidReference
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
@@ -137,7 +137,7 @@ class OpenKlantPlugin(
 
         val digitaalAdres = setDefaultDigitaalAdres(request)
 
-        execution.setVariable(resultPvName, digitaalAdres.uuid)
+        execution.setVariable(resultPvName, digitaalAdres.uuidReference)
     }
 
 

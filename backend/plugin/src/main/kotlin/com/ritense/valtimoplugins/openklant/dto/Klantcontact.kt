@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Klantcontact(
     @field:JsonProperty("uuid")
-    override val uuid: UuidReference,
+    override val uuidReference: UuidReference,
     @field:JsonProperty("url")
     override val url: String,
     @field:JsonProperty("gingOverOnderwerpobjecten")

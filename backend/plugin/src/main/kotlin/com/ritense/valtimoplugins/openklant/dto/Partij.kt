@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Partij(
     @JsonProperty("uuid")
-    override val uuid: String,
+    override val uuidReference: UuidReference,
     @JsonProperty("url")
     override val url: String,
     @JsonProperty("nummer")
