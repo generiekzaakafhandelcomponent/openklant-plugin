@@ -12,24 +12,24 @@ import com.ritense.valtimoplugins.openklant.model.PartijInformation
 
 interface OpenKlantService {
     fun storeContactInformation(
-        properties: OpenKlantProperties,
         contactInformation: ContactInformation,
+        properties: OpenKlantProperties,
     ): String
 
     fun getOrCreatePartij(
-        properties: OpenKlantProperties,
         partijInformation: PartijInformation,
+        properties: OpenKlantProperties,
     ): Partij
 
     fun setDefaultDigitaalAdres(
-        properties: OpenKlantProperties,
         digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties,
     ): DigitaalAdres
 
     fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
 
     fun postKlantcontact(
-        properties: OpenKlantProperties,
         klantcontactCreationInformation: KlantcontactCreationInformation,
+        properties: OpenKlantProperties,
     )
 }
