@@ -124,8 +124,7 @@ class OpenKlantServiceTest {
             adres = "test@example.com",
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = "ref-1",
-            verificatieDatum = "2024-01-01",
-            expand = null
+            verificatieDatum = "2024-01-01"
         )
 
     @BeforeEach

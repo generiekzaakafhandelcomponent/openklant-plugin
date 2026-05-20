@@ -162,8 +162,7 @@ class DefaultOpenKlantService(
             verstrektDoorPartij = partij.uuidReference,
             adres = contactInformation.emailadres,
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
-            referentie = contactInformation.zaaknummer,
-            expand = null
+            referentie = contactInformation.zaaknummer
         ),
         properties,
     )

@@ -46,8 +46,7 @@ data class AdresInformation(
                 soortDigitaalAdres = adresInformation.soortDigitaalAdres,
                 isStandaardAdres = isStandaardAdres,
                 referentie = adresInformation.referentie,
-                verificatieDatum = adresInformation.verificatieDatum,
-                expand = null
+                verificatieDatum = adresInformation.verificatieDatum
             )
         }
     }
