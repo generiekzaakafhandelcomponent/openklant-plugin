@@ -256,22 +256,24 @@ class OpenKlantPlugin(
         @PluginActionProperty caseUuid: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ) {
-        logger.info { "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}" }
-
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
-                token = token,
-                objectUuid = caseUuid,
-            )
-
+    ) =
         fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
-        )
-    }
+            query = KlantcontactQuery(
+                objectUuid = caseUuid,
+            ),
+            properties = OpenKlantProperties(
+                klantinteractiesUrl = klantinteractiesUrl,
+                token = token,
+            ),
+        ).also {
+            logger.info {
+                "Successfully fetched and stored contact history" +
+                        " from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
+            }
+        }
+
 
     @PluginAction(
         key = "get-contact-moments-by-bsn",
@@ -284,18 +286,22 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info { "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}" }
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
+        logger.info {
+            "Fetching contact history from Open Klant by " +
+                    "BSN number — business key: ${execution.processBusinessKey}"
+        }
+        val properties =
+            OpenKlantProperties(
+                klantinteractiesUrl = klantinteractiesUrl,
                 token = token,
-                bsn = bsn,
             )
+        val query = KlantcontactQuery(bsn = bsn)
 
         fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
+            query = query,
+            properties = properties,
         )
     }
 
@@ -309,21 +315,23 @@ class OpenKlantPlugin(
         @PluginActionProperty partijUuid: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ) {
-        logger.info { "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}" }
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
-                token = token,
-                partijUuid = partijUuid,
-            )
-
+    ) =
         fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
-        )
-    }
+            query = KlantcontactQuery(
+                partijUuid = partijUuid,
+            ),
+            properties = OpenKlantProperties(
+                klantinteractiesUrl = klantinteractiesUrl,
+                token = token,
+            ),
+        ).also {
+            logger.info {
+                "Successfully fetched contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
+            }
+        }
+
 
     @PluginAction(
         key = "register-klantcontact",
@@ -382,9 +390,10 @@ class OpenKlantPlugin(
     private fun fetchKlantcontactenAndStore(
         execution: DelegateExecution,
         resultPvName: String,
-        pluginProperties: KlantcontactOptions,
+        query: KlantcontactQuery,
+        properties: OpenKlantProperties,
     ) {
-        val klantcontacten = openKlantPluginService.getAllKlantcontacten(pluginProperties)
+        val klantcontacten = openKlantPluginService.getAllKlantcontacten(query = query, properties = properties)
         val contactenMaps = klantcontacten.map { reflectionUtil.deepReflectedMapOf(it) }
         execution.setVariable(resultPvName, contactenMaps)
     }
