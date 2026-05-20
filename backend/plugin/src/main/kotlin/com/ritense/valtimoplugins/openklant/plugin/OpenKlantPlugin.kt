@@ -149,8 +149,8 @@ class OpenKlantPlugin(
 
     fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
         openKlantPluginService.setDefaultDigitaalAdres(
-            digitaalAdresCreationRequest = digitaalAdresCreationRequest,
-            properties = OpenKlantProperties(klantinteractiesUrl, token),
+            request = digitaalAdresCreationRequest,
+            properties = OpenKlantProperties(klantinteractiesUrl = klantinteractiesUrl, token = token),
         ).also {
             logger.info {
                 "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
