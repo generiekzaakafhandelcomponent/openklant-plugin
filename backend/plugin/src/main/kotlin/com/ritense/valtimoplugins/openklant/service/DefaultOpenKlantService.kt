@@ -63,27 +63,27 @@ class DefaultOpenKlantService(
         )
 
     override fun setDefaultDigitaalAdres(
-        digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
+        request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres {
         clearDefaultForCurrentDigitaalAdressen(
-            digitaalAdresCreationRequest, properties
+            request, properties
         )
 
         return openKlantClient.createDigitaalAdres(
-            request = digitaalAdresCreationRequest,
+            request = request,
             properties = properties,
         )
     }
 
     override fun updateDigitaalAdres(
         digitaalAdresUuid: UuidReference,
-        digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
+        request: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         openKlantClient.updateDigitaalAdres(
             digitaalAdresUuid = digitaalAdresUuid,
-            patchData = digitaalAdresPatchRequest,
+            patchData = request,
             properties = properties
         )
 
