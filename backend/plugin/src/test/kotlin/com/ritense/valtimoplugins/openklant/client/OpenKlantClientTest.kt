@@ -51,4 +51,46 @@ internal class OpenKlantClientTest {
             result.toString(),
         )
     }
+
+    @Test
+    fun `buildDigitaalAdresUri builds correct URI with all options`() {
+
+        val query = DigitaalAdresQuery()
+
+        query.add("onderwerpobject__onderwerpobjectidentificatorCodeObjecttype", "type123")
+        query.add("hadBetrokkene__wasPartij__partijIdentificator__objectId", "bsn456")
+        query.add("onderwerpobject__onderwerpobjectidentificatorObjectId", "uuid789")
+
+        val builder = UriComponentsBuilder.fromUriString("https://example.com")
+
+        val result = client.buildDigitaalAdresUri(builder, query)
+
+        assertEquals(
+            "https://example.com/klantcontacten?" +
+                    "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
+                    "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
+                    "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
+            result.toString(),
+        )
+    }
+
+    @Test
+    fun `buildDigitaalAdresUri builds correct URI skipping null and empty options`() {
+
+        val query = DigitaalAdresQuery()
+
+        query.add(null, null)
+        query.add("", "")
+        query.add("onderwerpobject__onderwerpobjectidentificatorObjectId", "uuid789")
+
+        val builder = UriComponentsBuilder.fromUriString("https://example.com")
+
+        val result = client.buildDigitaalAdresUri(builder, query)
+
+        assertEquals(
+            "https://example.com/klantcontacten?" +
+                    "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
+            result.toString(),
+        )
+    }
 }
