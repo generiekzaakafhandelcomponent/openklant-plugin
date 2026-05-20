@@ -9,6 +9,7 @@ import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
@@ -93,11 +94,24 @@ class DefaultOpenKlantService(
             "Cannot get DefaultAdressen without 'referentie'"
         }
 
-        return openKlantClient.getDefaultAdressenBySoort(
-            partijUuid = adresInformation.verstrektDoorPartij.uuid.toString(),
-            soortDigitaalAdres = adresInformation.soortDigitaalAdres,
-            referentie = adresInformation.referentie,
-            properties = properties,
+        val query = DigitaalAdresQuery()
+
+        query.add(
+            paramName = DigitaalAdresQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value,
+            value = adresInformation.verstrektDoorPartij.toString()
+        )
+        query.add(
+            paramName = DigitaalAdresQueryParamNames.SOORTDIGITAALADRES.value,
+            value = adresInformation.soortDigitaalAdres.toString()
+        )
+        query.add(
+            paramName = DigitaalAdresQueryParamNames.REFERENTIE.value,
+            value = adresInformation.referentie
+        )
+
+        return openKlantClient.getDigitaleAdressen(
+            query = query,
+            properties = properties
         ).forEach {
             openKlantClient.updateDigitaalAdres(
                 digitaalAdresUuid = it.uuidReference,
@@ -145,9 +159,13 @@ class DefaultOpenKlantService(
         contactInformation: ContactInformation,
         properties: OpenKlantProperties,
     ) {
-        val digitaleAdressen = openKlantClient.getDigitaleAdressenByPartijByUuid(
-            partij.getObjectReference().uuid.toString(),
-            properties,
+        val digitaleAdressen = openKlantClient.getDigitaleAdressen(
+            query = DigitaalAdresQuery(
+                queryParams = mutableMapOf(
+                    DigitaalAdresQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value to partij.uuidReference.toString()
+                )
+            ),
+            properties = properties
         ).toMutableList()
 
         val digitaleUniekeReferenties = digitaleAdressen.map {
