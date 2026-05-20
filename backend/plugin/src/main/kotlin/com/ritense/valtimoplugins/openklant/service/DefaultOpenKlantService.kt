@@ -15,7 +15,9 @@ import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformatio
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
+import org.springframework.stereotype.Service
 
+@Service
 class DefaultOpenKlantService(
     private val openKlantClient: OpenKlantClient,
     private val partijFactory: PartijFactory,
