@@ -111,52 +111,6 @@ class OpenKlantClient(
             )
         }
 
-    fun getDigitaalAdresByUuid(
-        digitaalAdresUuid: String,
-        properties: OpenKlantProperties,
-    ): DigitaalAdres =
-        try {
-            restClient(properties = properties)
-                .get()
-                .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
-                .retrieve()
-                .body<DigitaalAdres>()
-                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
-        } catch (e: HttpServerErrorException.InternalServerError) {
-            handleInternalServerError(e)
-        } catch (e: RestClientResponseException) {
-            handleResponseException(e, "Error fetching DigitaalAdres with uuid: $digitaalAdresUuid")
-        }
-
-    fun getDefaultAdressenBySoort(
-        partijUuid: String,
-        soortDigitaalAdres: SoortDigitaalAdres,
-        referentie: String,
-        properties: OpenKlantProperties,
-    ): List<DigitaalAdres> =
-        try {
-            restClient(properties = properties)
-                .get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .path(OK_DIGITALE_ADRESSEN_PATH)
-                        .queryParam(OK_VERSTREKT_DOOR_PARTIJ_ID_PARAM, partijUuid)
-                        .queryParam(OK_SOORT_DIGITAAL_ADRES_PARAM, soortDigitaalAdres.value)
-                        .queryParam(OK_REFERENTIE_PARAM, referentie)
-                        .build()
-                }.retrieve()
-                .body<Page<DigitaalAdres>>()
-                ?.results
-                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
-
-        } catch (e: HttpServerErrorException.InternalServerError) {
-            handleInternalServerError(e)
-        } catch (e: RestClientResponseException) {
-            handleResponseException(
-                e,
-                "Error fetching Default ${soortDigitaalAdres.value} Adressen for partij: $partijUuid"
-            )
-        }
 
     fun createDigitaalAdres(
         request: DigitaalAdresCreationRequest,
@@ -174,6 +128,23 @@ class OpenKlantClient(
             handleInternalServerError(e)
         } catch (e: RestClientResponseException) {
             handleResponseException(e, "Error creating DigitaalAdres")
+        }
+
+    fun getSingleDigitaalAdres(
+        digitaalAdresUuid: UuidReference,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres =
+        try {
+            restClient(properties = properties)
+                .get()
+                .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
+                .retrieve()
+                .body<DigitaalAdres>()
+                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
+        } catch (e: HttpServerErrorException.InternalServerError) {
+            handleInternalServerError(e)
+        } catch (e: RestClientResponseException) {
+            handleResponseException(e, "Error fetching DigitaalAdres with uuid: $digitaalAdresUuid")
         }
 
     fun updateDigitaalAdres(
