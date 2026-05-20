@@ -22,6 +22,7 @@ import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
 import mu.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 import java.net.URI
+import kotlin.collections.count
 
 @Plugin(
     key = "openklant",
@@ -68,7 +69,7 @@ class OpenKlantPlugin(
             contactInformation = contactInformation,
             properties = properties
         ).also {
-            logger.info{
+            logger.info {
                 "Successfully stored contact information in Open Klant - ${execution.processBusinessKey}"
             }
         }
@@ -146,6 +147,52 @@ class OpenKlantPlugin(
         execution.setVariable(resultPvName, digitaleAdressen)
     }
 
+    fun createDigitaalAdres(
+        request: DigitaalAdresCreationRequest,
+    ): DigitaalAdres =
+        openKlantPluginService.createDigitaalAdres(
+            request = request,
+            properties = OpenKlantProperties(klantinteractiesUrl, token)
+        ).also {
+            logger.info {
+                "Successfully created DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+            }
+        }
+
+    @PluginAction(
+        key = "create-digitaal-adres",
+        title = "Create Digitaal Adres",
+        description = "Create a digitaal adres in Open Klant",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun createDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty verstrektDoorBetrokkene: String,
+        @PluginActionProperty verstrektDoorPartij: String,
+        @PluginActionProperty adres: String,
+        @PluginActionProperty soortDigitaalAdres: String,
+        @PluginActionProperty isStandaardAdres: Boolean,
+        @PluginActionProperty omschrijving: String,
+        @PluginActionProperty referentie: String,
+        @PluginActionProperty verificatieDatum: String,
+    ) {
+        val request = DigitaalAdresCreationRequest(
+            verstrektDoorBetrokkene = UuidReference.fromString(verstrektDoorBetrokkene),
+            verstrektDoorPartij = UuidReference.fromString(verstrektDoorPartij),
+            adres = adres,
+            soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres),
+            isStandaardAdres = isStandaardAdres,
+            omschrijving = omschrijving,
+            referentie = referentie,
+            verificatieDatum = verificatieDatum,
+        )
+
+        val digitaalAdres = createDigitaalAdres(request)
+
+        execution.setVariable(resultPvName, digitaalAdres)
+
+    }
 
     fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
         openKlantPluginService.setDefaultDigitaalAdres(
