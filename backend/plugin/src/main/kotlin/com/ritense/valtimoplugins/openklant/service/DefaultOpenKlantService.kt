@@ -12,7 +12,7 @@ import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
 
@@ -79,8 +79,8 @@ class DefaultOpenKlantService(
         )
 
 
-    override fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact> =
-        openKlantClient.getKlantcontacten(properties).results
+    override fun getAllKlantcontacten(query: KlantcontactQuery, properties: OpenKlantProperties): List<Klantcontact> =
+        openKlantClient.getKlantcontacten(query, properties).results
 
     override fun postKlantcontact(
         klantcontactCreationInformation: KlantcontactCreationInformation,
