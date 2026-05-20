@@ -14,7 +14,7 @@ import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
