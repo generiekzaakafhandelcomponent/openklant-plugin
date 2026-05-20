@@ -278,7 +278,8 @@ class OpenKlantPlugin(
     @PluginAction(
         key = "get-contact-moments-by-bsn",
         title = "Get contact history by BSN",
-        description = "Get contact history by BSN from Open Klant. Queries the API using the 'partij-identificator object-ID' parameter.",
+        description = "Get contact history by BSN from Open Klant. " +
+                "Queries the API using the 'partij-identificator object-ID' parameter.",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getContactMomentsByBsn(
