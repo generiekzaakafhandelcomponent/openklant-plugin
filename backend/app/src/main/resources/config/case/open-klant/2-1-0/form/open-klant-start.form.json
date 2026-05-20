@@ -34,6 +34,11 @@
           "label": "Zet standaard digitaal adres",
           "value": "zetStandaardDigitaalAdres",
           "shortcut": ""
+        },
+        {
+          "label": "Maak digitaal adres aan",
+          "value": "maakDigitaalAdresAan",
+          "shortcut": ""
         }
       ],
       "tableView": false,
