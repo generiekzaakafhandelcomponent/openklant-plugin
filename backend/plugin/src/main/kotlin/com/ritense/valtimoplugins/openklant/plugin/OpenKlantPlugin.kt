@@ -12,6 +12,7 @@ import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
@@ -106,6 +107,45 @@ class OpenKlantPlugin(
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuidReference.toString())
     }
+
+    fun getDigitaleAdressen(query: DigitaalAdresQuery): List<DigitaalAdres> =
+
+        openKlantPluginService.getAllDigitaleAdressen(
+            query = query,
+            properties = OpenKlantProperties(klantinteractiesUrl, token)
+        ).also {
+            logger.info {
+                "Retrieved ${it.count()} DigitaalAdres(sen) from Open Klant)"
+            }
+        }
+
+    @PluginAction(
+        key = "get-digitale-adressen",
+        title = "Get digitale adressen",
+        description = "Fetches digitale adressen from Open Klant based on provided filters",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getDigitaleAdressen(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty filterKey1: String? = null,
+        @PluginActionProperty filterValue1: String? = null,
+        @PluginActionProperty filterKey2: String? = null,
+        @PluginActionProperty filterValue2: String? = null,
+        @PluginActionProperty filterKey3: String? = null,
+        @PluginActionProperty filterValue3: String? = null,
+    ) {
+        val query = DigitaalAdresQuery()
+
+        query.add(filterKey1, filterValue1)
+        query.add(filterKey2, filterValue2)
+        query.add(filterKey3, filterValue3)
+
+        val digitaleAdressen = getDigitaleAdressen(query = query)
+
+        execution.setVariable(resultPvName, digitaleAdressen)
+    }
+
 
     fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
         openKlantPluginService.setDefaultDigitaalAdres(
