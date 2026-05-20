@@ -1,6 +1,5 @@
 package com.ritense.valtimoplugins.openklant.plugin
 
-import DigitaalAdresPatchRequest
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -8,6 +7,7 @@ import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
@@ -193,7 +193,7 @@ class OpenKlantPlugin(
     ): DigitaalAdres =
         openKlantPluginService.updateDigitaalAdres(
             digitaalAdresUuid = digitaalAdresUuid,
-            digitaalAdresPatchRequest = digitaalAdresPatchRequest,
+            request = digitaalAdresPatchRequest,
             properties = OpenKlantProperties(klantinteractiesUrl, token)
         ).also {
             logger.info {
