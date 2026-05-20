@@ -7,9 +7,8 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.zgw.Page
@@ -89,26 +88,27 @@ class OpenKlantClient(
             handleResponseException(e, "Error patching Partij")
         }
 
-    fun getDigitaleAdressenByPartijByUuid(
-        uuid: String,
-        properties: OpenKlantProperties,
+    fun getDigitaleAdressen(
+        query: DigitaalAdresQuery,
+        properties: OpenKlantProperties
     ): List<DigitaalAdres> =
         try {
             restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
-                    uriBuilder
-                        .path(OK_DIGITALE_ADRESSEN_PATH)
-                        .queryParam(OK_VERSTREKT_DOOR_PARTIJ_ID_PARAM, uuid)
-                        .build()
+                    buildDigitaalAdresUri(uriBuilder, query)
                 }.retrieve()
                 .body<Page<DigitaalAdres>>()
                 ?.results
-                ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
+                ?: throw IllegalStateException("Error fetching DigitaalAdres(sen): response body was null")
+
         } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
         } catch (e: RestClientResponseException) {
-            handleResponseException(e, "Error fetching DigitaalAdres for partij: $uuid")
+            handleResponseException(
+                e,
+                "Error fetching adressen"
+            )
         }
 
     fun getDigitaalAdresByUuid(
@@ -275,6 +275,19 @@ class OpenKlantClient(
         }
         return builder
             .path(OK_KLANTCONTACTEN_PATH)
+            .build()
+    }
+
+    @VisibleForTesting
+    internal fun buildDigitaalAdresUri(
+        builder: UriBuilder,
+        query: DigitaalAdresQuery,
+    ): URI {
+        query.queryParams.forEach { (key, value) ->
+            builder.queryParam(key, value)
+        }
+        return builder
+            .path(OK_DIGITALE_ADRESSEN_PATH)
             .build()
     }
 
