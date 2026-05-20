@@ -9,6 +9,7 @@ import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
@@ -42,6 +43,15 @@ class DefaultOpenKlantService(
         partijInformation,
         properties
     )
+
+    override fun getAllDigitaleAdressen(
+        query: DigitaalAdresQuery,
+        properties: OpenKlantProperties
+    ): List<DigitaalAdres> =
+        openKlantClient.getDigitaleAdressen(
+            query = query,
+            properties = properties
+        )
 
     override fun setDefaultDigitaalAdres(
         digitaalAdresCreationRequest: DigitaalAdresCreationRequest,
