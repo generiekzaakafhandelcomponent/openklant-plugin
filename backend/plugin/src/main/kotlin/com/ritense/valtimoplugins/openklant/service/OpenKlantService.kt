@@ -29,6 +29,11 @@ interface OpenKlantService {
         properties: OpenKlantProperties
     ): List<DigitaalAdres>
 
+    fun createDigitaalAdres(
+        request: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres
+
     fun setDefaultDigitaalAdres(
         request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,

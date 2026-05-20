@@ -64,6 +64,15 @@ class DefaultOpenKlantService(
             properties = properties
         )
 
+    override fun createDigitaalAdres(
+        request: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties
+    ): DigitaalAdres =
+        openKlantClient.createDigitaalAdres(
+            request = request,
+            properties = properties,
+        )
+
     override fun setDefaultDigitaalAdres(
         request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
