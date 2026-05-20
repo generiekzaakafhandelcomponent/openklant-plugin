@@ -8,7 +8,7 @@ data class DigitaalAdresCreationRequest(
     @JsonProperty("verstrektDoorBetrokkene")
     val verstrektDoorBetrokkene: UuidReference? = null,
     @JsonProperty("verstrektDoorPartij")
-    val verstrektDoorPartij: UuidReference? = null,
+    val verstrektDoorPartij: UuidReference,
     @JsonProperty("adres")
     val adres: String,
     @JsonProperty("soortDigitaalAdres")

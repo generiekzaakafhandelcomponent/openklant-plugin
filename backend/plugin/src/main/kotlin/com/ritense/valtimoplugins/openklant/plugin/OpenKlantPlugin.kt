@@ -169,7 +169,7 @@ class OpenKlantPlugin(
         execution: DelegateExecution,
         @PluginActionProperty resultPvName: String,
         @PluginActionProperty verstrektDoorBetrokkene: String? = null,
-        @PluginActionProperty verstrektDoorPartij: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String,
         @PluginActionProperty adres: String,
         @PluginActionProperty soortDigitaalAdres: String,
         @PluginActionProperty isStandaardAdres: Boolean? = null,
@@ -179,7 +179,7 @@ class OpenKlantPlugin(
     ) {
         val request = DigitaalAdresCreationRequest(
             verstrektDoorBetrokkene = verstrektDoorBetrokkene?.let { UuidReference.fromString(verstrektDoorBetrokkene) },
-            verstrektDoorPartij = verstrektDoorPartij?.let { UuidReference.fromString(verstrektDoorPartij) },
+            verstrektDoorPartij = UuidReference.fromString(verstrektDoorPartij),
             adres = adres,
             soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres),
             isStandaardAdres = isStandaardAdres,
