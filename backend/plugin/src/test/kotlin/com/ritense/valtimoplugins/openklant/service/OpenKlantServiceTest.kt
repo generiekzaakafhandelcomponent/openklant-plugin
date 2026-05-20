@@ -9,6 +9,7 @@ import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import io.mockk.MockKAnnotations
@@ -137,7 +138,7 @@ class OpenKlantServiceTest {
     fun `storeContactInformation should do nothing when supplied email is preferred address`() {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
-        every { client.getDigitaalAdresByUuid(any(), testProperties) } returns
+        every { client.getSingleDigitaalAdres(any(), testProperties) } returns
                 defaultDigitaalAdres.copy(
                     adres = "email@adres.nl",
                     isStandaardAdres = true,
@@ -152,7 +153,12 @@ class OpenKlantServiceTest {
 
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
-        verify { client.getDigitaalAdresByUuid(defaultPartij.voorkeursDigitaalAdres!!.uuid.toString(), testProperties) }
+        verify {
+            client.getSingleDigitaalAdres(
+                UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
+                testProperties
+            )
+        }
         verify(exactly = 0) { client.createDigitaalAdres(any(), testProperties) }
         verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
         verify(exactly = 0) { client.createPartij(any(), any()) }
@@ -162,16 +168,15 @@ class OpenKlantServiceTest {
     fun `storeContactInformation should update existing partij if email is not preferred address`() {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
-        every { client.getDigitaalAdresByUuid(any(), testProperties) } returns
+        every { client.getSingleDigitaalAdres(any(), testProperties) } returns
                 defaultDigitaalAdres.copy(
                     adres = "email2@adres.nl",
                     isStandaardAdres = true,
                     soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
                 )
         every {
-            client.getDigitaleAdressenByPartijByUuid(
-                defaultPartij.uuidReference.toString(),
-                testProperties
+            client.getDigitaleAdressen(
+                any(), any()
             )
         } returns listOf()
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
@@ -185,8 +190,18 @@ class OpenKlantServiceTest {
         )
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
-        verify { client.getDigitaalAdresByUuid(defaultPartij.voorkeursDigitaalAdres!!.uuid.toString(), testProperties) }
-        verify { client.getDigitaleAdressenByPartijByUuid(defaultPartij.uuidReference.toString(), testProperties) }
+        verify {
+            client.getSingleDigitaalAdres(
+                UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
+                testProperties
+            )
+        }
+        verify {
+            client.getDigitaleAdressen(
+                query = DigitaalAdresQuery(),
+                properties = testProperties
+            )
+        }
         verify {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
@@ -251,7 +266,7 @@ class OpenKlantServiceTest {
                 testProperties,
             )
         }
-        verify(exactly = 0) { client.getDigitaalAdresByUuid(any(), testProperties) }
+        verify(exactly = 0) { client.getSingleDigitaalAdres(any(), testProperties) }
     }
 
     @Test
@@ -314,7 +329,7 @@ class OpenKlantServiceTest {
             )
 
         every {
-            client.getDefaultAdressenBySoort(any(), any(), any(), any())
+            client.getDigitaleAdressen(any(), any())
         } returns listOf(existingAdres)
 
         val createdResult = existingAdres.copy(
@@ -331,7 +346,7 @@ class OpenKlantServiceTest {
 
         // ACT
         val result = service.setDefaultDigitaalAdres(
-            digitaalAdresCreationRequest = adresInformation,
+            request = adresInformation,
             properties = testProperties,
         )
 
