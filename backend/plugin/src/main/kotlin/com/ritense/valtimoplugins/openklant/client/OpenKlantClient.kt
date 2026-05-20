@@ -10,6 +10,7 @@ import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.zgw.Page
 import jakarta.validation.Valid
@@ -193,19 +194,25 @@ class OpenKlantClient(
         handleResponseException(e, "Error patching DigitaalAdres with uuid: $digitaalAdresUuid")
     }
 
-    fun getKlantcontacten(klantContactOptions: KlantcontactOptions): Page<Klantcontact> {
-        if (klantContactOptions.bsn.isNullOrBlank() &&
-            klantContactOptions.objectUuid.isNullOrBlank() &&
-            klantContactOptions.partijUuid.isNullOrBlank()
+    fun getKlantcontacten(
+        query: KlantcontactQuery,
+        properties: OpenKlantProperties
+    ): Page<Klantcontact> {
+        if (query.bsn.isNullOrBlank() &&
+            query.objectUuid.isNullOrBlank() &&
+            query.partijUuid.isNullOrBlank()
         ) {
             return Page(count = 0, results = emptyList())
         }
 
         try {
-            return restClient(properties = klantContactOptions)
+            return restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
-                    buildOpenKlantUri(uriBuilder, klantContactOptions)
+                    buildKlantcontactUri(
+                        builder = uriBuilder,
+                        query = query
+                    )
                 }.retrieve()
                 .body<Page<Klantcontact>>()
                 ?: throw IllegalStateException("Error fetching Klantcontacten: response body was null")
@@ -242,21 +249,29 @@ class OpenKlantClient(
             .build()
 
     @VisibleForTesting
-    internal fun buildOpenKlantUri(
+    internal fun buildKlantcontactUri(
         builder: UriBuilder,
-        options: KlantcontactOptions,
+        query: KlantcontactQuery,
     ): URI {
-        options.objectTypeId?.let {
-            builder.queryParam(OK_OBJECTTYPE_PARAM, it)
+        query.objectTypeId?.let {
+            builder.queryParam(
+                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATORCODEOBJECTTYPE.value, it
+            )
         }
-        options.bsn?.let {
-            builder.queryParam(OK_BSN_PARAM, it)
+        query.bsn?.let {
+            builder.queryParam(
+                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__PARTIJIDENTIFICATOR__OBJECTID.value, it
+            )
         }
-        options.objectUuid?.let {
-            builder.queryParam(OK_OBJECT_ID_PARAM, it)
+        query.objectUuid?.let {
+            builder.queryParam(
+                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATOROBJECTID.value, it
+            )
         }
-        options.partijUuid?.let {
-            builder.queryParam(OK_PARTIJ_UUID_PARAM, it)
+        query.partijUuid?.let {
+            builder.queryParam(
+                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value, it
+            )
         }
         return builder
             .path(OK_KLANTCONTACTEN_PATH)
