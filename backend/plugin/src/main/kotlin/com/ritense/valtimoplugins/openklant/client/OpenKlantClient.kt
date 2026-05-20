@@ -10,6 +10,7 @@ import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.zgw.Page
 import jakarta.validation.Valid
@@ -38,9 +39,9 @@ class OpenKlantClient(
                 .uri { uriBuilder ->
                     uriBuilder
                         .path(OK_PARTIJEN_PATH)
-                        .queryParam(OK_SOORT_PARTIJ_IDENTIFICATOR_PARAM, "bsn")
-                        .queryParam(OK_PARTIJ_IDENTIFICATOR_PARAM, bsn)
-                        .queryParam(OK_SOORT_PARTIJ_PARAM, "persoon")
+                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value, "bsn")
+                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value, bsn)
+                        .queryParam(KlantcontactQueryParamNames.SOORTPARTIJ.value, "persoon")
                         .build()
                 }.retrieve()
                 .body<Page<Partij>>()
@@ -290,17 +291,6 @@ class OpenKlantClient(
         private const val OK_KLANTCONTACTEN_PATH = "klantcontacten"
         private const val OK_DIGITALE_ADRESSEN_PATH = "digitaleadressen"
         private const val OK_MAAK_KLANTCONTACT_PATH = "maak-klantcontact"
-
-        private const val OK_VERSTREKT_DOOR_PARTIJ_ID_PARAM = "verstrektDoorPartij__uuid"
-        private const val OK_SOORT_PARTIJ_IDENTIFICATOR_PARAM = "partijIdentificator__codeSoortObjectId"
-        private const val OK_PARTIJ_IDENTIFICATOR_PARAM = "partijIdentificator__objectId"
-        private const val OK_SOORT_PARTIJ_PARAM = "soortPartij"
-        private const val OK_SOORT_DIGITAAL_ADRES_PARAM = "soortDigitaalAdres"
-        private const val OK_REFERENTIE_PARAM = "referentie"
-        private const val OK_OBJECTTYPE_PARAM = "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype"
-        private const val OK_OBJECT_ID_PARAM = "onderwerpobject__onderwerpobjectidentificatorObjectId"
-        private const val OK_BSN_PARAM = "hadBetrokkene__wasPartij__partijIdentificator__objectId"
-        private const val OK_PARTIJ_UUID_PARAM = "hadBetrokkene__wasPartij__uuid"
 
         private val logger = KotlinLogging.logger { }
     }
