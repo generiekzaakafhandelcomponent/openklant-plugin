@@ -27,8 +27,17 @@ class DefaultOpenKlantService(
     ): String {
         val partij = openKlantClient.getPartijByBsn(contactInformation.bsn, properties)
         return if (partij != null) {
-            if (!isPreferredAddress(contactInformation.emailadres, partij, properties)) {
-                updateExistingPartij(partij, contactInformation, properties)
+            if (!isPreferredAddress(
+                    emailAddress = contactInformation.emailadres,
+                    partij = partij,
+                    properties = properties
+                )
+            ) {
+                updateExistingPartij(
+                    partij = partij,
+                    contactInformation = contactInformation,
+                    properties = properties
+                )
             }
             partij.uuidReference.toString()
         } else {
@@ -197,7 +206,11 @@ class DefaultOpenKlantService(
         val partij = openKlantClient.getPartijByBsn(contactInformation.bsn, properties)
         return if (partij != null) {
             if (!isPreferredAddress(contactInformation.emailadres, partij, properties)) {
-                updateExistingPartij(partij, contactInformation, properties)
+                updateExistingPartij(
+                    partij = partij,
+                    contactInformation = contactInformation,
+                    properties = properties
+                )
             }
             partij.uuidReference.toString()
         } else {
