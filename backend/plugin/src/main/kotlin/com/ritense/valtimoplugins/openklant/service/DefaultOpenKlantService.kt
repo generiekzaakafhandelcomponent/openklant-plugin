@@ -145,8 +145,11 @@ class DefaultOpenKlantService(
         partij: Partij,
         properties: OpenKlantProperties,
     ): Boolean {
-        val voorkeursAdresUuid = partij.voorkeursDigitaalAdres?.uuid ?: return false
-        val voorkeursAdres = openKlantClient.getDigitaalAdresByUuid(voorkeursAdresUuid.toString(), properties)
+        val voorkeursAdresObjectReference = partij.voorkeursDigitaalAdres ?: return false
+        val voorkeursAdres = openKlantClient.getSingleDigitaalAdres(
+            UuidReference(voorkeursAdresObjectReference.uuid),
+            properties = properties
+        )
         return voorkeursAdres.adres == emailAddress
     }
 
