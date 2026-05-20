@@ -66,7 +66,7 @@ internal class OpenKlantClientTest {
         val result = client.buildDigitaalAdresUri(builder, query)
 
         assertEquals(
-            "https://example.com/klantcontacten?" +
+            "https://example.com/digitaleadressen?" +
                     "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
                     "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
                     "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
@@ -88,7 +88,7 @@ internal class OpenKlantClientTest {
         val result = client.buildDigitaalAdresUri(builder, query)
 
         assertEquals(
-            "https://example.com/klantcontacten?" +
+            "https://example.com/digitaleadressen?" +
                     "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
             result.toString(),
         )
