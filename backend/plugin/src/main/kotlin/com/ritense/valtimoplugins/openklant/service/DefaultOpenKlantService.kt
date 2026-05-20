@@ -123,7 +123,7 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ): DigitaalAdres = openKlantClient.createDigitaalAdres(
         DigitaalAdresCreationRequest(
-            verstrektDoorPartij = partij.getUuidReference(),
+            verstrektDoorPartij = partij.uuidReference,
             adres = contactInformation.emailadres,
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = contactInformation.zaaknummer,
@@ -155,7 +155,7 @@ class DefaultOpenKlantService(
         }
 
         // Maak alleen nieuwe aan wanneer deze uniek is (niet bestaat)
-        if ("${partij.getUuidReference().uuid},${contactInformation.zaaknummer},${SoortDigitaalAdres.EMAIL}" !in digitaleUniekeReferenties) {
+        if ("${partij.uuidReference.uuid},${contactInformation.zaaknummer},${SoortDigitaalAdres.EMAIL}" !in digitaleUniekeReferenties) {
             digitaleAdressen.add(createDigitalAddress(partij, contactInformation, properties))
         }
 
@@ -187,7 +187,7 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ) {
         val patchData = mapOf(
-            "digitaleAdressen" to digitaleAdressen.map { it.getUuidReference() },
+            "digitaleAdressen" to digitaleAdressen.map { it.uuidReference },
         )
         openKlantClient.patchPartij(partij.uuidReference.toString(), patchData, properties)
     }
