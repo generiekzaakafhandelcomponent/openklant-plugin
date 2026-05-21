@@ -836,6 +836,51 @@
             ]
         },
         {
+            "key": "haalDigitaleAdressenOp",
+            "title": "Maak digitaal adres aan",
+            "collapsible": false,
+            "conditional": {
+                "show": true,
+                "when": "selectedDemo",
+                "eq": "haalDigitaleAdressenOp"
+            },
+            "type": "panel",
+            "label": "Panel",
+            "input": false,
+            "tableView": false,
+            "components": [
+                {
+                    "type": "htmlelement",
+                    "tag": "p",
+                    "content": "Voor een lijst van de mogelijke query-parameternamen, zie <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml#tag/digitale-adressen/operation/digitaleadressenList' target='_blank'>de Open-Klant-API-docs</a>.",
+
+                    "className": "cds--form__helper-text"
+                },
+                {
+                    "type": "datagrid",
+                    "label": "Query parameters",
+                    "key": "apiRequest.queryParams",
+                    "input": true,
+                    "addAnother": "Parameter toevoegen",
+                    "components": [
+                        {
+                            "label": "Naam",
+                            "key": "key",
+                            "type": "textfield",
+                            "input": true,
+                            "tooltip": "Bijvoorbeeld 'verstrektDoorBetrokkene__uuid'"
+                        },
+                        {
+                            "label": "Waarde",
+                            "key": "value",
+                            "type": "textfield",
+                            "input": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "key": "submit",
             "type": "button",
             "input": true,
