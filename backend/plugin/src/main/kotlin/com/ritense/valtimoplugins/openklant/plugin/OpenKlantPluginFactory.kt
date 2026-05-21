@@ -1,5 +1,6 @@
 package com.ritense.valtimoplugins.openklant.plugin
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.ritense.plugin.PluginFactory
 import com.ritense.plugin.service.PluginService
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
