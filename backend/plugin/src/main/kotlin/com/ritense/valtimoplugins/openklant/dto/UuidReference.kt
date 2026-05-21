@@ -2,6 +2,10 @@ package com.ritense.valtimoplugins.openklant.dto
 
 import java.util.UUID
 
+// Should serialize to an object with one UUID key-value pair, e.g.:
+// {
+//     "uuid": "7d0ce1fb-53aa-48bd-be8b-a16727b78843"
+// }
 data class UuidReference(
     val uuid: UUID,
 ) {
