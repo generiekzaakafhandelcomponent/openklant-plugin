@@ -12,6 +12,7 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
+import com.ritense.valtimoplugins.openklant.jackson.StringToBooleanDeserializer
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
@@ -268,6 +269,8 @@ class OpenKlantPlugin(
         @PluginActionProperty verstrektDoorPartij: String? = null,
         @PluginActionProperty adres: String? = null,
         @PluginActionProperty soortDigitaalAdres: String? = null,
+        // Ensure empty strings are deserialized to null
+        @JsonDeserialize(using = StringToBooleanDeserializer::class)
         @PluginActionProperty isStandaardAdres: Boolean? = null,
         @PluginActionProperty omschrijving: String? = null,
         @PluginActionProperty referentie: String? = null,
