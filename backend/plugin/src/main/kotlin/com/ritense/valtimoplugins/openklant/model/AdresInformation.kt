@@ -4,7 +4,6 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import mu.KotlinLogging
-import java.util.UUID
 
 data class AdresInformation(
     val partijReference: UuidReference,
