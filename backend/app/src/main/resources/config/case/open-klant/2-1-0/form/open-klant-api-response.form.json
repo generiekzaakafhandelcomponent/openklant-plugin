@@ -12,6 +12,16 @@
             }
         },
         {
+            "key": "apiRequest",
+            "type": "hidden",
+            "input": true,
+            "label": "apiRequest",
+            "tableView": false,
+            "attributes": {
+                "data-testid": "open-klant-api-response-apiRequest"
+            }
+        },
+        {
             "key": "data.apiResponse.createDigitaalAdres",
             "type": "textarea",
             "label": "API Response",
@@ -32,6 +42,28 @@
             },
             "calculateValue": "value = JSON.stringify(data.apiResponse.updateDigitaalAdres, null, 4);",
             "customConditional": "show = data.apiResponse.updateDigitaalAdres"
+        },
+        {
+            "key": "data.apiResponse.haalDigitaleAdressenOpQuery",
+            "type": "textarea",
+            "label": "Query parameters",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOpQuery"
+            },
+            "calculateValue": "value = `${data.apiRequest.queryParams.map(element => {\nreturn `<li>${element.key}: ${element.value}{/li}`\n})}`;",
+            "customConditional": "show = data.apiRequest"
+        },
+        {
+            "key": "data.apiResponse.haalDigitaleAdressenOpResponse",
+            "type": "textarea",
+            "label": "API Response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOp"
+            },
+            "calculateValue": "value = JSON.stringify(data.apiResponse.haalDigitaleAdressenOp, null, 4);",
+            "customConditional": "show = data.apiResponse.haalDigitaleAdressenOp"
         }
     ]
 }
