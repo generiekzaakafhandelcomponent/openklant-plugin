@@ -181,14 +181,16 @@ class OpenKlantPlugin(
         @PluginActionProperty verificatieDatum: String? = null,
     ) {
         val request = DigitaalAdresCreationRequest(
-            verstrektDoorBetrokkene = verstrektDoorBetrokkene?.let { UuidReference.fromString(verstrektDoorBetrokkene) },
-            verstrektDoorPartij = UuidReference.fromString(verstrektDoorPartij),
-            adres = adres,
-            soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres),
+            verstrektDoorBetrokkene = verstrektDoorBetrokkene
+                ?.takeIf { it.isNotBlank() }
+                ?.let { UuidReference.fromString(verstrektDoorBetrokkene.trim()) },
+            verstrektDoorPartij = UuidReference.fromString(verstrektDoorPartij.trim()),
+            adres = adres.trim(),
+            soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
             isStandaardAdres = isStandaardAdres,
-            omschrijving = omschrijving,
-            referentie = referentie,
-            verificatieDatum = verificatieDatum,
+            omschrijving = omschrijving.trim(),
+            referentie = referentie?.takeIf { it.isNotBlank() }?.trim(),
+            verificatieDatum = verificatieDatum?.takeIf { it.isNotBlank() }?.trim(),
         )
 
 //      Map to JSON preemptively, as Operaton has issues serializing it itself
