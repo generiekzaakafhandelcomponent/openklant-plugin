@@ -126,6 +126,10 @@
         }
       }
     },
+    "apiRequest": {
+      "type": "object",
+      "properties": {}
+    },
     "apiResponse": {
       "type": "object",
       "properties": {}
