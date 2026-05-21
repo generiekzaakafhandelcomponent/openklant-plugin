@@ -684,6 +684,158 @@
             ]
         },
         {
+            "key": "pasBestaandDigitaalAdresAan",
+            "title": "Maak digitaal adres aan",
+            "collapsible": false,
+            "conditional": {
+                "show": true,
+                "when": "selectedDemo",
+                "eq": "pasBestaandDigitaalAdresAan"
+            },
+            "type": "panel",
+            "label": "Panel",
+            "input": false,
+            "tableView": false,
+            "components": [
+                {
+                    "label": "Digitaal-Adres-UUID",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.digitaalAdresUuid",
+                    "type": "textfield",
+                    "input": true,
+                    "validate": {
+                        "required": true
+                    }
+                },
+                {
+                    "label": "Betrokkene-UUID",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.verstrektDoorBetrokkene",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Partij-UUID",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.verstrektDoorPartij",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Adres",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.adres",
+                    "type": "textfield",
+                    "input": true
+                },
+                {
+                    "label": "Soort digitaal adres",
+                    "widget": "choicesjs",
+                    "tableView": true,
+                    "data": {
+                        "values": [
+                            {
+                                "label": "Email",
+                                "value": "email"
+                            },
+                            {
+                                "label": "Telefoonnummer",
+                                "value": "telefoonnummer"
+                            },
+                            {
+                                "label": "Overig",
+                                "value": "overig"
+                            }
+                        ]
+                    },
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.soortDigitaalAdres",
+                    "type": "select",
+                    "input": true
+                },
+                {
+                    "label": "Is standaardadres",
+                    "key": "digitaalAdres.isStandaardAdres",
+                    "type": "radio",
+                    "input": true,
+                    "values": [
+                        {
+                            "label": "Ja",
+                            "value": true
+                        },
+                        {
+                            "label": "Nee",
+                            "value": false
+                        }
+                    ],
+                    "defaultValue": null
+                },
+                {
+                    "label": "Omschrijving",
+                    "key": "digitaalAdres.omschrijving",
+                    "type": "textarea",
+                    "input": true,
+                    "rows": 1
+                },
+                {
+                    "label": "Referentie",
+                    "applyMaskOn": "change",
+                    "tableView": true,
+                    "defaultValue": "",
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.referentie",
+                    "type": "textfield",
+                    "input": true,
+                    "validate": {
+                        "pattern": "^[a-zA-Z0-9_-]+$",
+                        "customMessage": "Een geldige referentie bestaat uit alleen letters, cijfers, lage streepjes of streepjes."
+                    }
+                },
+                {
+                    "label": "Verificatiedatum",
+                    "format": "yyyy-MM-dd",
+                    "tableView": false,
+                    "datePicker": {
+                        "disableWeekends": false,
+                        "disableWeekdays": false
+                    },
+                    "enableTime": false,
+                    "enableMinDateInput": false,
+                    "enableMaxDateInput": false,
+                    "validateWhenHidden": false,
+                    "key": "digitaalAdres.verificatieDatum",
+                    "type": "datetime",
+                    "input": true,
+                    "widget": {
+                        "type": "calendar",
+                        "displayInTimezone": "viewer",
+                        "locale": "en",
+                        "useLocaleSettings": false,
+                        "allowInput": true,
+                        "mode": "single",
+                        "enableTime": false,
+                        "noCalendar": false,
+                        "format": "yyyy-MM-dd",
+                        "hourIncrement": 1,
+                        "minuteIncrement": 1,
+                        "time_24hr": false,
+                        "minDate": null,
+                        "disableWeekends": false,
+                        "disableWeekdays": false,
+                        "maxDate": null
+                    }
+                }
+            ]
+        },
+        {
             "key": "submit",
             "type": "button",
             "input": true,
