@@ -39,6 +39,16 @@
                     "label": "Maak digitaal adres aan",
                     "value": "maakDigitaalAdresAan",
                     "shortcut": ""
+                },
+                {
+                    "label": "Pas bestaand digitaal adres aan",
+                    "value": "pasBestaandDigitaalAdresAan",
+                    "shortcut": ""
+                },
+                {
+                    "label": "Haal digitale adressen op",
+                    "value": "haalDigitaleAdressenOp",
+                    "shortcut": ""
                 }
             ],
             "tableView": false,
