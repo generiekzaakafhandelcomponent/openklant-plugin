@@ -126,7 +126,7 @@
         "pluginActionDefinitionKey": "get-digitale-adressen",
         "actionProperties": {
             "resultPvName": "digitaalAdres",
-            "queryParams": "doc:/apiRequest.queryParams"
+            "queryParams": "doc:/apiRequest/queryParams"
         },
         "processLinkType": "plugin"
     }
