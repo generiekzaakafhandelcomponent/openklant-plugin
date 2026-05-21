@@ -8,7 +8,9 @@ import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformatio
 import java.util.UUID
 
 class KlantcontactFactory {
-    fun createKlantcontactRequest(klantContactCreationInformation: KlantcontactCreationInformation): KlantcontactCreationRequest =
+    fun createKlantcontactRequest(
+        klantContactCreationInformation: KlantcontactCreationInformation
+    ): KlantcontactCreationRequest =
         if (klantContactCreationInformation.hasBetrokkene) {
             KlantcontactCreationRequest(
                 klantcontact = klantcontactRequest(klantContactCreationInformation),
@@ -40,7 +42,9 @@ class KlantcontactFactory {
                 UuidReference(
                     uuid =
                         UUID.fromString(klantContactCreationInformation.partijUuid)
-                            ?: throw IllegalArgumentException("No partijUuid was specified to create a betrokkene request"),
+                            ?: throw IllegalArgumentException(
+                                "No partijUuid was specified to create a betrokkene request"
+                            ),
                 ),
             bezoekadres = null,
             correspondentieadres = null,

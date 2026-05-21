@@ -75,7 +75,7 @@ class OpenKlantValueResolverFactoryTest {
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(UUID.fromString(documentId)) } returns mockZaak
 
         val klantContact = mockk<Klantcontact>()
-        every { klantContact.uuidReference.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
+        every { klantContact.uuid.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
         every { klantContact.onderwerp } returns "test-onderwerp"
@@ -118,7 +118,7 @@ class OpenKlantValueResolverFactoryTest {
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(UUID.fromString(documentId)) } returns mockZaak
 
         val klantContact = mockk<Klantcontact>()
-        every { klantContact.uuidReference.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
+        every { klantContact.uuid.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
         every { klantContact.onderwerp } returns "test-onderwerp"
@@ -187,7 +187,7 @@ class OpenKlantValueResolverFactoryTest {
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) } returns mockZaak
 
         val klantContact = mockk<Klantcontact>()
-        every { klantContact.uuidReference.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
+        every { klantContact.uuid.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
         every { klantContact.onderwerp } returns "test-onderwerp"
@@ -241,7 +241,7 @@ class OpenKlantValueResolverFactoryTest {
         every { zaakDocumentService.getZaakByDocumentIdOrThrow(documentId) } returns mockZaak
 
         val klantContact = mockk<Klantcontact>()
-        every { klantContact.uuidReference.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
+        every { klantContact.uuid.toString() } returns "82d4576c-d521-45ae-a6fb-3004b910b8e4"
         every { klantContact.url } returns "test-url"
         every { klantContact.kanaal } returns "test-kanaal"
         every { klantContact.onderwerp } returns "test-onderwerp"

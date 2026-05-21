@@ -1,6 +1,8 @@
 package com.ritense.valtimoplugins.openklant.dto
 
+import java.util.UUID
+
 interface Referable {
-    val uuidReference: UuidReference
+    val uuid: UUID
     val url: String
 }

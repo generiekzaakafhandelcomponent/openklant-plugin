@@ -44,7 +44,7 @@ class OpenKlantServiceTest {
 
     private val defaultDigitaalAdres =
         DigitaalAdres(
-            uuidReference = UuidReference.fromString("a663831e-74fe-484c-a8bc-f076eed18078"),
+            uuid = UUID.fromString("a663831e-74fe-484c-a8bc-f076eed18078"),
             url = "https://example.com",
             verstrektDoorBetrokkene = null,
             verstrektDoorPartij = null,
@@ -56,7 +56,7 @@ class OpenKlantServiceTest {
         )
     private val defaultPartij =
         Partij(
-            uuidReference = UuidReference.fromString("24c482c7-acec-410f-95e6-72781a9f3064"),
+            uuid = UUID.fromString("24c482c7-acec-410f-95e6-72781a9f3064"),
             url = "https://example.com",
             nummer = null,
             interneNotitie = null,
@@ -213,10 +213,10 @@ class OpenKlantServiceTest {
         }
         verify {
             client.patchPartij(
-                defaultPartij.uuidReference.toString(),
+                defaultPartij.uuid.toString(),
                 match<Map<String, Any>> { partij ->
-                    val digitaleAdressen = partij["digitaleAdressen"] as List<UuidReference>
-                    digitaleAdressen.any { it.uuid == newDigitaalAdres.uuidReference }
+                    val digitaleAdressen = partij["digitaleAdressen"] as List<UUID>
+                    digitaleAdressen.any { it == newDigitaalAdres.uuid }
                 },
                 testProperties,
             )
@@ -229,7 +229,7 @@ class OpenKlantServiceTest {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns null
         val newPartij =
-            defaultPartij.copy(uuidReference = UuidReference.fromString("d5b806ac-de9b-4024-ae86-c9fab58d53ac"))
+            defaultPartij.copy(uuid = UUID.fromString("d5b806ac-de9b-4024-ae86-c9fab58d53ac"))
         every { partijFactory.createFromBsn(contactInformation) } returns defaultCreatePartijRequest
         every { client.createPartij(defaultCreatePartijRequest, testProperties) } returns newPartij
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
@@ -257,10 +257,10 @@ class OpenKlantServiceTest {
         }
         verify {
             client.patchPartij(
-                newPartij.uuidReference.toString(),
+                newPartij.uuid.toString(),
                 match<Map<String, Any>> { partij ->
-                    val digitaleAdressen = partij["digitaleAdressen"] as List<UuidReference>
-                    digitaleAdressen.any { it.uuid == newDigitaalAdres.uuidReference }
+                    val digitaleAdressen = partij["digitaleAdressen"] as List<UUID>
+                    digitaleAdressen.any { it == newDigitaalAdres.uuid }
                 },
                 testProperties,
             )
@@ -272,11 +272,11 @@ class OpenKlantServiceTest {
     fun `getOrCreatePartij should return existing partij when there is a partij for supplied bsn`() {
         // ARRANGE:
         val existingPartij =
-            defaultPartij.copy(uuidReference = UuidReference.fromString("6648ab61-4c76-466a-bf95-8f25df01aaad"))
+            defaultPartij.copy(uuid = UUID.fromString("6648ab61-4c76-466a-bf95-8f25df01aaad"))
         every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returns existingPartij
 
         val newPartij =
-            defaultPartij.copy(uuidReference = UuidReference.fromString("222be532-9e4f-4710-adf3-92d2f62097f2"))
+            defaultPartij.copy(uuid = UUID.fromString("222be532-9e4f-4710-adf3-92d2f62097f2"))
         every { client.createPartij(defaultCreatePartijRequest, testProperties) } returns newPartij
 
         // ACT:
@@ -287,7 +287,7 @@ class OpenKlantServiceTest {
             )
 
         // ASSERT:
-        assertEquals("6648ab61-4c76-466a-bf95-8f25df01aaad", resultPartij.uuidReference.toString())
+        assertEquals("6648ab61-4c76-466a-bf95-8f25df01aaad", resultPartij.uuid.toString())
     }
 
     @Test
@@ -296,7 +296,7 @@ class OpenKlantServiceTest {
         every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returns null
 
         val newPartij =
-            defaultPartij.copy(uuidReference = UuidReference.fromString("39bc3ca9-3672-4c68-a34a-fe1152c5dfec"))
+            defaultPartij.copy(uuid = UUID.fromString("39bc3ca9-3672-4c68-a34a-fe1152c5dfec"))
         every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
         every { client.createPartij(defaultCreatePartijRequest, testProperties) } returns newPartij
 
@@ -308,7 +308,7 @@ class OpenKlantServiceTest {
             )
 
         // ASSERT:
-        assertEquals("39bc3ca9-3672-4c68-a34a-fe1152c5dfec", resultPartij.uuidReference.toString())
+        assertEquals("39bc3ca9-3672-4c68-a34a-fe1152c5dfec", resultPartij.uuid.toString())
     }
 
     @Test
@@ -316,7 +316,7 @@ class OpenKlantServiceTest {
         // ARRANGE
         val existingAdres =
             DigitaalAdres(
-                uuidReference = UuidReference.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
+                uuid = UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
                 url = "url1",
                 verstrektDoorBetrokkene = null,
                 verstrektDoorPartij = null,
@@ -332,7 +332,7 @@ class OpenKlantServiceTest {
         } returns listOf(existingAdres)
 
         val createdResult = existingAdres.copy(
-            UuidReference.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85")
+            UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85")
         )
         every {
             client.createDigitaalAdres(any(), any())
@@ -364,6 +364,6 @@ class OpenKlantServiceTest {
             )
         }
 
-        assertEquals("0853ba19-7c5e-405b-af4a-60689c0b4e85", result.uuidReference.toString())
+        assertEquals("0853ba19-7c5e-405b-af4a-60689c0b4e85", result.uuid.toString())
     }
 }
