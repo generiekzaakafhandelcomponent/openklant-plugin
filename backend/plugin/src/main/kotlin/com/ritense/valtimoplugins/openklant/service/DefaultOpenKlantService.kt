@@ -117,9 +117,6 @@ class DefaultOpenKlantService(
         adresInformation: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ) {
-        require(adresInformation.verstrektDoorPartij != null) {
-            "Cannot get DefaultAdressen without Partij(UUID)"
-        }
         require(adresInformation.referentie != null) {
             "Cannot get DefaultAdressen without 'referentie'"
         }
