@@ -140,9 +140,9 @@ class OpenKlantPlugin(
     ) {
         val query = DigitaalAdresQuery.fromFormioList(queryParams)
 
-        val digitaleAdressen = getDigitaleAdressen(query = query)
+        val digitaleAdressenJson = objectMapper.valueToTree<JsonNode>(getDigitaleAdressen(query = query))
 
-        execution.setVariable(resultPvName, digitaleAdressen)
+        execution.setVariable(resultPvName, digitaleAdressenJson)
     }
 
     fun createDigitaalAdres(
