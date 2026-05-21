@@ -23,7 +23,7 @@ data class AdresInformation(
             referentie: String,
             verificatieDatum: String,
         ) = AdresInformation(
-            partijReference = UuidReference(UUID.fromString(partijUuid.trim())),
+            partijReference = UuidReference.fromString(partijUuid.trim()),
             adres = adres.trim(),
             soortDigitaalAdres =
                 SoortDigitaalAdres.entries
