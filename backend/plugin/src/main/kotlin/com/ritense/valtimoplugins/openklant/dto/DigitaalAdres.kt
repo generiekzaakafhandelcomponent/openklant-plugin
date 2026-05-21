@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import java.util.UUID
 
 data class DigitaalAdres(
     @JsonProperty("uuid")
     @field:NotNull
-    override val uuidReference: UuidReference,
+    override val uuid: UUID,
 
     @JsonProperty("url")
     @field:NotNull

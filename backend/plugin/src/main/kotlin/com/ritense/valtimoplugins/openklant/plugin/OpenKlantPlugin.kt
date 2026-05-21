@@ -106,7 +106,7 @@ class OpenKlantPlugin(
             openKlantPluginService
                 .getOrCreatePartij(partijInformation = partijInformation, properties = properties)
 
-        execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuidReference.toString())
+        execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuid.toString())
     }
 
     fun getDigitaleAdressen(query: DigitaalAdresQuery): List<DigitaalAdres> =
@@ -155,7 +155,7 @@ class OpenKlantPlugin(
             properties = OpenKlantProperties(klantinteractiesUrl, token)
         ).also {
             logger.info {
-                "Successfully created DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+                "Successfully created DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
             }
         }
 
@@ -200,7 +200,7 @@ class OpenKlantPlugin(
             properties = OpenKlantProperties(klantinteractiesUrl = klantinteractiesUrl, token = token),
         ).also {
             logger.info {
-                "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+                "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
             }
         }
 
@@ -231,7 +231,7 @@ class OpenKlantPlugin(
 
         val digitaalAdres = setDefaultDigitaalAdres(request)
 
-        execution.setVariable(resultPvName, digitaalAdres.uuidReference.toString())
+        execution.setVariable(resultPvName, digitaalAdres.uuid.toString())
     }
 
     fun updateDigitaalAdres(
@@ -244,7 +244,7 @@ class OpenKlantPlugin(
             properties = OpenKlantProperties(klantinteractiesUrl, token)
         ).also {
             logger.info {
-                "Updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuidReference})"
+                "Updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
             }
         }
 
@@ -288,7 +288,7 @@ class OpenKlantPlugin(
             digitaalAdresPatchRequest = patchRequest
         )
 
-        execution.setVariable(resultPvName, digitaalAdres.uuidReference.toString())
+        execution.setVariable(resultPvName, digitaalAdres.uuid.toString())
 
     }
 

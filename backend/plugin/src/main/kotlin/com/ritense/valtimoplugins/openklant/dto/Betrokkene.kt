@@ -1,10 +1,11 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class Betrokkene(
     @JsonProperty("uuid")
-    override val uuidReference: UuidReference,
+    override val uuid: UUID,
     @JsonProperty("url")
     override val url: String,
     @JsonProperty("wasPartij")
