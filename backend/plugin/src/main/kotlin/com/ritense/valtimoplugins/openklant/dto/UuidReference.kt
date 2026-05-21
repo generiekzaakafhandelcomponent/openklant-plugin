@@ -12,4 +12,11 @@ data class UuidReference(
     override fun toString(): String {
         return uuid.toString()
     }
+
+    companion object {
+        fun fromString(uuidString: String): com.ritense.valtimoplugins.openklant.dto.UuidReference {
+            val uuid = UUID.fromString(uuidString)
+            return UuidReference(uuid)
+        }
+    }
 }
