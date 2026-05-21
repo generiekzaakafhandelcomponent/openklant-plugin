@@ -1,5 +1,6 @@
 package com.ritense.valtimoplugins.openklant.autoconfigure
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.ritense.plugin.service.PluginService
 import com.ritense.processdocument.service.ProcessDocumentService
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
@@ -49,11 +50,13 @@ class OpenKlantAutoConfiguration {
         pluginService: PluginService,
         openKlantService: OpenKlantService,
         reflectionUtil: ReflectionUtil,
+        objectMapper: ObjectMapper
     ): OpenKlantPluginFactory =
         OpenKlantPluginFactory(
-            pluginService,
-            openKlantService,
-            reflectionUtil,
+            pluginService = pluginService,
+            openKlantPluginService = openKlantService,
+            reflectionUtil = reflectionUtil,
+            objectMapper = objectMapper
         )
 
     @Bean

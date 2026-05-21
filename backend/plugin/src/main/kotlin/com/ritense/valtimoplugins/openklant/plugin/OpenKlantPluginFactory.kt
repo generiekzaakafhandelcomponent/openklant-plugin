@@ -9,6 +9,12 @@ class OpenKlantPluginFactory(
     pluginService: PluginService,
     private val openKlantPluginService: OpenKlantService,
     private val reflectionUtil: ReflectionUtil,
+    private val objectMapper: ObjectMapper
 ) : PluginFactory<OpenKlantPlugin>(pluginService) {
-    override fun create() = OpenKlantPlugin(openKlantPluginService, reflectionUtil)
+    override fun create() =
+        OpenKlantPlugin(
+            openKlantPluginService = openKlantPluginService,
+            reflectionUtil = reflectionUtil,
+            objectMapper = objectMapper
+        )
 }

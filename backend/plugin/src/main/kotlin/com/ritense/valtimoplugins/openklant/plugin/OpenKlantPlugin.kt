@@ -1,5 +1,7 @@
 package com.ritense.valtimoplugins.openklant.plugin
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -33,6 +35,7 @@ import kotlin.collections.count
 class OpenKlantPlugin(
     private val openKlantPluginService: OpenKlantService,
     private val reflectionUtil: ReflectionUtil,
+    private val objectMapper: ObjectMapper,
 ) {
     @PluginProperty(key = "klantinteractiesUrl", secret = false, required = true)
     lateinit var klantinteractiesUrl: URI
@@ -188,9 +191,10 @@ class OpenKlantPlugin(
             verificatieDatum = verificatieDatum,
         )
 
-        val digitaalAdres = createDigitaalAdres(request)
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
+        val digitaalAdresJson = objectMapper.valueToTree<JsonNode>(createDigitaalAdres(request))
 
-        execution.setVariable(resultPvName, digitaalAdres)
+        execution.setVariable(resultPvName, digitaalAdresJson)
 
     }
 
