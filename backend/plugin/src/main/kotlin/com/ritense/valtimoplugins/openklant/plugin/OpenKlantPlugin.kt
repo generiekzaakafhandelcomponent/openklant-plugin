@@ -2,6 +2,7 @@ package com.ritense.valtimoplugins.openklant.plugin
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -303,13 +304,15 @@ class OpenKlantPlugin(
                 ?.trim(),
         )
 
-        val digitaalAdres = updateDigitaalAdres(
-            digitaalAdresUuid = UuidReference.fromString(digitaalAdresUuid),
-            digitaalAdresPatchRequest = patchRequest
+        //      Map to JSON preemptively, as Operaton has issues serializing it itself
+        val digitaalAdresJson = objectMapper.valueToTree<JsonNode>(
+            updateDigitaalAdres(
+                digitaalAdresUuid = UuidReference.fromString(digitaalAdresUuid),
+                digitaalAdresPatchRequest = patchRequest
+            )
         )
 
-        execution.setVariable(resultPvName, digitaalAdres.uuid.toString())
-
+        execution.setVariable(resultPvName, digitaalAdresJson)
     }
 
 
