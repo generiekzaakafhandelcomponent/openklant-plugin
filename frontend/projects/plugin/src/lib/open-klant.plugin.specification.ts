@@ -6,10 +6,9 @@ import { GetContactMomentsByCaseUuidComponent } from "./components/open-klant-ge
 import { GetContactMomentsByBsnComponent } from "./components/get-contact-moments-by-bsn/get-contact-moments-by-bsn.component";
 import { RegisterKlantcontactComponent } from "./components/open-klant-register-klantcontact/open-klant-register-klantcontact.component";
 import { GetOrCreatePartijComponent } from "./components/get-or-create-partij/get-or-create-partij.component";
-import {
-  SetDefaultDigitaalAdresComponent
-} from "./components/set-default-digitaal-adres/set-default-digitaal-adres.component";
-import {GetContactMomentsByPartijUuidComponent} from './components/get-contact-moments-by-partij-uuid/get-contact-moments-by-partij-uuid.component';
+import { SetDefaultDigitaalAdresComponent } from "./components/set-default-digitaal-adres/set-default-digitaal-adres.component";
+import { GetContactMomentsByPartijUuidComponent } from "./components/get-contact-moments-by-partij-uuid/get-contact-moments-by-partij-uuid.component";
+import { CreateDigitaalAdresComponent } from "./components/create-digitaal-adres/create-digitaal-adres.component";
 
 const openKlantPluginSpecification: PluginSpecification = {
   pluginId: "openklant",
@@ -23,12 +22,12 @@ const openKlantPluginSpecification: PluginSpecification = {
     "get-or-create-partij": GetOrCreatePartijComponent,
     "register-klantcontact": RegisterKlantcontactComponent,
     "set-default-digitaal-adres": SetDefaultDigitaalAdresComponent,
+    "create-digitaal-adres": CreateDigitaalAdresComponent,
   },
   pluginTranslations: {
     nl: {
       title: "Open Klant",
-      description:
-        "Een plugin voor het ophalen en versturen van Open Klant-gegevens.",
+      description: "Een plugin voor het ophalen en versturen van Open Klant-gegevens.",
 
       // Common
       resultPvName: "Naam van resultaat-procesvariabele",
@@ -56,16 +55,13 @@ const openKlantPluginSpecification: PluginSpecification = {
       "get-or-create-partij": "Haal Partij op of maak een Partij aan",
 
       // Get contact moments by BSN
-      "get-contact-moments-by-bsn":
-        "Contactgeschiedenis ophalen op basis van BSN",
+      "get-contact-moments-by-bsn": "Contactgeschiedenis ophalen op basis van BSN",
 
       // Get contact moments by Partij UUID
-      "get-contact-moments-by-partij-uuid":
-        "Contactgeschiedenis ophalen op basis van Partij-UUID",
+      "get-contact-moments-by-partij-uuid": "Contactgeschiedenis ophalen op basis van Partij-UUID",
 
       // Get contact moments by case UUID
-      "get-contact-moments-by-case-uuid":
-        "Contactgeschiedenis ophalen op basis van Open-Zaak-UUID",
+      "get-contact-moments-by-case-uuid": "Contactgeschiedenis ophalen op basis van Open-Zaak-UUID",
 
       // Register contact moment
       "register-klantcontact": "Registreer nieuw klantcontact",
@@ -84,8 +80,7 @@ const openKlantPluginSpecification: PluginSpecification = {
       voornaam: "Voornaam",
       voorvoegselAchternaam: "Voorvoegsel achternaam",
       achternaam: "Achternaam",
-      heeftBetrokkene:
-        "Bevat het klantcontact een betrokkene of is het anoniem?",
+      heeftBetrokkene: "Bevat het klantcontact een betrokkene of is het anoniem?",
       "heeftBetrokkene.betrokkene": "Heeft betrokkene",
       "heeftBetrokkene.anoniem": "Is anoniem",
 
@@ -94,6 +89,23 @@ const openKlantPluginSpecification: PluginSpecification = {
       digitaalAdres: "Digitaal adres",
       soortDigitaalAdres: "Soort digitaal adres ('email'/'telefoonnummer'/'overig')",
       verificatieDatum: "Verificatiedatum (YYYY-MM-DD)",
+      verificatieDatumTooltip:
+        "Referentie naar de datum waarop het digitale adres is geverifieerd. Moet worden opgegeven in het formaat YYYY-MM-DD.",
+
+      // Create digitaal adres
+      "create-digitaal-adres": "Maak een digitaal adres aan",
+      verstrektDoorBetrokkene: "UUID van digitaal adres verstrekt door betrokkene",
+      verstrektDoorBetrokkeneTooltip:
+        "Verwijzing naar de UUID van de betrokkene die het digitale adres verstrekt, bijvoorbeeld 'pv:/betrokkeneUuid'",
+      verstrektDoorPartij: "UUID van digitaal adres verstrekt door partij",
+      verstrektDoorPartijTooltip: "Verwijzing naar de UUID van de partij die het digitale adres verstrekt, bijvoorbeeld 'pv:/partijUuid'",
+      adres: "Adres",
+      isStandaardAdres: "Is standaard adres",
+      isStandaardAdresTooltip:
+        "Verwijzing naar een booleanwaarde die bepaalt of het digitale adres het standaard adres is (true/false). Indien dit veld leeg wordt gelaten, wordt dit automatisch op 'false' gezet.",
+      omschrijving: "Omschrijving",
+      referentie: "Referentie",
+      referentieTooltip: "Machine-leesbare tag voor unieke identificatie van het digitaal adres.",
     },
 
     en: {
@@ -110,8 +122,7 @@ const openKlantPluginSpecification: PluginSpecification = {
 
       // Configuration
       configurationTitle: "Open Klant plugin configuration",
-      configurationTitleTooltip:
-        "In this section, you configure the Open Klant plugin to easily send and retrieve data.",
+      configurationTitleTooltip: "In this section, you configure the Open Klant plugin to easily send and retrieve data.",
       klantinteractiesUrl: "Klantinteracties URL",
       token: "Open Klant token",
 
@@ -129,12 +140,10 @@ const openKlantPluginSpecification: PluginSpecification = {
       "get-contact-moments-by-bsn": "Retrieve contact history based on BSN",
 
       // Get contact moments by Partij UUID
-      "get-contact-moments-by-partij-uuid":
-        "Retrieve contact history based on Partij UUID",
+      "get-contact-moments-by-partij-uuid": "Retrieve contact history based on Partij UUID",
 
       // Get contact moments by case UUID
-      "get-contact-moments-by-case-uuid":
-        "Retrieve contact history based on Open Zaak case UUID",
+      "get-contact-moments-by-case-uuid": "Retrieve contact history based on Open Zaak case UUID",
 
       // Register contact moment
       "register-klantcontact": "Register new klantcontact (customer contact)",
@@ -153,8 +162,7 @@ const openKlantPluginSpecification: PluginSpecification = {
       voornaam: "First name",
       voorvoegselAchternaam: "Name infix",
       achternaam: "Last name",
-      heeftBetrokkene:
-        "Does the contact moment involve an individual or is it anonymous?",
+      heeftBetrokkene: "Does the contact moment involve an individual or is it anonymous?",
       "heeftBetrokkene.betrokkene": "Has an individual",
       "heeftBetrokkene.anoniem": "Is anonymous",
 
@@ -163,8 +171,25 @@ const openKlantPluginSpecification: PluginSpecification = {
       digitaalAdres: "Digital address",
       soortDigitaalAdres: "Type of digital address ('email'/'telefoonnummer'/'overig')",
       verificatieDatum: "Verification datum (YYYY-MM-DD)",
-    }
+      verificatieDatumTooltip:
+        "Reference to the date on which the digital address was verified. Must be provided in the format YYYY-MM-DD.",
+
+      // Create digital address
+      "create-digitaal-adres": "Create a digital address",
+      verstrektDoorBetrokkene: "UUID of digital address provided by individual",
+      verstrektDoorBetrokkeneTooltip:
+        "Reference to the UUID of the individual providing the digital address, for example 'pv:/betrokkeneUuid'",
+      verstrektDoorPartij: "UUID of digital address provided by organization",
+      verstrektDoorPartijTooltip: "Reference to the UUID of the organization providing the digital address, for example 'pv:/partijUuid'",
+      adres: "Address",
+      isStandaardAdres: "Is default address",
+      isStandaardAdresTooltip:
+        "Reference to a boolean value indicating whether the digital address is the default address (true/false). If this field is left empty, it will automatically be set to 'false'.",
+      omschrijving: "Description",
+      referentie: "Reference",
+      referentieTooltip: "Machine-readable tag for unique identification of the digital address.",
+    },
   },
 };
 
-export {openKlantPluginSpecification};
+export { openKlantPluginSpecification };
