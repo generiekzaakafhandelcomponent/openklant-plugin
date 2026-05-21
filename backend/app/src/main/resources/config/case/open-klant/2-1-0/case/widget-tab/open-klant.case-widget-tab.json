@@ -4,8 +4,8 @@
     "widgets": [
       {
         "type": "fields",
-        "key": "klant-informatie",
-        "title": "Klant Informatie",
+        "key": "klantinformatie",
+        "title": "Klantinformatie",
         "width": 1,
         "highContrast": false,
         "properties": {
@@ -22,7 +22,7 @@
               },
               {
                 "key": "partij-uuid",
-                "title": "Partij Uuid",
+                "title": "Partij-UUID",
                 "value": "doc:partijUuid",
                 "displayProperties": {
                   "type": "text",
@@ -31,7 +31,7 @@
               },
               {
                 "key": "digitaal-adres-uuid",
-                "title": "Digitaal adres Uuid",
+                "title": "Digitaal-adres-UUID",
                 "value": "doc:digitaalAdres.uuid",
                 "displayProperties": {
                   "type": "text",

@@ -14,7 +14,7 @@ data class UuidReference(
     }
 
     companion object {
-        fun fromString(uuidString: String): com.ritense.valtimoplugins.openklant.dto.UuidReference {
+        fun fromString(uuidString: String): UuidReference {
             val uuid = UUID.fromString(uuidString)
             return UuidReference(uuid)
         }
