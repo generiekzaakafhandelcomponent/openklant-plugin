@@ -4,6 +4,9 @@
   "title": "Open Klant",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "properties": {
+    "selectedDemo": {
+      "type": "string"
+    },
     "bsn": {
       "type": "string",
       "default": ""
@@ -97,7 +100,10 @@
     "digitaalAdres": {
       "type": "object",
       "properties": {
-        "uuid": {
+        "verstrektDoorBetrokkene": {
+          "type": "string"
+        },
+        "verstrektDoorPartij": {
           "type": "string"
         },
         "adres": {
@@ -106,13 +112,23 @@
         "soortDigitaalAdres": {
           "type": "string"
         },
+        "isStandaardAdres": {
+          "type": "boolean"
+        },
+        "omschrijving": {
+          "type": "string"
+        },
+        "referentie": {
+          "type": "string"
+        },
         "verificatieDatum": {
           "type": "string"
         }
       }
     },
-    "selectedDemo": {
-      "type": "string"
+    "apiResponse": {
+      "type": "object",
+      "properties": {}
     }
   },
   "additionalProperties": false

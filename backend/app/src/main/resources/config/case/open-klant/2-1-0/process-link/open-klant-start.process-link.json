@@ -81,5 +81,23 @@
       "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
     },
     "processLinkType": "plugin"
+  },
+  {
+    "activityId": "maakDigitaalAdresAan",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-digitaal-adres",
+    "actionProperties": {
+      "resultPvName": "digitaalAdres",
+      "verstrektDoorBetrokkene": "doc:/digitaalAdres/verstrektDoorBetrokkene",
+      "verstrektDoorPartij": "doc:/digitaalAdres/verstrektDoorPartij",
+      "adres": "doc:/digitaalAdres/adres",
+      "soortDigitaalAdres": "doc:/digitaalAdres/soortDigitaalAdres",
+      "isStandaardAdres": "doc:/digitaalAdres/isStandaardAdres",
+      "omschrijving": "doc:/digitaalAdres/omschrijving",
+      "referentie": "doc:/digitaalAdres/referentie",
+      "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
+    },
+    "processLinkType": "plugin"
   }
 ]
