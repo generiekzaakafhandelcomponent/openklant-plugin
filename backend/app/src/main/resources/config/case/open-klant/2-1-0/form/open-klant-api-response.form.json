@@ -1,0 +1,26 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "key": "apiResponse",
+            "type": "hidden",
+            "input": true,
+            "label": "apiResponse",
+            "tableView": false,
+            "attributes": {
+                "data-testid": "open-klant-api-response-apiResponse"
+            }
+        },
+        {
+            "key": "data.apiResponse.createDigitaalAdres",
+            "type": "textarea",
+            "label": "API Response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.createDigitaalAdres"
+            },
+            "calculateValue": "value = JSON.stringify(data.apiResponse.createDigitaalAdres, null, 4);",
+            "customConditional": "show = data.apiResponse.createDigitaalAdres"
+        }
+    ]
+}

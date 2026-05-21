@@ -41,6 +41,17 @@
             ]
           ]
         }
+      },
+      {
+        "type": "formio",
+        "key": "open-klant-api-response",
+        "title": "Open-Klant-API-response",
+        "icon": "",
+        "width": 3,
+        "highContrast": false,
+        "properties": {
+          "formDefinitionName": "open-klant-api-response"
+        }
       }
     ]
   }
