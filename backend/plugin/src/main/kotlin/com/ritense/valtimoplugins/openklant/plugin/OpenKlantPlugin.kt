@@ -276,18 +276,29 @@ class OpenKlantPlugin(
         ) {
 
         val patchRequest = DigitaalAdresPatchRequest(
-            verstrektDoorBetrokkene = verstrektDoorBetrokkene?.let { UuidReference.fromString(it) },
-            verstrektDoorPartij = verstrektDoorPartij?.let { UuidReference.fromString(it) },
-            adres = adres,
-            soortDigitaalAdres = SoortDigitaalAdres.entries.firstOrNull {
-                it.name == soortDigitaalAdres
-            },
+            verstrektDoorBetrokkene = verstrektDoorBetrokkene
+                ?.takeIf { it.isNotBlank() }
+                ?.let { UuidReference.fromString(verstrektDoorBetrokkene.trim()) },
+            verstrektDoorPartij = verstrektDoorPartij
+                ?.takeIf { it.isNotBlank() }
+                ?.let { UuidReference.fromString(verstrektDoorPartij.trim()) },
+            adres = adres
+                ?.takeIf { it.isNotBlank() }
+                ?.let { adres.trim() },
+            soortDigitaalAdres = soortDigitaalAdres
+                ?.takeIf { it.isNotBlank() }
+                ?.let { SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()) },
             isStandaardAdres = isStandaardAdres,
-            omschrijving = omschrijving,
-            referentie = referentie,
-            verificatieDatum = verificatieDatum,
-
-            )
+            omschrijving = omschrijving
+                ?.takeIf { it.isNotBlank() }
+                ?.let { omschrijving.trim() },
+            referentie = referentie
+                ?.takeIf { it.isNotBlank() }
+                ?.trim(),
+            verificatieDatum = verificatieDatum
+                ?.takeIf { it.isNotBlank() }
+                ?.trim(),
+        )
 
         val digitaalAdres = updateDigitaalAdres(
             digitaalAdresUuid = UuidReference.fromString(digitaalAdresUuid),
