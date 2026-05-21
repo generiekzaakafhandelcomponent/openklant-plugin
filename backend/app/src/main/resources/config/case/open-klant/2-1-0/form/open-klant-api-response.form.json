@@ -21,6 +21,17 @@
             },
             "calculateValue": "value = JSON.stringify(data.apiResponse.createDigitaalAdres, null, 4);",
             "customConditional": "show = data.apiResponse.createDigitaalAdres"
+        },
+        {
+            "key": "data.apiResponse.updateDigitaalAdres",
+            "type": "textarea",
+            "label": "API Response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.updateDigitaalAdres"
+            },
+            "calculateValue": "value = JSON.stringify(data.apiResponse.updateDigitaalAdres, null, 4);",
+            "customConditional": "show = data.apiResponse.updateDigitaalAdres"
         }
     ]
 }
