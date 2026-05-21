@@ -113,7 +113,7 @@
           "type": "string"
         },
         "isStandaardAdres": {
-          "type": "boolean"
+          "type": ["boolean", "string"]
         },
         "omschrijving": {
           "type": "string"
