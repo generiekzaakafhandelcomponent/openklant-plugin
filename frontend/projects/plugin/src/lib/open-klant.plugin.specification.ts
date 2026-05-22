@@ -1,14 +1,21 @@
-import { PluginSpecification } from "@valtimo/plugin";
-import { OpenKlantPluginConfigurationComponent } from "./components/open-klant-plugin-configuration/open-klant-plugin-configuration.component";
-import { StoreContactInfoComponent } from "./components/open-klant-store-contact-info/open-klant-store-contact-info.component";
-import { OPEN_KLANT_PLUGIN_LOGO_BASE64 } from "./assets/open-klant-plugin-logo";
-import { GetContactMomentsByCaseUuidComponent } from "./components/open-klant-get-contact-moments-by-case-uuid/open-klant-get-contact-moments-by-case-uuid.component";
-import { GetContactMomentsByBsnComponent } from "./components/get-contact-moments-by-bsn/get-contact-moments-by-bsn.component";
-import { RegisterKlantcontactComponent } from "./components/open-klant-register-klantcontact/open-klant-register-klantcontact.component";
-import { GetOrCreatePartijComponent } from "./components/get-or-create-partij/get-or-create-partij.component";
-import { SetDefaultDigitaalAdresComponent } from "./components/set-default-digitaal-adres/set-default-digitaal-adres.component";
-import { GetContactMomentsByPartijUuidComponent } from "./components/get-contact-moments-by-partij-uuid/get-contact-moments-by-partij-uuid.component";
-import { CreateDigitaalAdresComponent } from "./components/create-digitaal-adres/create-digitaal-adres.component";
+import {PluginSpecification} from "@valtimo/plugin";
+import {
+  OpenKlantPluginConfigurationComponent
+} from "./components/open-klant-plugin-configuration/open-klant-plugin-configuration.component";
+import {StoreContactInfoComponent} from "./components/open-klant-store-contact-info/open-klant-store-contact-info.component";
+import {OPEN_KLANT_PLUGIN_LOGO_BASE64} from "./assets/open-klant-plugin-logo";
+import {
+  GetContactMomentsByCaseUuidComponent
+} from "./components/open-klant-get-contact-moments-by-case-uuid/open-klant-get-contact-moments-by-case-uuid.component";
+import {GetContactMomentsByBsnComponent} from "./components/get-contact-moments-by-bsn/get-contact-moments-by-bsn.component";
+import {RegisterKlantcontactComponent} from "./components/open-klant-register-klantcontact/open-klant-register-klantcontact.component";
+import {GetOrCreatePartijComponent} from "./components/get-or-create-partij/get-or-create-partij.component";
+import {SetDefaultDigitaalAdresComponent} from "./components/set-default-digitaal-adres/set-default-digitaal-adres.component";
+import {
+  GetContactMomentsByPartijUuidComponent
+} from "./components/get-contact-moments-by-partij-uuid/get-contact-moments-by-partij-uuid.component";
+import {CreateDigitaalAdresComponent} from "./components/create-digitaal-adres/create-digitaal-adres.component";
+import {GetDigitaleAdressenComponent} from "./components/get-digitale-adressen/get-digitale-adressen.component";
 
 const openKlantPluginSpecification: PluginSpecification = {
   pluginId: "openklant",
@@ -23,7 +30,7 @@ const openKlantPluginSpecification: PluginSpecification = {
     "register-klantcontact": RegisterKlantcontactComponent,
     "set-default-digitaal-adres": SetDefaultDigitaalAdresComponent,
     "create-digitaal-adres": CreateDigitaalAdresComponent,
-    // "get-digitale-adressen": GetAllDigitaalAdresComponent
+    "get-digitale-adressen": GetDigitaleAdressenComponent
   },
   pluginTranslations: {
     nl: {
@@ -63,6 +70,10 @@ const openKlantPluginSpecification: PluginSpecification = {
 
       // Get contact moments by case UUID
       "get-contact-moments-by-case-uuid": "Contactgeschiedenis ophalen op basis van Open-Zaak-UUID",
+
+      // Get digitale adressen
+      "get-digitale-adressen": "Digitale adressen ophalen",
+      queryParams: "Query parameters",
 
       // Register contact moment
       "register-klantcontact": "Registreer nieuw klantcontact",
@@ -193,4 +204,4 @@ const openKlantPluginSpecification: PluginSpecification = {
   },
 };
 
-export { openKlantPluginSpecification };
+export {openKlantPluginSpecification};

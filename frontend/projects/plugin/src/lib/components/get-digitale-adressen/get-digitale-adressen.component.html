@@ -1,0 +1,28 @@
+<v-form
+        (valueChange)="formValueChange($event)"
+        *ngIf="{
+        disabled: disabled$ | async,
+        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
+    } as obs"
+>
+  <v-input
+    name="resultPvName"
+    [title]="'resultPvName' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.resultPvName"
+    [disabled]="obs.disabled"
+    [required]="true"
+  >
+  </v-input>
+
+  <valtimo-carbon-multi-input
+    [defaultValues]="obs.prefill?.queryParams"
+    [disabled]="obs.disabled"
+    [margin]="true"
+    [required]="false"
+    [title]="'queryParams' | pluginTranslate: pluginId | async"
+    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+    name="queryParams"
+    type="keyValue"
+  ></valtimo-carbon-multi-input>
+</v-form>
