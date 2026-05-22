@@ -23,6 +23,7 @@ const openKlantPluginSpecification: PluginSpecification = {
     "register-klantcontact": RegisterKlantcontactComponent,
     "set-default-digitaal-adres": SetDefaultDigitaalAdresComponent,
     "create-digitaal-adres": CreateDigitaalAdresComponent,
+    // "get-digitale-adressen": GetAllDigitaalAdresComponent
   },
   pluginTranslations: {
     nl: {
