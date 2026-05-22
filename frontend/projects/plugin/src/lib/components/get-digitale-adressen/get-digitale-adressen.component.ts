@@ -43,7 +43,6 @@ export class GetDigitaleAdressenComponent
   }
 
   formValueChange(formOutput: FormOutput): void {
-    console.log(formOutput);
     this.config$.next(formOutput as GetDigitaleAdressenConfig);
     this.handleValid(formOutput as GetDigitaleAdressenConfig);
   }
