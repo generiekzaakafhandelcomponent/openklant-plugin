@@ -1,9 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {CreateDigitaalAdresComponent} from './create-digitaal-adres.component';
-import {GetOrCreatePartijComponent} from "../get-or-create-partij/get-or-create-partij.component";
 import {EMPTY, of} from "rxjs";
-import {GetOrCreatePartijConfig} from "../../models/get-or-create-partij-config";
-import {SetDefaultDigitaalAdresConfig} from "../../models/set-default-digitaal-adres-config";
+import {CreateDigitaalAdresConfig} from "../../models/create-digitaal-adres-config";
 
 describe('CreateDigitaalAdresComponent', () => {
   let component: CreateDigitaalAdresComponent;
@@ -27,11 +25,15 @@ describe('CreateDigitaalAdresComponent', () => {
 
     component.prefillConfiguration$ = of({
       resultPvName: "",
-      partijUuid: "",
+      verstrektDoorBetrokkene: "",
+      verstrektDoorPartij: "",
       adres: "",
       soortDigitaalAdres: "",
+      isStandaardAdres: true,
+      omschrijving: "",
+      referentie: "",
       verificatieDatum: "",
-    } as SetDefaultDigitaalAdresConfig);
+    } as CreateDigitaalAdresConfig);
 
     fixture.detectChanges();
   });
