@@ -1,6 +1,6 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import com.ritense.valtimoplugins.openklant.dto.FormioQueryParam
+import com.ritense.valtimoplugins.openklant.dto.KeyValueQueryParam
 import mu.KotlinLogging
 
 data class DigitaalAdresQuery(
@@ -28,7 +28,7 @@ data class DigitaalAdresQuery(
     }
 
     companion object {
-        fun fromFormioList(queryParamList: List<FormioQueryParam>): DigitaalAdresQuery {
+        fun fromFormioList(queryParamList: List<KeyValueQueryParam>): DigitaalAdresQuery {
             val query = DigitaalAdresQuery()
             queryParamList
                 .filter { it.key.isNotBlank() && it.value.isNotBlank() }

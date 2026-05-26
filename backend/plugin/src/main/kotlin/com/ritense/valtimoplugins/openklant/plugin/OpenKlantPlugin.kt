@@ -11,7 +11,7 @@ import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
-import com.ritense.valtimoplugins.openklant.dto.FormioQueryParam
+import com.ritense.valtimoplugins.openklant.dto.KeyValueQueryParam
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.jackson.StringToBooleanDeserializer
@@ -139,7 +139,7 @@ class OpenKlantPlugin(
         execution: DelegateExecution,
         @PluginActionProperty resultPvName: String,
         @PluginActionProperty
-        queryParams: List<FormioQueryParam> = emptyList(),
+        queryParams: List<KeyValueQueryParam> = emptyList(),
     ) {
         val query = DigitaalAdresQuery.fromFormioList(queryParams)
 
