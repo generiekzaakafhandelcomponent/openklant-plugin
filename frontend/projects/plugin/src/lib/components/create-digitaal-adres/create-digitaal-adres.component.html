@@ -1,105 +1,83 @@
 <v-form
   (valueChange)="formValueChange($event)"
   *ngIf="{
-        disabled: disabled$ | async,
-        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
-    } as obs"
->
-  <v-input
+    disabled: disabled$ | async,
+    prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null,
+  } as obs"
+  ><v-input
+    name="verstrektDoorBetrokkene"
+    [title]="'verstrektDoorBetrokkene' | pluginTranslate: pluginId | async"
+    [tooltip]="'verstrektDoorBetrokkeneTooltip' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.verstrektDoorBetrokkene"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="verstrektDoorPartij"
+    [title]="'verstrektDoorPartij' | pluginTranslate: pluginId | async"
+    [tooltip]="'verstrektDoorPartijTooltip' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.verstrektDoorPartij"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="adres"
+    [title]="'digitaalAdres' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.adres"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="soortDigitaalAdres"
+    [title]="'soortDigitaalAdres' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.soortDigitaalAdres"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="isStandaardAdres"
+    [title]="'isStandaardAdres' | pluginTranslate: pluginId | async"
+    [tooltip]="'isStandaardAdresTooltip' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.isStandaardAdres"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="omschrijving"
+    [title]="'omschrijving' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.omschrijving"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="referentie"
+    [title]="'referentie' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.referentie"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
+    name="verificatieDatum"
+    [title]="'verificatieDatum' | pluginTranslate: pluginId | async"
+    [tooltip]="'verificatieDatumTooltip' | pluginTranslate: pluginId | async"
+    [margin]="true"
+    [defaultValue]="obs.prefill?.verificatieDatum"
+    [disabled]="obs.disabled"
+    [required]="true"
+  ></v-input
+  ><v-input
     name="resultPvName"
     [title]="'resultPvName' | pluginTranslate: pluginId | async"
     [margin]="true"
     [defaultValue]="obs.prefill?.resultPvName"
     [disabled]="obs.disabled"
     [required]="true"
-  >
-  </v-input>
-
-  <v-input
-    name="verstrektDoorBetrokkene"
-    [title]="'verstrektDoorBetrokkene' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.verstrektDoorBetrokkene"
-    [disabled]="obs.disabled"
-    [required]="false"
-  >
-  </v-input>
-
-  <v-input
-    name="verstrektDoorPartij"
-    [title]="'verstrektDoorPartij' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.verstrektDoorPartij"
-    [disabled]="obs.disabled"
-    [required]="true"
-  >
-  </v-input>
-
-  <v-input
-    name="adres"
-    [title]="'digitaalAdres' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.adres"
-    [disabled]="obs.disabled"
-    [required]="true"
-  >
-  </v-input>
-
-  <v-input
-    name="soortDigitaalAdres"
-    [title]="'soortDigitaalAdres' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.soortDigitaalAdres"
-    [disabled]="obs.disabled"
-    [required]="true"
-  >
-  </v-input>
-
-  <v-input
-    name="isStandaardAdres"
-    [title]="'soortDigitaalAdres' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.isStandaardAdres"
-    [disabled]="obs.disabled"
-    [required]="false"
-  >
-  </v-input>
-
-  <v-input
-    name="omschrijving"
-    [title]="'omschrijving' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.omschrijving"
-    [disabled]="obs.disabled"
-    [required]="true"
-  >
-  </v-input>
-
-  <v-input
-    name="referentie"
-    [title]="'referentie' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.referentie"
-    [disabled]="obs.disabled"
-    [required]="false"
-  >
-  </v-input>
-
-  <v-input
-    name="verificatieDatum"
-    [title]="'verificatieDatum' | pluginTranslate: pluginId | async"
-    [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
-    [margin]="true"
-    [defaultValue]="obs.prefill?.verificatieDatum"
-    [disabled]="obs.disabled"
-    [required]="false"
-  >
-  </v-input>
-</v-form>
+  ></v-input
+></v-form>

@@ -1,40 +1,32 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {FunctionConfigurationComponent, FunctionConfigurationData, PluginTranslatePipeModule} from "@valtimo/plugin";
-import {BehaviorSubject, combineLatest, Observable, Subscription, take} from "rxjs";
-import {CreateDigitaalAdresConfig} from "../../models/create-digitaal-adres-config";
-import {AsyncPipe, NgIf} from "@angular/common";
-import {FormModule, FormOutput, InputModule} from "@valtimo/components";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { FunctionConfigurationComponent, FunctionConfigurationData, PluginTranslatePipeModule } from "@valtimo/plugin";
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription, take } from "rxjs";
+import { CreateDigitaalAdresConfig } from "../../models/create-digitaal-adres-config";
+import { AsyncPipe, NgIf } from "@angular/common";
+import { FormModule, FormOutput, InputModule } from "@valtimo/components";
 
 @Component({
-  selector: 'create-digitaal-adres',
-  imports: [
-    AsyncPipe,
-    FormModule,
-    InputModule,
-    NgIf,
-    PluginTranslatePipeModule
-  ],
+  selector: "lib-create-digitaal-adres",
+  imports: [AsyncPipe, FormModule, InputModule, NgIf, PluginTranslatePipeModule],
   standalone: true,
-  templateUrl: './create-digitaal-adres.component.html'
+  templateUrl: "./create-digitaal-adres.component.html",
+  styleUrl: "./create-digitaal-adres.component.css",
 })
-export class CreateDigitaalAdresComponent
-  implements FunctionConfigurationComponent, OnInit, OnDestroy {
+export class CreateDigitaalAdresComponent implements FunctionConfigurationComponent, OnInit, OnDestroy {
   @Input() save$: Observable<void>;
   @Input() disabled$: Observable<boolean>;
   @Input() pluginId: string;
   @Input() prefillConfiguration$?: Observable<CreateDigitaalAdresConfig>;
   @Output() valid: EventEmitter<boolean>;
-  @Output() configuration: EventEmitter<FunctionConfigurationData> =
-    new EventEmitter<FunctionConfigurationData>();
+  @Output() configuration: EventEmitter<FunctionConfigurationData> = new EventEmitter<FunctionConfigurationData>();
 
   private saveSubscription!: Subscription;
 
-  private readonly config$ =
-    new BehaviorSubject<CreateDigitaalAdresConfig | null>(null);
+  private readonly config$ = new BehaviorSubject<CreateDigitaalAdresConfig | null>(null);
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
-    this.openSaveSubscription()
+    this.openSaveSubscription();
   }
 
   ngOnDestroy(): void {
@@ -47,12 +39,16 @@ export class CreateDigitaalAdresComponent
   }
 
   private handleValid(formOutput: CreateDigitaalAdresConfig): void {
-    const valid = !!formOutput.resultPvName &&
+    const valid =
+      !!formOutput.resultPvName &&
+      !!formOutput.verstrektDoorBetrokkene &&
       !!formOutput.verstrektDoorPartij &&
       !!formOutput.adres &&
       !!formOutput.soortDigitaalAdres &&
-      !!formOutput.verificatieDatum &&
-      !!formOutput.omschrijving;
+      !!formOutput.isStandaardAdres &&
+      !!formOutput.omschrijving &&
+      !!formOutput.referentie &&
+      !!formOutput.verificatieDatum;
 
     this.valid$.next(valid);
     this.valid.emit(valid);
