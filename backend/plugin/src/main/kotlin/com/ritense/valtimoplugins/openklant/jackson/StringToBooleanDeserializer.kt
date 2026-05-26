@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 
 class StringToBooleanDeserializer : JsonDeserializer<Boolean?>() {
     override fun deserialize(
-        p: JsonParser,
-        ctxt: DeserializationContext,
+        parser: JsonParser,
+        context: DeserializationContext,
     ): Boolean? =
-        when (p.valueAsString?.trim()?.lowercase()) {
+        when (parser.valueAsString?.trim()?.lowercase()) {
             "true" -> true
             "false" -> false
             "", "null", null -> null
