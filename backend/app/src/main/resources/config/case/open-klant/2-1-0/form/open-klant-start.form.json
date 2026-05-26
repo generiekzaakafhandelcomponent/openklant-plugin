@@ -685,7 +685,7 @@
         },
         {
             "key": "pasBestaandDigitaalAdresAan",
-            "title": "Maak digitaal adres aan",
+            "title": "Pas bestaand digitaal adres aan",
             "collapsible": false,
             "conditional": {
                 "show": true,
@@ -837,7 +837,7 @@
         },
         {
             "key": "haalDigitaleAdressenOp",
-            "title": "Maak digitaal adres aan",
+            "title": "Haal digitale adressen op",
             "collapsible": false,
             "conditional": {
                 "show": true,
