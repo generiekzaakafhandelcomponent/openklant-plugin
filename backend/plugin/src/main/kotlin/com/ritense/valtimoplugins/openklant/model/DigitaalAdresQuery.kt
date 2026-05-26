@@ -28,7 +28,7 @@ data class DigitaalAdresQuery(
     }
 
     companion object {
-        fun fromFormioList(queryParamList: List<KeyValueQueryParam>): DigitaalAdresQuery {
+        fun fromKeyValueQueryParamList(queryParamList: List<KeyValueQueryParam>): DigitaalAdresQuery {
             val query = DigitaalAdresQuery()
             queryParamList
                 .filter { it.key.isNotBlank() && it.value.isNotBlank() }
