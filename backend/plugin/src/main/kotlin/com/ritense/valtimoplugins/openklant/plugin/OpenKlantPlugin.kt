@@ -268,7 +268,8 @@ class OpenKlantPlugin(
         @PluginActionProperty verstrektDoorPartij: String? = null,
         @PluginActionProperty adres: String? = null,
         @PluginActionProperty soortDigitaalAdres: String? = null,
-        // Ensure empty strings are deserialized to null
+        // When null is passed to a Formio form, Formio stubbornly
+        // returns an empty string, thus we use this deserializer
         @JsonDeserialize(using = StringToBooleanDeserializer::class)
         @PluginActionProperty isStandaardAdres: Boolean? = null,
         @PluginActionProperty omschrijving: String? = null,
