@@ -139,7 +139,7 @@ class DefaultOpenKlantService(
             value = adresInformation.referentie,
         )
 
-        return openKlantClient
+        openKlantClient
             .getDigitaleAdressen(
                 query = query,
                 properties = properties,
