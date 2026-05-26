@@ -17,7 +17,7 @@ data class AdresInformation(
         isStandaardAdres: Boolean = true,
     ): DigitaalAdresCreationRequest =
         DigitaalAdresCreationRequest(
-            verstrektDoorPartij = UuidReference(adresInformation.partijReference.uuid),
+            verstrektDoorPartij = partijReference,
             adres = adresInformation.adres,
             soortDigitaalAdres = adresInformation.soortDigitaalAdres,
             isStandaardAdres = isStandaardAdres,
