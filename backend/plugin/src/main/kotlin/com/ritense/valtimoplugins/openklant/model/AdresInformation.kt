@@ -12,6 +12,19 @@ data class AdresInformation(
     val referentie: String,
     val verificatieDatum: String,
 ) {
+    fun toDigitaalAdresCreationRequest(
+        adresInformation: AdresInformation,
+        isStandaardAdres: Boolean = true,
+    ): DigitaalAdresCreationRequest =
+        DigitaalAdresCreationRequest(
+            verstrektDoorPartij = UuidReference(adresInformation.partijReference.uuid),
+            adres = adresInformation.adres,
+            soortDigitaalAdres = adresInformation.soortDigitaalAdres,
+            isStandaardAdres = isStandaardAdres,
+            referentie = adresInformation.referentie,
+            verificatieDatum = adresInformation.verificatieDatum,
+        )
+
     companion object {
         private val logger = KotlinLogging.logger { }
 
@@ -34,19 +47,5 @@ data class AdresInformation(
             referentie = referentie.trim(),
             verificatieDatum = verificatieDatum.trim(),
         )
-
-        fun toDigitaalAdresCreationRequest(
-            adresInformation: AdresInformation,
-            isStandaardAdres: Boolean = true
-        ): DigitaalAdresCreationRequest {
-            return DigitaalAdresCreationRequest(
-                verstrektDoorPartij = UuidReference(adresInformation.partijReference.uuid),
-                adres = adresInformation.adres,
-                soortDigitaalAdres = adresInformation.soortDigitaalAdres,
-                isStandaardAdres = isStandaardAdres,
-                referentie = adresInformation.referentie,
-                verificatieDatum = adresInformation.verificatieDatum
-            )
-        }
     }
 }

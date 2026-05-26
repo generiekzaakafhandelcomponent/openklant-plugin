@@ -231,7 +231,7 @@ class OpenKlantPlugin(
                 referentie = DEFAULT_DIGITALE_ADRES_REFERENCE,
                 verificatieDatum = verificatieDatum,
             )
-        val request = AdresInformation.toDigitaalAdresCreationRequest(adresInformation)
+        val request = adresInformation.toDigitaalAdresCreationRequest(adresInformation)
 
         val digitaalAdres = setDefaultDigitaalAdres(request)
 
