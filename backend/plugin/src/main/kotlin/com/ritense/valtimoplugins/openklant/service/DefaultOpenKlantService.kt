@@ -78,7 +78,7 @@ class DefaultOpenKlantService(
         request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres {
-        clearDefaultForCurrentDigitaalAdressen(
+        clearReferentieForCurrentDigitaalAdressen(
             request,
             properties,
         )
@@ -116,7 +116,7 @@ class DefaultOpenKlantService(
         )
     }
 
-    private fun clearDefaultForCurrentDigitaalAdressen(
+    private fun clearReferentieForCurrentDigitaalAdressen(
         adresInformation: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
     ) {
