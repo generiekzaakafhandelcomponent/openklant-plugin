@@ -51,7 +51,7 @@
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOpQuery"
             },
-            "calculateValue": "value = `${data.apiRequest.queryParams.map(element => {\nreturn `<li>${element.key}: ${element.value}{/li}`\n})}`;",
+            "calculateValue": "value = \n`<ul class=\"cds--list--unordered\">${data.apiRequest.queryParams.map((element) => {\nreturn `<li class=\"cds--list__item\"><code>${element.key}</code>: <code>${element.value}</code></li>`;\n}).join('')}</ul>`;",
             "customConditional": "show = data.apiRequest"
         },
         {
@@ -62,7 +62,7 @@
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOp"
             },
-            "calculateValue": "value = JSON.stringify(data.apiResponse.haalDigitaleAdressenOp, null, 4);",
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.haalDigitaleAdressenOp, null, 4)}</div>`;",
             "customConditional": "show = data.apiResponse.haalDigitaleAdressenOp"
         }
     ]
