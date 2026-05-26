@@ -12,8 +12,8 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.FormioQueryParam
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.jackson.StringToBooleanDeserializer
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
@@ -184,8 +184,8 @@ class OpenKlantPlugin(
                 verstrektDoorBetrokkene =
                     verstrektDoorBetrokkene
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { UuidReference.fromString(verstrektDoorBetrokkene.trim()) },
-                verstrektDoorPartij = UuidReference.fromString(verstrektDoorPartij.trim()),
+                        ?.let { NestedUuid.fromString(verstrektDoorBetrokkene.trim()) },
+                verstrektDoorPartij = NestedUuid.fromString(verstrektDoorPartij.trim()),
                 adres = adres.trim(),
                 soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
                 isStandaardAdres = isStandaardAdres,
@@ -243,7 +243,7 @@ class OpenKlantPlugin(
     }
 
     fun updateDigitaalAdres(
-        digitaalAdresUuid: UuidReference,
+        digitaalAdresUuid: NestedUuid,
         digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
     ): DigitaalAdres =
         openKlantPluginService
@@ -284,11 +284,11 @@ class OpenKlantPlugin(
                 verstrektDoorBetrokkene =
                     verstrektDoorBetrokkene
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { UuidReference.fromString(verstrektDoorBetrokkene.trim()) },
+                        ?.let { NestedUuid.fromString(verstrektDoorBetrokkene.trim()) },
                 verstrektDoorPartij =
                     verstrektDoorPartij
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { UuidReference.fromString(verstrektDoorPartij.trim()) },
+                        ?.let { NestedUuid.fromString(verstrektDoorPartij.trim()) },
                 adres =
                     adres
                         ?.takeIf { it.isNotBlank() }
@@ -314,7 +314,7 @@ class OpenKlantPlugin(
 
         val digitaalAdres =
             updateDigitaalAdres(
-                digitaalAdresUuid = UuidReference.fromString(digitaalAdresUuid),
+                digitaalAdresUuid = NestedUuid.fromString(digitaalAdresUuid),
                 digitaalAdresPatchRequest = patchRequest,
             )
 

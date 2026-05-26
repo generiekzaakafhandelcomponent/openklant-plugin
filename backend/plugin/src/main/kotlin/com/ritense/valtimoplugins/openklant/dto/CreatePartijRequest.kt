@@ -10,13 +10,13 @@ data class CreatePartijRequest(
     @JsonProperty("interneNotitie")
     val interneNotitie: String,
     @JsonProperty("digitaleAdressen")
-    val digitaleAdressen: List<UuidReference>?,
+    val digitaleAdressen: List<NestedUuid>?,
     @JsonProperty("voorkeursDigitaalAdres")
-    val voorkeursDigitaalAdres: UuidReference?,
+    val voorkeursDigitaalAdres: NestedUuid?,
     @JsonProperty("rekeningnummers")
-    val rekeningnummers: List<UuidReference>?,
+    val rekeningnummers: List<NestedUuid>?,
     @JsonProperty("voorkeursRekeningnummer")
-    val voorkeursRekeningnummer: UuidReference?,
+    val voorkeursRekeningnummer: NestedUuid?,
     @JsonProperty("partijIdentificatoren")
     val partijIdentificatoren: List<Map<String, Identificator>>,
     @JsonProperty("soortPartij")

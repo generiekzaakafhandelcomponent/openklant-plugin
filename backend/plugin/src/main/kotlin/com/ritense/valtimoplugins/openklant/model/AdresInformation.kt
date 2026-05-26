@@ -1,12 +1,12 @@
 package com.ritense.valtimoplugins.openklant.model
 
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import mu.KotlinLogging
 
 data class AdresInformation(
-    val partijReference: UuidReference,
+    val partijReference: NestedUuid,
     val adres: String,
     val soortDigitaalAdres: SoortDigitaalAdres,
     val referentie: String,
@@ -35,7 +35,7 @@ data class AdresInformation(
             referentie: String,
             verificatieDatum: String,
         ) = AdresInformation(
-            partijReference = UuidReference.fromString(partijUuid.trim()),
+            partijReference = NestedUuid.fromString(partijUuid.trim()),
             adres = adres.trim(),
             soortDigitaalAdres =
                 SoortDigitaalAdres.entries

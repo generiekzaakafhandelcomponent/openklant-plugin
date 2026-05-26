@@ -6,8 +6,8 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQueryParamNames
@@ -130,7 +130,7 @@ class OpenKlantClient(
         }
 
     fun getDigitaalAdres(
-        digitaalAdresUuid: UuidReference,
+        digitaalAdresUuid: NestedUuid,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
         try {
@@ -147,7 +147,7 @@ class OpenKlantClient(
         }
 
     fun updateDigitaalAdres(
-        digitaalAdresUuid: UuidReference,
+        digitaalAdresUuid: NestedUuid,
         patchData: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ) = try {

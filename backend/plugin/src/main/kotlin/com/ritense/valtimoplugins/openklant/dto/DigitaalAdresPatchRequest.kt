@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonInclude(JsonInclude.Include.NON_NULL) // Will only include non-null values in patch request
 data class DigitaalAdresPatchRequest(
     @JsonProperty("verstrektDoorBetrokkene")
-    val verstrektDoorBetrokkene: UuidReference? = null,
+    val verstrektDoorBetrokkene: NestedUuid? = null,
     @JsonProperty("verstrektDoorPartij")
-    val verstrektDoorPartij: UuidReference? = null,
+    val verstrektDoorPartij: NestedUuid? = null,
     @JsonProperty("adres")
     val adres: String? = null,
     @JsonProperty("soortDigitaalAdres")

@@ -3,13 +3,13 @@ package com.ritense.valtimoplugins.openklant.service
 import com.ritense.valtimoplugins.openklant.dto.Betrokkene.Rol
 import com.ritense.valtimoplugins.openklant.dto.Contactnaam
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import java.util.UUID
 
 class KlantcontactFactory {
     fun createKlantcontactRequest(
-        klantContactCreationInformation: KlantcontactCreationInformation
+        klantContactCreationInformation: KlantcontactCreationInformation,
     ): KlantcontactCreationRequest =
         if (klantContactCreationInformation.hasBetrokkene) {
             KlantcontactCreationRequest(
@@ -39,11 +39,11 @@ class KlantcontactFactory {
     private fun betrokkeneRequest(klantContactCreationInformation: KlantcontactCreationInformation) =
         KlantcontactCreationRequest.BetrokkeneRequest(
             wasPartij =
-                UuidReference(
+                NestedUuid(
                     uuid =
                         UUID.fromString(klantContactCreationInformation.partijUuid)
                             ?: throw IllegalArgumentException(
-                                "No partijUuid was specified to create a betrokkene request"
+                                "No partijUuid was specified to create a betrokkene request",
                             ),
                 ),
             bezoekadres = null,

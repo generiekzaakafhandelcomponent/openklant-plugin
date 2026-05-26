@@ -62,7 +62,7 @@ data class KlantcontactCreationRequest(
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     data class BetrokkeneRequest(
         @field:JsonProperty("wasPartij")
-        val wasPartij: UuidReference? = null,
+        val wasPartij: NestedUuid? = null,
         @field:JsonProperty("bezoekadres")
         val bezoekadres: Adres? = null,
         @field:JsonProperty("correspondentieadres")
@@ -83,7 +83,7 @@ data class KlantcontactCreationRequest(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     data class OnderwerpobjectRequest(
         @field:JsonProperty("wasKlantcontact")
-        val wasKlantcontact: UuidReference? = null,
+        val wasKlantcontact: NestedUuid? = null,
         @field:JsonProperty("onderwerpobjectidentificator")
         val onderwerpobjectidentificator: Onderwerpobjectidentificator? = null,
     )

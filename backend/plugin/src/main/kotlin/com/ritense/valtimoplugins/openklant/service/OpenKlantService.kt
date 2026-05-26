@@ -4,8 +4,8 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
@@ -40,7 +40,7 @@ interface OpenKlantService {
     ): DigitaalAdres
 
     fun updateDigitaalAdres(
-        digitaalAdresUuid: UuidReference,
+        digitaalAdresUuid: NestedUuid,
         request: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres

@@ -4,10 +4,10 @@ import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
@@ -120,7 +120,7 @@ class OpenKlantServiceTest {
 
     private val adresInformation =
         DigitaalAdresCreationRequest(
-            verstrektDoorPartij = UuidReference.fromString("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df"),
+            verstrektDoorPartij = NestedUuid.fromString("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df"),
             adres = "test@example.com",
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = "ref-1",
@@ -154,7 +154,7 @@ class OpenKlantServiceTest {
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
         verify {
             client.getDigitaalAdres(
-                UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
+                NestedUuid(defaultPartij.voorkeursDigitaalAdres!!.uuid),
                 testProperties,
             )
         }
@@ -192,7 +192,7 @@ class OpenKlantServiceTest {
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
         verify {
             client.getDigitaalAdres(
-                UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
+                NestedUuid(defaultPartij.voorkeursDigitaalAdres!!.uuid),
                 testProperties,
             )
         }

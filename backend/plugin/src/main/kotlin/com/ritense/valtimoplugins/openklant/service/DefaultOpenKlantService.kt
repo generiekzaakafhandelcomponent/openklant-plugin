@@ -5,9 +5,9 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
+import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.UuidReference
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
@@ -90,7 +90,7 @@ class DefaultOpenKlantService(
     }
 
     override fun updateDigitaalAdres(
-        digitaalAdresUuid: UuidReference,
+        digitaalAdresUuid: NestedUuid,
         request: DigitaalAdresPatchRequest,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
@@ -145,7 +145,7 @@ class DefaultOpenKlantService(
                 properties = properties,
             ).forEach {
                 openKlantClient.updateDigitaalAdres(
-                    digitaalAdresUuid = UuidReference(it.uuid),
+                    digitaalAdresUuid = NestedUuid(it.uuid),
                     patchData = DigitaalAdresPatchRequest(referentie = ""),
                     properties = properties,
                 )
@@ -160,7 +160,7 @@ class DefaultOpenKlantService(
         val voorkeursAdresObjectReference = partij.voorkeursDigitaalAdres ?: return false
         val voorkeursAdres =
             openKlantClient.getDigitaalAdres(
-                UuidReference(voorkeursAdresObjectReference.uuid),
+                NestedUuid(voorkeursAdresObjectReference.uuid),
                 properties = properties,
             )
         return voorkeursAdres.adres == emailAddress
@@ -173,7 +173,7 @@ class DefaultOpenKlantService(
     ): DigitaalAdres =
         openKlantClient.createDigitaalAdres(
             DigitaalAdresCreationRequest(
-                verstrektDoorPartij = UuidReference(partij.uuid),
+                verstrektDoorPartij = NestedUuid(partij.uuid),
                 adres = contactInformation.emailadres,
                 soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
                 referentie = contactInformation.zaaknummer,
