@@ -125,7 +125,7 @@
         "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
         "pluginActionDefinitionKey": "get-digitale-adressen",
         "actionProperties": {
-            "resultPvName": "digitaalAdres",
+            "resultPvName": "digitaleAdressen",
             "queryParams": "doc:/apiRequest/queryParams"
         },
         "processLinkType": "plugin"

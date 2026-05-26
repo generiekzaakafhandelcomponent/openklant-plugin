@@ -136,7 +136,7 @@
     <bpmn:sequenceFlow id="Flow_150sx03" name="Haal digitale adressen op" sourceRef="Gateway_0unxpx3" targetRef="haalDigitaleAdressenOp">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${valueResolverDelegateService.resolveValue(execution, "doc:selectedDemo") == "haalDigitaleAdressenOp"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_044k1ce" name="Sla digitaal adres op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/apiResponse/haalDigitaleAdressenOp&#34;, digitaalAdres)}">
+    <bpmn:serviceTask id="Activity_044k1ce" name="Sla digitaal adres op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/apiResponse/haalDigitaleAdressenOp&#34;, digitaleAdressen)}">
       <bpmn:incoming>Flow_1yi2zsz</bpmn:incoming>
       <bpmn:outgoing>Flow_1ernjvn</bpmn:outgoing>
     </bpmn:serviceTask>
