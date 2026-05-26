@@ -143,6 +143,7 @@ class OpenKlantPlugin(
     ) {
         val query = DigitaalAdresQuery.fromFormioList(queryParams)
 
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
         val digitaleAdressenJson = objectMapper.valueToTree<JsonNode>(getDigitaleAdressen(query = query))
 
         execution.setVariable(resultPvName, digitaleAdressenJson)
@@ -307,7 +308,7 @@ class OpenKlantPlugin(
                         ?.trim(),
             )
 
-        //      Map to JSON preemptively, as Operaton has issues serializing it itself
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
         val digitaalAdresJson =
             objectMapper.valueToTree<JsonNode>(
                 updateDigitaalAdres(
