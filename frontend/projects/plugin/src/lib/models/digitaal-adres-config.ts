@@ -1,11 +1,11 @@
 export interface DigitaalAdresConfig {
-  resultPvName: string;
-  verstrektDoorBetrokkene: string;
-  verstrektDoorPartij: string;
-  adres: string;
-  soortDigitaalAdres: string;
-  isStandaardAdres: boolean;
-  omschrijving: string;
-  referentie: string;
-  verificatieDatum: string;
+    resultPvName: string;
+    verstrektDoorBetrokkene: string;
+    verstrektDoorPartij: string;
+    adres: string;
+    soortDigitaalAdres: string;
+    isStandaardAdres: string;
+    omschrijving: string;
+    referentie: string;
+    verificatieDatum: string;
 }

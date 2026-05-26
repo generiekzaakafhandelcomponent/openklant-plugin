@@ -1,9 +1,9 @@
 export interface GetDigitaleAdressenConfig {
-  resultPvName: string;
-  queryParams: FormIOQueryParam[];
+    resultPvName: string;
+    queryParams: FormIOQueryParam[];
 }
 
 interface FormIOQueryParam {
-  key: string;
-  value: string;
+    key: string;
+    value: string;
 }
