@@ -29,7 +29,7 @@
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.createDigitaalAdres"
             },
-            "calculateValue": "value = JSON.stringify(data.apiResponse.createDigitaalAdres, null, 4);",
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.createDigitaalAdres, null, 4)}</div>`;",
             "customConditional": "show = data.apiResponse.createDigitaalAdres"
         },
         {
@@ -40,7 +40,8 @@
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.updateDigitaalAdres"
             },
-            "calculateValue": "value = JSON.stringify(data.apiResponse.updateDigitaalAdres, null, 4);",
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.updateDigitaalAdres, null, 4)}</div>`;",
+
             "customConditional": "show = data.apiResponse.updateDigitaalAdres"
         },
         {
