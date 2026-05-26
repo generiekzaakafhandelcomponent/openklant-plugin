@@ -53,7 +53,7 @@
                 "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOpQuery"
             },
             "calculateValue": "value = \n`<ul class=\"cds--list--unordered\">${data.apiRequest.queryParams.map((element) => {\nreturn `<li class=\"cds--list__item\"><code>${element.key}</code>: <code>${element.value}</code></li>`;\n}).join('')}</ul>`;",
-            "customConditional": "show = data.apiRequest"
+            "customConditional": "show = data.apiRequest.haalDigitaleAdressenOp"
         },
         {
             "key": "data.apiResponse.haalDigitaleAdressenOpResponse",
