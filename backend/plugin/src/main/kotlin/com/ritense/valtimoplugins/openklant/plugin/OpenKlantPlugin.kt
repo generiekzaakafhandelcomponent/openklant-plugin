@@ -141,7 +141,7 @@ class OpenKlantPlugin(
         @PluginActionProperty
         queryParams: List<KeyValueQueryParam> = emptyList(),
     ) {
-        val query = DigitaalAdresQuery.fromFormioList(queryParams)
+        val query = DigitaalAdresQuery.fromKeyValueQueryParamList(queryParams)
 
         val digitaleAdressen = getDigitaleAdressen(query = query)
 //      Map to JSON preemptively, as Operaton has issues serializing it itself
