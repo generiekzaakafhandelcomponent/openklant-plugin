@@ -29,7 +29,7 @@ data class AdresInformation(
                     .firstOrNull { it.name.equals(soortDigitaalAdres.trim(), ignoreCase = true) }
                     ?: SoortDigitaalAdres.OVERIG
                         .also {
-                            logger.warn { "Unknown soortDigitaalAdres: {$soortDigitaalAdres}, using default: {$it}" }
+                            logger.warn { "Unknown soortDigitaalAdres: $soortDigitaalAdres, using default: $it" }
                         },
             referentie = referentie.trim(),
             verificatieDatum = verificatieDatum.trim(),
