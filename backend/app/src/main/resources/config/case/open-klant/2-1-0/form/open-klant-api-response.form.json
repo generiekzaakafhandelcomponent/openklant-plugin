@@ -24,7 +24,7 @@
         {
             "key": "data.apiResponse.createDigitaalAdres",
             "type": "textarea",
-            "label": "Maak digitaal adres aan — API Response",
+            "label": "Maak digitaal adres aan — API-response",
             "disabled": true,
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.createDigitaalAdres"
@@ -35,7 +35,7 @@
         {
             "key": "data.apiResponse.updateDigitaalAdres",
             "type": "textarea",
-            "label": "Pas bestaand digitaal adres aan — API Response",
+            "label": "Pas bestaand digitaal adres aan — API-response",
             "disabled": true,
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.updateDigitaalAdres"
@@ -57,7 +57,7 @@
         {
             "key": "data.apiResponse.haalDigitaleAdressenOpResponse",
             "type": "textarea",
-            "label": "Haal digitale adressen op — API Response",
+            "label": "Haal digitale adressen op — API-response",
             "disabled": true,
             "attributes": {
                 "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOp"
