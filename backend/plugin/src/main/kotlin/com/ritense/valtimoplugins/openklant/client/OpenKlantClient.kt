@@ -1,8 +1,8 @@
 package com.ritense.valtimoplugins.openklant.client
 
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
@@ -18,9 +18,9 @@ import mu.KotlinLogging
 import org.jetbrains.annotations.VisibleForTesting
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientResponseException
-import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.body
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriBuilder
@@ -91,7 +91,7 @@ class OpenKlantClient(
 
     fun getDigitaleAdressen(
         query: DigitaalAdresQuery,
-        properties: OpenKlantProperties
+        properties: OpenKlantProperties,
     ): List<DigitaalAdres> =
         try {
             restClient(properties = properties)
@@ -102,16 +102,14 @@ class OpenKlantClient(
                 .body<Page<DigitaalAdres>>()
                 ?.results
                 ?: throw IllegalStateException("Error fetching DigitaalAdres(sen): response body was null")
-
         } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
         } catch (e: RestClientResponseException) {
             handleResponseException(
                 e,
-                "Error fetching adressen"
+                "Error fetching adressen",
             )
         }
-
 
     fun createDigitaalAdres(
         request: DigitaalAdresCreationRequest,
@@ -168,7 +166,7 @@ class OpenKlantClient(
 
     fun getKlantcontacten(
         query: KlantcontactQuery,
-        properties: OpenKlantProperties
+        properties: OpenKlantProperties,
     ): Page<Klantcontact> {
         if (query.bsn.isNullOrBlank() &&
             query.objectUuid.isNullOrBlank() &&
@@ -183,7 +181,7 @@ class OpenKlantClient(
                 .uri { uriBuilder ->
                     buildKlantcontactUri(
                         builder = uriBuilder,
-                        query = query
+                        query = query,
                     )
                 }.retrieve()
                 .body<Page<Klantcontact>>()
@@ -227,22 +225,26 @@ class OpenKlantClient(
     ): URI {
         query.objectTypeId?.let {
             builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATORCODEOBJECTTYPE.value, it
+                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATORCODEOBJECTTYPE.value,
+                it,
             )
         }
         query.bsn?.let {
             builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__PARTIJIDENTIFICATOR__OBJECTID.value, it
+                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__PARTIJIDENTIFICATOR__OBJECTID.value,
+                it,
             )
         }
         query.objectUuid?.let {
             builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATOROBJECTID.value, it
+                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATOROBJECTID.value,
+                it,
             )
         }
         query.partijUuid?.let {
             builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value, it
+                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value,
+                it,
             )
         }
         return builder

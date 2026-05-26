@@ -1,8 +1,8 @@
 package com.ritense.valtimoplugins.openklant.service
 
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.UuidReference
@@ -26,7 +26,7 @@ interface OpenKlantService {
 
     fun getAllDigitaleAdressen(
         query: DigitaalAdresQuery,
-        properties: OpenKlantProperties
+        properties: OpenKlantProperties,
     ): List<DigitaalAdres>
 
     fun createDigitaalAdres(
@@ -47,7 +47,7 @@ interface OpenKlantService {
 
     fun getAllKlantcontacten(
         query: KlantcontactQuery,
-        properties: OpenKlantProperties
+        properties: OpenKlantProperties,
     ): List<Klantcontact>
 
     fun postKlantcontact(

@@ -1,9 +1,9 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
@@ -124,7 +124,7 @@ class OpenKlantServiceTest {
             adres = "test@example.com",
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = "ref-1",
-            verificatieDatum = "2024-01-01"
+            verificatieDatum = "2024-01-01",
         )
 
     @BeforeEach
@@ -138,11 +138,11 @@ class OpenKlantServiceTest {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
         every { client.getDigitaalAdres(any(), testProperties) } returns
-                defaultDigitaalAdres.copy(
-                    adres = "email@adres.nl",
-                    isStandaardAdres = true,
-                    soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
-                )
+            defaultDigitaalAdres.copy(
+                adres = "email@adres.nl",
+                isStandaardAdres = true,
+                soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            )
 
         // ACT:
         service.storeContactInformation(
@@ -155,7 +155,7 @@ class OpenKlantServiceTest {
         verify {
             client.getDigitaalAdres(
                 UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
-                testProperties
+                testProperties,
             )
         }
         verify(exactly = 0) { client.createDigitaalAdres(any(), testProperties) }
@@ -168,14 +168,15 @@ class OpenKlantServiceTest {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
         every { client.getDigitaalAdres(any(), testProperties) } returns
-                defaultDigitaalAdres.copy(
-                    adres = "email2@adres.nl",
-                    isStandaardAdres = true,
-                    soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
-                )
+            defaultDigitaalAdres.copy(
+                adres = "email2@adres.nl",
+                isStandaardAdres = true,
+                soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            )
         every {
             client.getDigitaleAdressen(
-                any(), any()
+                any(),
+                any(),
             )
         } returns listOf()
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
@@ -192,21 +193,21 @@ class OpenKlantServiceTest {
         verify {
             client.getDigitaalAdres(
                 UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
-                testProperties
+                testProperties,
             )
         }
         verify {
             client.getDigitaleAdressen(
                 query = DigitaalAdresQuery(),
-                properties = testProperties
+                properties = testProperties,
             )
         }
         verify {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
                     it.adres == contactInformation.emailadres &&
-                            it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                            it.referentie == contactInformation.zaaknummer
+                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
+                        it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
@@ -249,8 +250,8 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
                     it.adres == contactInformation.emailadres &&
-                            it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                            it.referentie == contactInformation.zaaknummer
+                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
+                        it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
@@ -331,9 +332,10 @@ class OpenKlantServiceTest {
             client.getDigitaleAdressen(any(), any())
         } returns listOf(existingAdres)
 
-        val createdResult = existingAdres.copy(
-            UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85")
-        )
+        val createdResult =
+            existingAdres.copy(
+                UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
+            )
         every {
             client.createDigitaalAdres(any(), any())
         } returns createdResult
@@ -344,10 +346,11 @@ class OpenKlantServiceTest {
         } returns adjustedAdres
 
         // ACT
-        val result = service.setDefaultDigitaalAdres(
-            request = adresInformation,
-            properties = testProperties,
-        )
+        val result =
+            service.setDefaultDigitaalAdres(
+                request = adresInformation,
+                properties = testProperties,
+            )
 
         // ASSERT
         verify {
@@ -355,10 +358,10 @@ class OpenKlantServiceTest {
                 request =
                     match {
                         it.verstrektDoorPartij?.uuid == adresInformation.verstrektDoorPartij?.uuid &&
-                                it.adres == adresInformation.adres &&
-                                it.soortDigitaalAdres == adresInformation.soortDigitaalAdres &&
-                                it.isStandaardAdres == true &&
-                                it.referentie == adresInformation.referentie
+                            it.adres == adresInformation.adres &&
+                            it.soortDigitaalAdres == adresInformation.soortDigitaalAdres &&
+                            it.isStandaardAdres == true &&
+                            it.referentie == adresInformation.referentie
                     },
                 properties = testProperties,
             )
