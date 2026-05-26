@@ -137,7 +137,7 @@ class OpenKlantServiceTest {
     fun `storeContactInformation should do nothing when supplied email is preferred address`() {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
-        every { client.getSingleDigitaalAdres(any(), testProperties) } returns
+        every { client.getDigitaalAdres(any(), testProperties) } returns
                 defaultDigitaalAdres.copy(
                     adres = "email@adres.nl",
                     isStandaardAdres = true,
@@ -153,7 +153,7 @@ class OpenKlantServiceTest {
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
         verify {
-            client.getSingleDigitaalAdres(
+            client.getDigitaalAdres(
                 UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
                 testProperties
             )
@@ -167,7 +167,7 @@ class OpenKlantServiceTest {
     fun `storeContactInformation should update existing partij if email is not preferred address`() {
         // ARRANGE:
         every { client.getPartijByBsn(contactInformation.bsn, testProperties) } returns defaultPartij
-        every { client.getSingleDigitaalAdres(any(), testProperties) } returns
+        every { client.getDigitaalAdres(any(), testProperties) } returns
                 defaultDigitaalAdres.copy(
                     adres = "email2@adres.nl",
                     isStandaardAdres = true,
@@ -190,7 +190,7 @@ class OpenKlantServiceTest {
         // ASSERT:
         verify { client.getPartijByBsn(contactInformation.bsn, testProperties) }
         verify {
-            client.getSingleDigitaalAdres(
+            client.getDigitaalAdres(
                 UuidReference(defaultPartij.voorkeursDigitaalAdres!!.uuid),
                 testProperties
             )
@@ -265,7 +265,7 @@ class OpenKlantServiceTest {
                 testProperties,
             )
         }
-        verify(exactly = 0) { client.getSingleDigitaalAdres(any(), testProperties) }
+        verify(exactly = 0) { client.getDigitaalAdres(any(), testProperties) }
     }
 
     @Test

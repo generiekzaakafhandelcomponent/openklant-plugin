@@ -154,7 +154,7 @@ class DefaultOpenKlantService(
         properties: OpenKlantProperties,
     ): Boolean {
         val voorkeursAdresObjectReference = partij.voorkeursDigitaalAdres ?: return false
-        val voorkeursAdres = openKlantClient.getSingleDigitaalAdres(
+        val voorkeursAdres = openKlantClient.getDigitaalAdres(
             UuidReference(voorkeursAdresObjectReference.uuid),
             properties = properties
         )

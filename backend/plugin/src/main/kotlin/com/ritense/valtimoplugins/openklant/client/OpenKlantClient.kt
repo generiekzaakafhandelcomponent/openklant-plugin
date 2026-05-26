@@ -131,7 +131,7 @@ class OpenKlantClient(
             handleResponseException(e, "Error creating DigitaalAdres")
         }
 
-    fun getSingleDigitaalAdres(
+    fun getDigitaalAdres(
         digitaalAdresUuid: UuidReference,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
