@@ -1,4 +1,4 @@
-export interface CreateDigitaalAdresConfig {
+export interface DigitaalAdresConfig {
   resultPvName: string;
   verstrektDoorBetrokkene: string;
   verstrektDoorPartij: string;
