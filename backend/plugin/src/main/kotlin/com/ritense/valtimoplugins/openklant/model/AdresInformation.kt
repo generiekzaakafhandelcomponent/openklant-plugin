@@ -12,17 +12,14 @@ data class AdresInformation(
     val referentie: String,
     val verificatieDatum: String,
 ) {
-    fun toDigitaalAdresCreationRequest(
-        adresInformation: AdresInformation,
-        isStandaardAdres: Boolean = true,
-    ): DigitaalAdresCreationRequest =
+    fun toDigitaalAdresCreationRequest(isStandaardAdres: Boolean = true): DigitaalAdresCreationRequest =
         DigitaalAdresCreationRequest(
             verstrektDoorPartij = partijReference,
-            adres = adresInformation.adres,
-            soortDigitaalAdres = adresInformation.soortDigitaalAdres,
+            adres = adres,
+            soortDigitaalAdres = soortDigitaalAdres,
             isStandaardAdres = isStandaardAdres,
-            referentie = adresInformation.referentie,
-            verificatieDatum = adresInformation.verificatieDatum,
+            referentie = referentie,
+            verificatieDatum = verificatieDatum,
         )
 
     companion object {
