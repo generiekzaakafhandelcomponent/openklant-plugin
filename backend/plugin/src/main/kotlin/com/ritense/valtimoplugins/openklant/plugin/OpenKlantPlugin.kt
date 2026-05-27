@@ -61,6 +61,7 @@ class OpenKlantPlugin(
         @PluginActionProperty emailAddress: String,
         @PluginActionProperty caseUuid: String,
     ) {
+        logger.info { "Storing contact information..." }
         val contactInformation =
             ContactInformation.fromActionProperties(
                 bsn = bsn,
@@ -99,7 +100,7 @@ class OpenKlantPlugin(
         @PluginActionProperty voorvoegselAchternaam: String,
         @PluginActionProperty achternaam: String,
     ) {
-        logger.info { "Get or Create partij in Open Klant - ${execution.processBusinessKey}" }
+        logger.info { "Getting or otherwise creating partij in Open Klant" }
 
         val partijInformation =
             PartijInformationImpl.fromActionProperties(
@@ -117,17 +118,18 @@ class OpenKlantPlugin(
         execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuid.toString())
     }
 
-    fun getDigitaleAdressen(query: DigitaalAdresQuery): List<DigitaalAdres> =
-
-        openKlantPluginService
+    fun getDigitaleAdressen(query: DigitaalAdresQuery): List<DigitaalAdres> {
+        logger.info { "Retrieving DigitaleAdressen..." }
+        return openKlantPluginService
             .getAllDigitaleAdressen(
                 query = query,
                 properties = OpenKlantProperties(klantinteractiesUrl, token),
             ).also {
                 logger.info {
-                    "Retrieved ${it.count()} DigitaalAdres(sen) from Open Klant)"
+                    "Successfully retrieved ${it.count()} DigitaalAdres(sen) from Open Klant)"
                 }
             }
+    }
 
     @PluginAction(
         key = "get-digitale-adressen",
@@ -150,8 +152,9 @@ class OpenKlantPlugin(
         execution.setVariable(resultPvName, digitaleAdressenJson)
     }
 
-    fun createDigitaalAdres(request: DigitaalAdresCreationRequest): DigitaalAdres =
-        openKlantPluginService
+    fun createDigitaalAdres(request: DigitaalAdresCreationRequest): DigitaalAdres {
+        logger.info { "Creating DigitaalAdres..." }
+        return openKlantPluginService
             .createDigitaalAdres(
                 request = request,
                 properties = OpenKlantProperties(klantinteractiesUrl, token),
@@ -160,6 +163,7 @@ class OpenKlantPlugin(
                     "Successfully created DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
                 }
             }
+    }
 
     @PluginAction(
         key = "create-digitaal-adres",
@@ -202,8 +206,9 @@ class OpenKlantPlugin(
         execution.setVariable(resultPvName, digitaalAdresJson)
     }
 
-    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres =
-        openKlantPluginService
+    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres {
+        logger.info { "Setting default DigitaalAdres..." }
+        return openKlantPluginService
             .setDefaultDigitaalAdres(
                 request = digitaalAdresCreationRequest,
                 properties = OpenKlantProperties(klantinteractiesUrl = klantinteractiesUrl, token = token),
@@ -212,6 +217,7 @@ class OpenKlantPlugin(
                     "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
                 }
             }
+    }
 
     @PluginAction(
         key = "set-default-digitaal-adres",
@@ -245,17 +251,19 @@ class OpenKlantPlugin(
     fun updateDigitaalAdres(
         digitaalAdresUuid: NestedUuid,
         digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
-    ): DigitaalAdres =
-        openKlantPluginService
+    ): DigitaalAdres {
+        logger.info { "Updating DigitaalAdres..." }
+        return openKlantPluginService
             .updateDigitaalAdres(
                 digitaalAdresUuid = digitaalAdresUuid,
                 request = digitaalAdresPatchRequest,
                 properties = OpenKlantProperties(klantinteractiesUrl, token),
             ).also {
                 logger.info {
-                    "Updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
+                    "Successfully updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
                 }
             }
+    }
 
     @PluginAction(
         key = "update-digitaal-adres",
@@ -334,22 +342,25 @@ class OpenKlantPlugin(
         @PluginActionProperty caseUuid: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ) = fetchKlantcontactenAndStore(
-        execution = execution,
-        resultPvName = resultPvName,
-        query =
-            KlantcontactQuery(
-                objectUuid = caseUuid,
-            ),
-        properties =
-            OpenKlantProperties(
-                klantinteractiesUrl = klantinteractiesUrl,
-                token = token,
-            ),
-    ).also {
-        logger.info {
-            "Successfully fetched and stored contact history" +
-                " from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
+    ) {
+        logger.info { "Fetching contact history (Klantcontacten)..." }
+        return fetchKlantcontactenAndStore(
+            execution = execution,
+            resultPvName = resultPvName,
+            query =
+                KlantcontactQuery(
+                    objectUuid = caseUuid,
+                ),
+            properties =
+                OpenKlantProperties(
+                    klantinteractiesUrl = klantinteractiesUrl,
+                    token = token,
+                ),
+        ).also {
+            logger.info {
+                "Successfully fetched and stored contact history" +
+                    " from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
+            }
         }
     }
 
@@ -395,21 +406,24 @@ class OpenKlantPlugin(
         @PluginActionProperty partijUuid: String,
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
-    ) = fetchKlantcontactenAndStore(
-        execution = execution,
-        resultPvName = resultPvName,
-        query =
-            KlantcontactQuery(
-                partijUuid = partijUuid,
-            ),
-        properties =
-            OpenKlantProperties(
-                klantinteractiesUrl = klantinteractiesUrl,
-                token = token,
-            ),
-    ).also {
-        logger.info {
-            "Successfully fetched contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
+    ) {
+        logger.info { "Fetching contact history..." }
+        fetchKlantcontactenAndStore(
+            execution = execution,
+            resultPvName = resultPvName,
+            query =
+                KlantcontactQuery(
+                    partijUuid = partijUuid,
+                ),
+            properties =
+                OpenKlantProperties(
+                    klantinteractiesUrl = klantinteractiesUrl,
+                    token = token,
+                ),
+        ).also {
+            logger.info {
+                "Successfully fetched contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
+            }
         }
     }
 
@@ -438,7 +452,7 @@ class OpenKlantPlugin(
         @PluginActionProperty metadata: Map<String, String>?,
         execution: DelegateExecution,
     ) {
-        logger.info { "Registering klantcontact - ${execution.processBusinessKey}" }
+        logger.info { "Registering klantcontact..." }
 
         val klantcontactCreationInformation =
             KlantcontactCreationInformation.fromActionProperties(
