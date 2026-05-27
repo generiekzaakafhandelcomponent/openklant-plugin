@@ -1,14 +1,19 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.mapper.toCreationRequest
+import com.ritense.valtimoplugins.openklant.mapper.toModel
+import com.ritense.valtimoplugins.openklant.mapper.toRequest
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
@@ -60,45 +65,49 @@ class DefaultOpenKlantService(
         query: DigitaalAdresQuery,
         properties: OpenKlantProperties,
     ): List<DigitaalAdres> =
-        openKlantClient.getDigitaleAdressen(
-            query = query,
-            properties = properties,
-        )
+        openKlantClient
+            .getDigitaleAdressen(
+                query = query,
+                properties = properties,
+            ).map { it -> it.toModel() }
 
     override fun createDigitaalAdres(
-        request: DigitaalAdresCreationRequest,
+        request: DigitaalAdres,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
-        openKlantClient.createDigitaalAdres(
-            request = request,
-            properties = properties,
-        )
+        openKlantClient
+            .createDigitaalAdres(
+                request = request.toCreationRequest(),
+                properties = properties,
+            ).toModel()
 
     override fun setDefaultDigitaalAdres(
-        request: DigitaalAdresCreationRequest,
+        request: DigitaalAdres,
         properties: OpenKlantProperties,
     ): DigitaalAdres {
         clearReferentieForCurrentDigitaalAdressen(
-            request,
-            properties,
-        )
-
-        return openKlantClient.createDigitaalAdres(
-            request = request,
+            adresInformation = request.toCreationRequest(),
             properties = properties,
         )
+
+        return openKlantClient
+            .createDigitaalAdres(
+                request = request.toCreationRequest(),
+                properties = properties,
+            ).toModel()
     }
 
     override fun updateDigitaalAdres(
         digitaalAdresUuid: NestedUuid,
-        request: DigitaalAdresPatchRequest,
+        request: DigitaalAdresPatch,
         properties: OpenKlantProperties,
     ): DigitaalAdres =
-        openKlantClient.updateDigitaalAdres(
-            digitaalAdresUuid = digitaalAdresUuid,
-            patchData = request,
-            properties = properties,
-        )
+        openKlantClient
+            .updateDigitaalAdres(
+                digitaalAdresUuid = digitaalAdresUuid,
+                patchData = request.toRequest(),
+                properties = properties,
+            ).toModel()
 
     override fun getAllKlantcontacten(
         query: KlantcontactQuery,
@@ -170,7 +179,7 @@ class DefaultOpenKlantService(
         partij: Partij,
         contactInformation: ContactInformation,
         properties: OpenKlantProperties,
-    ): DigitaalAdres =
+    ): DigitaalAdresResponse =
         openKlantClient.createDigitaalAdres(
             DigitaalAdresCreationRequest(
                 verstrektDoorPartij = NestedUuid(partij.uuid),
@@ -248,7 +257,7 @@ class DefaultOpenKlantService(
 
     private fun updateDigitaleAdressenForPartij(
         partij: Partij,
-        digitaleAdressen: List<DigitaalAdres>,
+        digitaleAdressen: List<DigitaalAdresResponse>,
         properties: OpenKlantProperties,
     ) {
         val patchData =
@@ -260,7 +269,7 @@ class DefaultOpenKlantService(
 
     private fun updateDigitaleAdressenForPartij(
         partij: Partij,
-        digitaleAdress: DigitaalAdres,
+        digitaleAdress: DigitaalAdresResponse,
         properties: OpenKlantProperties,
     ) = updateDigitaleAdressenForPartij(partij, listOf(digitaleAdress), properties)
 }

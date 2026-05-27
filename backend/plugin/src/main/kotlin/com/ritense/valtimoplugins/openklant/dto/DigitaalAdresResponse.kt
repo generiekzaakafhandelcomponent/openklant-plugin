@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.util.UUID
 
-data class DigitaalAdresCreationResponse(
+data class DigitaalAdresResponse(
     @JsonProperty("uuid")
     @field:NotNull
     override val uuid: UUID,

@@ -12,9 +12,9 @@ data class AdresInformation(
     val referentie: String,
     val verificatieDatum: String,
 ) {
-    fun toDigitaalAdresCreationRequest(isStandaardAdres: Boolean = true): DigitaalAdresCreationRequest =
-        DigitaalAdresCreationRequest(
-            verstrektDoorPartij = partijReference,
+    fun toDigitaalAdresCreationRequest(isStandaardAdres: Boolean = true): DigitaalAdres =
+        DigitaalAdres(
+            verstrektDoorPartijUuid = partijReference.uuid,
             adres = adres,
             soortDigitaalAdres = soortDigitaalAdres,
             isStandaardAdres = isStandaardAdres,

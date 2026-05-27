@@ -8,14 +8,13 @@ import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
 import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.KeyValueQueryParam
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
@@ -27,6 +26,7 @@ import com.ritense.valtimoplugins.openklant.util.StringToBooleanDeserializer
 import mu.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 import java.net.URI
+import java.util.UUID
 import kotlin.collections.count
 
 @Plugin(
@@ -152,7 +152,7 @@ class OpenKlantPlugin(
         execution.setVariable(resultPvName, digitaleAdressenJson)
     }
 
-    fun createDigitaalAdres(request: DigitaalAdresCreationRequest): DigitaalAdres {
+    fun createDigitaalAdres(request: DigitaalAdres): DigitaalAdres {
         logger.info { "Creating DigitaalAdres..." }
         return openKlantPluginService
             .createDigitaalAdres(
@@ -184,12 +184,15 @@ class OpenKlantPlugin(
         @PluginActionProperty verificatieDatum: String? = null,
     ) {
         val request =
-            DigitaalAdresCreationRequest(
-                verstrektDoorBetrokkene =
+            DigitaalAdres(
+                verstrektDoorBetrokkeneUuid =
                     verstrektDoorBetrokkene
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { NestedUuid.fromString(verstrektDoorBetrokkene.trim()) },
-                verstrektDoorPartij = NestedUuid.fromString(verstrektDoorPartij.trim()),
+                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
+                verstrektDoorPartijUuid =
+                    verstrektDoorPartij
+                        .takeIf { it.isNotBlank() }
+                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
                 adres = adres.trim(),
                 soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
                 isStandaardAdres = isStandaardAdres,
@@ -206,11 +209,11 @@ class OpenKlantPlugin(
         execution.setVariable(resultPvName, digitaalAdresJson)
     }
 
-    fun setDefaultDigitaalAdres(digitaalAdresCreationRequest: DigitaalAdresCreationRequest): DigitaalAdres {
+    fun setDefaultDigitaalAdres(digitaalAdres: DigitaalAdres): DigitaalAdres {
         logger.info { "Setting default DigitaalAdres..." }
         return openKlantPluginService
             .setDefaultDigitaalAdres(
-                request = digitaalAdresCreationRequest,
+                request = digitaalAdres,
                 properties = OpenKlantProperties(klantinteractiesUrl = klantinteractiesUrl, token = token),
             ).also {
                 logger.info {
@@ -250,7 +253,7 @@ class OpenKlantPlugin(
 
     fun updateDigitaalAdres(
         digitaalAdresUuid: NestedUuid,
-        digitaalAdresPatchRequest: DigitaalAdresPatchRequest,
+        digitaalAdresPatchRequest: DigitaalAdresPatch,
     ): DigitaalAdres {
         logger.info { "Updating DigitaalAdres..." }
         return openKlantPluginService
@@ -288,15 +291,15 @@ class OpenKlantPlugin(
         @PluginActionProperty verificatieDatum: String? = null,
     ) {
         val patchRequest =
-            DigitaalAdresPatchRequest(
-                verstrektDoorBetrokkene =
+            DigitaalAdresPatch(
+                verstrektDoorBetrokkeneUuid =
                     verstrektDoorBetrokkene
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { NestedUuid.fromString(verstrektDoorBetrokkene.trim()) },
-                verstrektDoorPartij =
+                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
+                verstrektDoorPartijUuid =
                     verstrektDoorPartij
                         ?.takeIf { it.isNotBlank() }
-                        ?.let { NestedUuid.fromString(verstrektDoorPartij.trim()) },
+                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
                 adres =
                     adres
                         ?.takeIf { it.isNotBlank() }

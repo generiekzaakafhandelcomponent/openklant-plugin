@@ -1,9 +1,9 @@
 package com.ritense.valtimoplugins.openklant.client
 
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.KlantcontactCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
@@ -92,14 +92,14 @@ class OpenKlantClient(
     fun getDigitaleAdressen(
         query: DigitaalAdresQuery,
         properties: OpenKlantProperties,
-    ): List<DigitaalAdres> =
+    ): List<DigitaalAdresResponse> =
         try {
             restClient(properties = properties)
                 .get()
                 .uri { uriBuilder ->
                     buildDigitaalAdresUri(uriBuilder, query)
                 }.retrieve()
-                .body<Page<DigitaalAdres>>()
+                .body<Page<DigitaalAdresResponse>>()
                 ?.results
                 ?: throw IllegalStateException("Error fetching DigitaalAdres(sen): response body was null")
         } catch (e: HttpServerErrorException.InternalServerError) {
@@ -114,14 +114,14 @@ class OpenKlantClient(
     fun createDigitaalAdres(
         request: DigitaalAdresCreationRequest,
         properties: OpenKlantProperties,
-    ): DigitaalAdres =
+    ): DigitaalAdresResponse =
         try {
             restClient(properties = properties)
                 .post()
                 .uri(OK_DIGITALE_ADRESSEN_PATH)
                 .body(request)
                 .retrieve()
-                .body<DigitaalAdres>()
+                .body<DigitaalAdresResponse>()
                 ?: throw IllegalStateException("Error creating DigitaalAdres: response body was null")
         } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
@@ -132,13 +132,13 @@ class OpenKlantClient(
     fun getDigitaalAdres(
         digitaalAdresUuid: NestedUuid,
         properties: OpenKlantProperties,
-    ): DigitaalAdres =
+    ): DigitaalAdresResponse =
         try {
             restClient(properties = properties)
                 .get()
                 .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
                 .retrieve()
-                .body<DigitaalAdres>()
+                .body<DigitaalAdresResponse>()
                 ?: throw IllegalStateException("Error fetching DigitaalAdres: response body was null")
         } catch (e: HttpServerErrorException.InternalServerError) {
             handleInternalServerError(e)
@@ -156,7 +156,7 @@ class OpenKlantClient(
             .uri("$OK_DIGITALE_ADRESSEN_PATH/$digitaalAdresUuid")
             .body(patchData)
             .retrieve()
-            .body<DigitaalAdres>()
+            .body<DigitaalAdresResponse>()
             ?: throw IllegalStateException("Error patching DigitaalAdres: response body was null")
     } catch (e: HttpServerErrorException.InternalServerError) {
         handleInternalServerError(e)

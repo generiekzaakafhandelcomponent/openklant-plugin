@@ -2,13 +2,14 @@ package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
 import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
@@ -43,7 +44,7 @@ class OpenKlantServiceTest {
     lateinit var service: OpenKlantService
 
     private val defaultDigitaalAdres =
-        DigitaalAdres(
+        DigitaalAdresResponse(
             uuid = UUID.fromString("a663831e-74fe-484c-a8bc-f076eed18078"),
             url = "https://example.com",
             verstrektDoorBetrokkene = null,
@@ -118,9 +119,9 @@ class OpenKlantServiceTest {
             achternaam = "Doe",
         )
 
-    private val adresInformation =
-        DigitaalAdresCreationRequest(
-            verstrektDoorPartij = NestedUuid.fromString("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df"),
+    private val digitaalAdres =
+        DigitaalAdres(
+            verstrektDoorPartijUuid = UUID.fromString("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df"),
             adres = "test@example.com",
             soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
             referentie = "ref-1",
@@ -316,7 +317,7 @@ class OpenKlantServiceTest {
     fun `setDefaultDigitaalAdres clears existing defaults and creates new one`() {
         // ARRANGE
         val existingAdres =
-            DigitaalAdres(
+            DigitaalAdresResponse(
                 uuid = UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
                 url = "url1",
                 verstrektDoorBetrokkene = null,
@@ -348,7 +349,7 @@ class OpenKlantServiceTest {
         // ACT
         val result =
             service.setDefaultDigitaalAdres(
-                request = adresInformation,
+                request = digitaalAdres,
                 properties = testProperties,
             )
 
@@ -357,11 +358,11 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 request =
                     match {
-                        it.verstrektDoorPartij?.uuid == adresInformation.verstrektDoorPartij?.uuid &&
-                            it.adres == adresInformation.adres &&
-                            it.soortDigitaalAdres == adresInformation.soortDigitaalAdres &&
+                        it.verstrektDoorPartij?.uuid == digitaalAdres.verstrektDoorPartijUuid &&
+                            it.adres == digitaalAdres.adres &&
+                            it.soortDigitaalAdres == digitaalAdres.soortDigitaalAdres &&
                             it.isStandaardAdres == true &&
-                            it.referentie == adresInformation.referentie
+                            it.referentie == digitaalAdres.referentie
                     },
                 properties = testProperties,
             )
