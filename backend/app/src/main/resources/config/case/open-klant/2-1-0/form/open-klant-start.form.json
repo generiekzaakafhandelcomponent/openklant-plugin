@@ -113,7 +113,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "partij.voorletters",
+                    "key": "apiRequest.getOrCreatePartij.voorletters",
                     "type": "textfield",
                     "input": true
                 },
@@ -123,7 +123,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "partij.voornaam",
+                    "key": "apiRequest.getOrCreatePartij.voornaam",
                     "type": "textfield",
                     "input": true
                 },
@@ -132,7 +132,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "partij.voorvoegselAchternaam",
+                    "key": "apiRequest.getOrCreatePartij.voorvoegselAchternaam",
                     "type": "textfield",
                     "input": true
                 },
@@ -142,7 +142,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "partij.achternaam",
+                    "key": "apiRequest.getOrCreatePartij.achternaam",
                     "type": "textfield",
                     "input": true
                 }
@@ -157,7 +157,7 @@
             "tableView": false,
             "components": [
                 {
-                    "key": "klantcontact.referentienummer",
+                    "key": "apiRequest.registerNewKlantcontact.referentienummer",
                     "type": "textfield",
                     "input": true,
                     "label": "Referentienummer",
@@ -168,7 +168,7 @@
                     "applyMaskOn": "change"
                 },
                 {
-                    "key": "klantcontact.kanaal",
+                    "key": "apiRequest.registerNewKlantcontact.kanaal",
                     "type": "textfield",
                     "input": true,
                     "label": "Kanaal",
@@ -180,7 +180,7 @@
                     "defaultValue": "telefoon"
                 },
                 {
-                    "key": "klantcontact.onderwerp",
+                    "key": "apiRequest.registerNewKlantcontact.onderwerp",
                     "type": "textfield",
                     "input": true,
                     "label": "Onderwerp",
@@ -192,7 +192,7 @@
                     "defaultValue": "Lorem ipsum dolor sit amet consectetur adipiscing elit."
                 },
                 {
-                    "key": "klantcontact.inhoud",
+                    "key": "apiRequest.registerNewKlantcontact.inhoud",
                     "type": "textarea",
                     "input": true,
                     "label": "Inhoud",
@@ -205,7 +205,7 @@
                     "defaultValue": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos."
                 },
                 {
-                    "key": "klantcontact.reactie",
+                    "key": "apiRequest.registerNewKlantcontact.reactie",
                     "type": "textarea",
                     "input": true,
                     "label": "Reactie",
@@ -218,7 +218,7 @@
                     "defaultValue": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos."
                 },
                 {
-                    "key": "klantcontact.vertrouwelijk",
+                    "key": "apiRequest.registerNewKlantcontact.vertrouwelijk",
                     "type": "radio",
                     "input": true,
                     "label": "Vertrouwelijk",
@@ -243,7 +243,7 @@
                     "optionsLabelPosition": "right"
                 },
                 {
-                    "key": "klantcontact.indicatieContactGelukt",
+                    "key": "apiRequest.registerNewKlantcontact.indicatieContactGelukt",
                     "type": "radio",
                     "input": true,
                     "label": "Indicatie Contact Gelukt",
@@ -268,7 +268,7 @@
                     "optionsLabelPosition": "right"
                 },
                 {
-                    "key": "klantcontact.taal",
+                    "key": "apiRequest.registerNewKlantcontact.taal",
                     "type": "textfield",
                     "input": true,
                     "label": "Taal",
@@ -280,7 +280,7 @@
                     "defaultValue": "nld"
                 },
                 {
-                    "key": "klantcontact.plaatsgevondenOp",
+                    "key": "apiRequest.registerNewKlantcontact.plaatsgevondenOp",
                     "type": "datetime",
                     "input": true,
                     "label": "Date / Time",
@@ -316,7 +316,7 @@
                     "enableMinDateInput": false
                 },
                 {
-                    "key": "klantcontact.metadata",
+                    "key": "apiRequest.registerNewKlantcontact.metadata",
                     "type": "datamap",
                     "input": true,
                     "label": "Metadata",
@@ -332,7 +332,7 @@
                     }
                 },
                 {
-                    "key": "klantcontact.hasBetrokkene",
+                    "key": "apiRequest.registerNewKlantcontact.hasBetrokkene",
                     "type": "radio",
                     "input": true,
                     "label": "Heeft betrokkene",
@@ -376,7 +376,7 @@
                             "applyMaskOn": "change"
                         },
                         {
-                            "key": "klantcontact.betrokkene.voorletters",
+                            "key": "apiRequest.registerNewKlantcontact.betrokkene.voorletters",
                             "type": "textfield",
                             "input": true,
                             "label": "Voorletters",
@@ -388,7 +388,7 @@
                             "defaultValue": "J"
                         },
                         {
-                            "key": "klantcontact.betrokkene.voornaam",
+                            "key": "apiRequest.registerNewKlantcontact.betrokkene.voornaam",
                             "type": "textfield",
                             "input": true,
                             "label": "Voornaam",
@@ -400,7 +400,7 @@
                             "defaultValue": "John"
                         },
                         {
-                            "key": "klantcontact.betrokkene.voorvoegselAchternaam",
+                            "key": "apiRequest.registerNewKlantcontact.betrokkene.voorvoegselAchternaam",
                             "type": "textfield",
                             "input": true,
                             "label": "Voorvoegsel achternaam",
@@ -412,7 +412,7 @@
                             "defaultValue": "D"
                         },
                         {
-                            "key": "klantcontact.betrokkene.achternaam",
+                            "key": "apiRequest.registerNewKlantcontact.betrokkene.achternaam",
                             "type": "textfield",
                             "input": true,
                             "label": "Achternaam",
@@ -428,7 +428,7 @@
                     "conditional": {
                         "eq": "true",
                         "show": true,
-                        "when": "klantcontact.hasBetrokkene"
+                        "when": "apiRequest.registerNewKlantcontact.hasBetrokkene"
                     }
                 }
             ],
@@ -487,7 +487,7 @@
                         ]
                     },
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.soortDigitaalAdres",
+                    "key": "apiRequest.setDefaultDigitaalAdres.soortDigitaalAdres",
                     "type": "select",
                     "input": true
                 },
@@ -497,7 +497,7 @@
                     "tableView": true,
                     "defaultValue": "email@example.com",
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.adres",
+                    "key": "apiRequest.setDefaultDigitaalAdres.adres",
                     "type": "textfield",
                     "input": true
                 },
@@ -515,7 +515,7 @@
                     "enableMinDateInput": false,
                     "enableMaxDateInput": false,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verificatieDatum",
+                    "key": "apiRequest.setDefaultDigitaalAdres.verificatieDatum",
                     "type": "datetime",
                     "input": true,
                     "widget": {
@@ -558,7 +558,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verstrektDoorBetrokkene",
+                    "key": "apiRequest.createDigitaalAdres.verstrektDoorBetrokkene",
                     "type": "textfield",
                     "input": true
                 },
@@ -567,7 +567,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verstrektDoorPartij",
+                    "key": "partijUuid",
                     "type": "textfield",
                     "input": true,
                     "defaultValue": "b8cef7e3-b16c-4bb6-9b2f-9cd1583d6578",
@@ -581,7 +581,7 @@
                     "tableView": true,
                     "defaultValue": "email@example.com",
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.adres",
+                    "key": "apiRequest.createDigitaalAdres.adres",
                     "type": "textfield",
                     "input": true,
                     "validate": {
@@ -610,7 +610,7 @@
                         ]
                     },
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.soortDigitaalAdres",
+                    "key": "apiRequest.createDigitaalAdres.soortDigitaalAdres",
                     "type": "select",
                     "input": true,
                     "validate": {
@@ -619,17 +619,17 @@
                 },
                 {
                     "label": "Is standaardadres",
-                    "key": "digitaalAdres.isStandaardAdres",
+                    "key": "apiRequest.createDigitaalAdres.isStandaardAdres",
                     "type": "checkbox",
                     "input": true,
                     "defaultValue": false
                 },
                 {
                     "label": "Omschrijving",
-                    "key": "digitaalAdres.omschrijving",
+                    "key": "apiRequest.createDigitaalAdres.omschrijving",
                     "type": "textarea",
                     "input": true,
-                    "rows": 1
+                    "rows": 2
                 },
                 {
                     "label": "Referentie",
@@ -637,7 +637,7 @@
                     "tableView": true,
                     "defaultValue": "",
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.referentie",
+                    "key": "apiRequest.createDigitaalAdres.referentie",
                     "type": "textfield",
                     "input": true,
                     "validate": {
@@ -659,7 +659,7 @@
                     "enableMinDateInput": false,
                     "enableMaxDateInput": false,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verificatieDatum",
+                    "key": "apiRequest.createDigitaalAdres.verificatieDatum",
                     "type": "datetime",
                     "input": true,
                     "widget": {
@@ -702,7 +702,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.digitaalAdresUuid",
+                    "key": "digitaalAdresUuid",
                     "type": "textfield",
                     "input": true,
                     "validate": {
@@ -714,7 +714,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verstrektDoorBetrokkene",
+                    "key": "apiRequest.updateDigitaalAdres.verstrektDoorBetrokkene",
                     "type": "textfield",
                     "input": true
                 },
@@ -723,7 +723,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verstrektDoorPartij",
+                    "key": "apiRequest.updateDigitaalAdres.verstrektDoorPartij",
                     "type": "textfield",
                     "input": true
                 },
@@ -732,7 +732,7 @@
                     "applyMaskOn": "change",
                     "tableView": true,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.adres",
+                    "key": "apiRequest.updateDigitaalAdres.adres",
                     "type": "textfield",
                     "input": true
                 },
@@ -757,13 +757,13 @@
                         ]
                     },
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.soortDigitaalAdres",
+                    "key": "apiRequest.updateDigitaalAdres.soortDigitaalAdres",
                     "type": "select",
                     "input": true
                 },
                 {
                     "label": "Is standaardadres",
-                    "key": "digitaalAdres.isStandaardAdres",
+                    "key": "apiRequest.updateDigitaalAdres.isStandaardAdres",
                     "type": "radio",
                     "input": true,
                     "values": [
@@ -780,10 +780,10 @@
                 },
                 {
                     "label": "Omschrijving",
-                    "key": "digitaalAdres.omschrijving",
+                    "key": "apiRequest.updateDigitaalAdres.omschrijving",
                     "type": "textarea",
                     "input": true,
-                    "rows": 1
+                    "rows": 2
                 },
                 {
                     "label": "Referentie",
@@ -791,7 +791,7 @@
                     "tableView": true,
                     "defaultValue": "",
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.referentie",
+                    "key": "apiRequest.updateDigitaalAdres.referentie",
                     "type": "textfield",
                     "input": true,
                     "validate": {
@@ -811,7 +811,7 @@
                     "enableMinDateInput": false,
                     "enableMaxDateInput": false,
                     "validateWhenHidden": false,
-                    "key": "digitaalAdres.verificatieDatum",
+                    "key": "apiRequest.updateDigitaalAdres.verificatieDatum",
                     "type": "datetime",
                     "input": true,
                     "widget": {
@@ -859,7 +859,7 @@
                 {
                     "type": "datagrid",
                     "label": "Query parameters",
-                    "key": "apiRequest.queryParams",
+                    "key": "apiRequest.getDigitaleAdressen.queryParams",
                     "input": true,
                     "addAnother": "Parameter toevoegen",
                     "components": [

@@ -19,9 +19,7 @@
       <bpmn:outgoing>Flow_0zgjdd1</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0tvlv51" name="Ja&#10;&#10;" sourceRef="Gateway_018e90x" targetRef="verstuurKlantcontact">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
-        ${valueResolverDelegateService.resolveValue(execution, "doc:klantcontact.hasBetrokkene") }
-      </bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${valueResolverDelegateService.resolveValue(execution, "doc:apiRequest.registerNewKlantcontact.hasBetrokkene") }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0zgjdd1" name="Nee" sourceRef="Gateway_018e90x" targetRef="verstuurKlantcontactZonderBetrokkene" />
     <bpmn:exclusiveGateway id="Gateway_08zm5q6">
@@ -93,7 +91,7 @@
       <bpmn:outgoing>Flow_1p6ydjm</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1pz6u1a" sourceRef="Activity_0fawwqw" targetRef="Event_0w1qhf4" />
-    <bpmn:serviceTask id="Activity_0fawwqw" name="Sla digitaal adres UUID op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/digitaalAdres/uuid&#34;, digitaalAdresUuid)}">
+    <bpmn:serviceTask id="Activity_0fawwqw" name="Sla digitaal-adres-UUID op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/digitaalAdresUuid&#34;, digitaalAdresUuid)}">
       <bpmn:incoming>Flow_1p6ydjm</bpmn:incoming>
       <bpmn:outgoing>Flow_1pz6u1a</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -101,17 +99,15 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${valueResolverDelegateService.resolveValue(execution, "doc:selectedDemo") == "maakDigitaalAdresAan"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_18r9ndn" name="Sla digitaal adres op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/apiResponse/createDigitaalAdres&#34;, digitaalAdres)}">
-      <bpmn:incoming>Flow_0bqktzv</bpmn:incoming>
-      <bpmn:outgoing>Flow_0t7holk</bpmn:outgoing>
+      <bpmn:incoming>Flow_1sp2pu8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o9wqf9</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0bqktzv" sourceRef="maakDigitaalAdresAan" targetRef="Activity_18r9ndn" />
     <bpmn:endEvent id="Event_1myqaz1">
-      <bpmn:incoming>Flow_0t7holk</bpmn:incoming>
+      <bpmn:incoming>Flow_19cms5w</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0t7holk" sourceRef="Activity_18r9ndn" targetRef="Event_1myqaz1" />
     <bpmn:serviceTask id="maakDigitaalAdresAan" name="Maak digitaal adres aan" camunda:expression="${true}">
       <bpmn:incoming>Flow_1vlr673</bpmn:incoming>
-      <bpmn:outgoing>Flow_0bqktzv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1sp2pu8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0304j7e" name="Pas bestaand digitaal adres aan" sourceRef="Gateway_0unxpx3" targetRef="pasBestaandDigitaalAdresAan">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${valueResolverDelegateService.resolveValue(execution, "doc:selectedDemo") == "pasBestaandDigitaalAdresAan"}</bpmn:conditionExpression>
@@ -126,9 +122,9 @@
       <bpmn:outgoing>Flow_1k0z11m</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_1dn31t1">
-      <bpmn:incoming>Flow_1iyz5ws</bpmn:incoming>
+      <bpmn:incoming>Flow_0rxx4qo</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1iyz5ws" sourceRef="Activity_07jjlkh" targetRef="Event_1dn31t1" />
+    <bpmn:sequenceFlow id="Flow_1iyz5ws" sourceRef="Activity_07jjlkh" targetRef="Activity_050nf5j" />
     <bpmn:serviceTask id="haalDigitaleAdressenOp" name="Haal digitale adressen op" camunda:expression="${true}">
       <bpmn:incoming>Flow_150sx03</bpmn:incoming>
       <bpmn:outgoing>Flow_1yi2zsz</bpmn:outgoing>
@@ -136,15 +132,32 @@
     <bpmn:sequenceFlow id="Flow_150sx03" name="Haal digitale adressen op" sourceRef="Gateway_0unxpx3" targetRef="haalDigitaleAdressenOp">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${valueResolverDelegateService.resolveValue(execution, "doc:selectedDemo") == "haalDigitaleAdressenOp"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_044k1ce" name="Sla digitaal adres op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/apiResponse/haalDigitaleAdressenOp&#34;, digitaleAdressen)}">
+    <bpmn:serviceTask id="Activity_044k1ce" name="Sla digitaal adres op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/apiResponse/getDigitaleAdressen&#34;, digitaleAdressen)}">
       <bpmn:incoming>Flow_1yi2zsz</bpmn:incoming>
       <bpmn:outgoing>Flow_1ernjvn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1yi2zsz" sourceRef="haalDigitaleAdressenOp" targetRef="Activity_044k1ce" />
     <bpmn:endEvent id="Event_1bvf4st">
-      <bpmn:incoming>Flow_1ernjvn</bpmn:incoming>
+      <bpmn:incoming>Flow_0ty0xht</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1ernjvn" sourceRef="Activity_044k1ce" targetRef="Event_1bvf4st" />
+    <bpmn:sequenceFlow id="Flow_1ernjvn" sourceRef="Activity_044k1ce" targetRef="Activity_1jsc8al" />
+    <bpmn:serviceTask id="Activity_10sy1bo" name="Sla digitaal-adres-UUID op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/digitaalAdresUuid&#34;, valueResolverDelegateService.resolveValue(execution, &#34;pv:/digitaalAdres/uuid&#34;))}">
+      <bpmn:incoming>Flow_1o9wqf9</bpmn:incoming>
+      <bpmn:outgoing>Flow_19cms5w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1sp2pu8" sourceRef="maakDigitaalAdresAan" targetRef="Activity_18r9ndn" />
+    <bpmn:sequenceFlow id="Flow_1o9wqf9" sourceRef="Activity_18r9ndn" targetRef="Activity_10sy1bo" />
+    <bpmn:sequenceFlow id="Flow_19cms5w" sourceRef="Activity_10sy1bo" targetRef="Event_1myqaz1" />
+    <bpmn:serviceTask id="Activity_050nf5j" name="Sla digitaal-adres-UUID op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/digitaalAdresUuid&#34;, valueResolverDelegateService.resolveValue(execution, &#34;pv:/digitaalAdres/uuid&#34;))}">
+      <bpmn:incoming>Flow_1iyz5ws</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rxx4qo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0rxx4qo" sourceRef="Activity_050nf5j" targetRef="Event_1dn31t1" />
+    <bpmn:serviceTask id="Activity_1jsc8al" name="Sla digitaal-adres-UUID op in dossier" camunda:expression="${valueResolverDelegateService.handleValue(execution, &#34;doc:/digitaalAdresUuid&#34;, valueResolverDelegateService.resolveValue(execution, &#34;pv:/digitaalAdres/uuid&#34;))}">
+      <bpmn:incoming>Flow_1ernjvn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ty0xht</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ty0xht" sourceRef="Activity_1jsc8al" targetRef="Event_1bvf4st" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="open-klant-start">
@@ -203,9 +216,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_13qx5d1_di" bpmnElement="Activity_0fawwqw">
         <dc:Bounds x="800" y="-330" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_02i1xlu" bpmnElement="Activity_18r9ndn">
-        <dc:Bounds x="800" y="-480" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1myqaz1_di" bpmnElement="Event_1myqaz1">
@@ -235,6 +245,22 @@
       <bpmndi:BPMNShape id="Event_1bvf4st_di" bpmnElement="Event_1bvf4st">
         <dc:Bounds x="1172" y="-738" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02i1xlu" bpmnElement="Activity_18r9ndn">
+        <dc:Bounds x="800" y="-480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1eclklz" bpmnElement="Activity_10sy1bo">
+        <dc:Bounds x="950" y="-480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1wp715c" bpmnElement="Activity_050nf5j">
+        <dc:Bounds x="950" y="-620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1pvhtuf" bpmnElement="Activity_1jsc8al">
+        <dc:Bounds x="950" y="-760" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1xgxipo_di" bpmnElement="Flow_1xgxipo">
         <di:waypoint x="78" y="530" />
         <di:waypoint x="255" y="530" />
@@ -249,7 +275,7 @@
         <di:waypoint x="630" y="10" />
         <di:waypoint x="720" y="10" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="664" y="-10" width="13" height="40" />
+          <dc:Bounds x="665" y="-10" width="12" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0zgjdd1_di" bpmnElement="Flow_0zgjdd1">
@@ -332,14 +358,6 @@
           <dc:Bounds x="392" y="-474" width="65" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bqktzv_di" bpmnElement="Flow_0bqktzv">
-        <di:waypoint x="750" y="-440" />
-        <di:waypoint x="800" y="-440" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0t7holk_di" bpmnElement="Flow_0t7holk">
-        <di:waypoint x="900" y="-440" />
-        <di:waypoint x="1172" y="-440" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0304j7e_di" bpmnElement="Flow_0304j7e">
         <di:waypoint x="280" y="505" />
         <di:waypoint x="280" y="-580" />
@@ -354,7 +372,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1iyz5ws_di" bpmnElement="Flow_1iyz5ws">
         <di:waypoint x="900" y="-580" />
-        <di:waypoint x="1172" y="-580" />
+        <di:waypoint x="950" y="-580" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_150sx03_di" bpmnElement="Flow_150sx03">
         <di:waypoint x="280" y="505" />
@@ -370,6 +388,26 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ernjvn_di" bpmnElement="Flow_1ernjvn">
         <di:waypoint x="900" y="-720" />
+        <di:waypoint x="950" y="-720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sp2pu8_di" bpmnElement="Flow_1sp2pu8">
+        <di:waypoint x="750" y="-440" />
+        <di:waypoint x="800" y="-440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o9wqf9_di" bpmnElement="Flow_1o9wqf9">
+        <di:waypoint x="900" y="-440" />
+        <di:waypoint x="950" y="-440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19cms5w_di" bpmnElement="Flow_19cms5w">
+        <di:waypoint x="1050" y="-440" />
+        <di:waypoint x="1172" y="-440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rxx4qo_di" bpmnElement="Flow_0rxx4qo">
+        <di:waypoint x="1050" y="-580" />
+        <di:waypoint x="1172" y="-580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ty0xht_di" bpmnElement="Flow_0ty0xht">
+        <di:waypoint x="1050" y="-720" />
         <di:waypoint x="1172" y="-720" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

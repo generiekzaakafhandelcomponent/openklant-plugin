@@ -45,26 +45,26 @@
             "customConditional": "show = data.apiResponse.updateDigitaalAdres"
         },
         {
-            "key": "data.apiResponse.haalDigitaleAdressenOpQuery",
+            "key": "data.apiRequest.getDigitaleAdressen.queryParams",
             "type": "textarea",
             "label": "Query parameters",
             "disabled": true,
             "attributes": {
-                "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOpQuery"
+                "data-testid": "open-klant-api-response-data.apiRequest.getDigitaleAdressen.queryParams"
             },
-            "calculateValue": "value = \n`<ul class=\"cds--list--unordered\">${data.apiRequest.queryParams.map((element) => {\nreturn `<li class=\"cds--list__item\"><code>${element.key}</code>: <code>${element.value}</code></li>`;\n}).join('')}</ul>`;",
-            "customConditional": "show = data.apiRequest.haalDigitaleAdressenOp"
+            "calculateValue": "value = \n`<ul class=\"cds--list--unordered\">${data.apiRequest.getDigitaleAdressen.queryParams.map((element) => {\nreturn `<li class=\"cds--list__item\"><code>${element.key}</code>: <code>${element.value}</code></li>`;\n}).join('')}</ul>`;",
+            "customConditional": "show = data.apiResponse.getDigitaleAdressen && data.apiRequest.getDigitaleAdressen.queryParams.filter(pair => !!pair.key && !!pair.value).length > 0; console.log('length: ' + data.apiRequest.getDigitaleAdressen.queryParams.filter(pair => !!pair.key && !!pair.value).length);"
         },
         {
-            "key": "data.apiResponse.haalDigitaleAdressenOpResponse",
+            "key": "data.apiResponse.getDigitaleAdressen",
             "type": "textarea",
             "label": "Haal digitale adressen op — API-response",
             "disabled": true,
             "attributes": {
-                "data-testid": "open-klant-api-response-data.apiResponse.haalDigitaleAdressenOp"
+                "data-testid": "open-klant-api-response-data.apiResponse.getDigitaleAdressen"
             },
-            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.haalDigitaleAdressenOp, null, 4)}</div>`;",
-            "customConditional": "show = data.apiResponse.haalDigitaleAdressenOp"
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.getDigitaleAdressen, null, 4)}</div>`;",
+            "customConditional": "show = data.apiResponse.getDigitaleAdressen"
         }
     ]
 }

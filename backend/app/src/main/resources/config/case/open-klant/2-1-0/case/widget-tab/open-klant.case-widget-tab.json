@@ -32,7 +32,7 @@
               {
                 "key": "digitaal-adres-uuid",
                 "title": "Digitaal-adres-UUID",
-                "value": "doc:digitaalAdres.uuid",
+                "value": "doc:digitaalAdresUuid",
                 "displayProperties": {
                   "type": "text",
                   "hideWhenEmpty": true
@@ -47,7 +47,7 @@
         "key": "open-klant-api-response",
         "title": "Open-Klant-API-response",
         "icon": "",
-        "width": 3,
+        "width": 2,
         "highContrast": false,
         "properties": {
           "formDefinitionName": "open-klant-api-response"

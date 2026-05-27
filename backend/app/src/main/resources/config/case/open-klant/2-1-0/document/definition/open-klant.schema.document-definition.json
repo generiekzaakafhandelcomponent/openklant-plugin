@@ -15,116 +15,16 @@
       "type": "string",
       "default": ""
     },
+    "digitaalAdresUuid": {
+      "type": ["string", "null"],
+      "default": ""
+    },
     "contactgeschiedenis": {
       "type": "array",
       "items": {
         "properties": {}
       },
       "default": []
-    },
-    "partij": {
-      "type": "object",
-      "properties": {
-        "voorletters": {
-          "type": "string"
-        },
-        "voornaam": {
-          "type": "string"
-        },
-        "voorvoegselAchternaam": {
-          "type": "string"
-        },
-        "achternaam": {
-          "type": "string"
-        },
-        "partijUuid": {
-          "type": "string"
-        }
-      }
-    },
-    "klantcontact": {
-      "type": "object",
-      "properties": {
-        "referentienummer": {
-          "type": "string"
-        },
-        "kanaal": {
-          "type": "string"
-        },
-        "onderwerp": {
-          "type": "string"
-        },
-        "inhoud": {
-          "type": "string"
-        },
-        "reactie": {
-          "type": "string"
-        },
-        "indicatieContactGelukt": {
-          "type": "boolean"
-        },
-        "vertrouwelijk": {
-          "type": "boolean"
-        },
-        "taal": {
-          "type": "string"
-        },
-        "plaatsgevondenOp": {
-          "type": "string"
-        },
-        "metadata": {
-          "type": "object"
-        },
-        "hasBetrokkene": {
-          "type": "boolean"
-        },
-        "betrokkene": {
-          "type": "object",
-          "properties": {
-            "voornaam": {
-              "type": "string"
-            },
-            "achternaam": {
-              "type": "string"
-            },
-            "voorletters": {
-              "type": "string"
-            },
-            "voorvoegselAchternaam": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "digitaalAdres": {
-      "type": "object",
-      "properties": {
-        "verstrektDoorBetrokkene": {
-          "type": "string"
-        },
-        "verstrektDoorPartij": {
-          "type": "string"
-        },
-        "adres": {
-          "type": "string"
-        },
-        "soortDigitaalAdres": {
-          "type": "string"
-        },
-        "isStandaardAdres": {
-          "type": ["boolean", "string"]
-        },
-        "omschrijving": {
-          "type": "string"
-        },
-        "referentie": {
-          "type": "string"
-        },
-        "verificatieDatum": {
-          "type": "string"
-        }
-      }
     },
     "apiRequest": {
       "type": "object",
