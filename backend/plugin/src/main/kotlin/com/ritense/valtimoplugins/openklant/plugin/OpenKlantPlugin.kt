@@ -14,7 +14,6 @@ import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.KeyValueQueryParam
 import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
-import com.ritense.valtimoplugins.openklant.jackson.StringToBooleanDeserializer
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
@@ -24,6 +23,7 @@ import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
+import com.ritense.valtimoplugins.openklant.util.StringToBooleanDeserializer
 import mu.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 import java.net.URI
@@ -235,7 +235,7 @@ class OpenKlantPlugin(
                 referentie = DEFAULT_DIGITALE_ADRES_REFERENCE,
                 verificatieDatum = verificatieDatum,
             )
-        val request = adresInformation.toDigitaalAdresCreationRequest(adresInformation)
+        val request = adresInformation.toDigitaalAdresCreationRequest(isStandaardAdres = true)
 
         val digitaalAdres = setDefaultDigitaalAdres(request)
 
