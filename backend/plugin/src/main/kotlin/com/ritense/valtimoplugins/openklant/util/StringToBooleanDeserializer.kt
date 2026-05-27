@@ -1,4 +1,4 @@
-package com.ritense.valtimoplugins.openklant.jackson
+package com.ritense.valtimoplugins.openklant.util
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
