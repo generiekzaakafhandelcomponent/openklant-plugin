@@ -24,10 +24,6 @@ data class DigitaalAdresResponse(
     val adres: String,
     @JsonProperty("soortDigitaalAdres")
     @field:NotNull
-    @field:Pattern(
-        regexp = "email|telefoonnummer|overig",
-        message = "Does not match either 'email', 'telefoonnummer', or 'overig'",
-    )
     val soortDigitaalAdres: SoortDigitaalAdres,
     @JsonProperty("isStandaardAdres")
     val isStandaardAdres: Boolean? = null,
