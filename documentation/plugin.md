@@ -126,7 +126,7 @@ Bij het instellen van een standaard digitaal adres wordt het volgende gedaan:
 
 Voorbeeld `*.processlink.json`
 ```json
-{
+    {
   "activityId": "zetStandaardDigitaalAdres",
   "activityType": "bpmn:ServiceTask:start",
   "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
@@ -134,9 +134,108 @@ Voorbeeld `*.processlink.json`
   "actionProperties": {
     "resultPvName": "digitaalAdresUuid",
     "partijUuid": "doc:/partijUuid",
-    "adres": "doc:/digitaalAdres/adres",
-    "soortDigitaalAdres": "doc:/digitaalAdres/soortDigitaalAdres",
-    "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
+    "adres": "doc:/apiRequest/setDefaultDigitaalAdres/apiRequest/adres",
+    "soortDigitaalAdres": "doc:/apiRequest/setDefaultDigitaalAdres/soortDigitaalAdres",
+    "verificatieDatum": "doc:/apiRequest/setDefaultDigitaalAdres/verificatieDatum"
+  },
+  "processLinkType": "plugin"
+}
+```
+
+## Digitale Adressen ophalen
+![Digitale adressen ophalen](img/haal-digitale-adressen-op.png)
+
+Hiermee kan een lijst van digitale adressen opgehaald worden. 
+
+Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. De response kan zonder `queryParams` erg groot kan worden. Om het verwerken van de response-data in Valtimo simpel om mee te werken te houden, wordt er namelijk geen paginatie toegepast door de plugin.
+
+`queryParams` moeten als volgt geformatteerd worden:
+```json
+[
+  {
+    "key": "verstrektDoorPartij__partijIdentificator__objectId",
+    "value": "053799793"
+  },
+  {
+    "key": "soortDigitaalAdres",
+    "value": "email"
+  }
+  
+]
+```
+In dit bovenstaande voorbeeld wordt gefilterd op een specifiek `verstrektDoorPartij__partijIdentificator__objectId`, oftewel BSN, en op het `email`-adrestype. Zie voor een complete lijst van mogelijk queryParams <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml#tag/digitale-adressen/operation/digitaleadressenList' target='_blank'>de Open-Klant-API-docs</a>. 
+
+Hieronder een voorbeeld van een proceskoppeling voor het ophalen van digitale adressen:
+
+```json
+{
+  "activityId": "haalDigitaleAdressenOp",
+  "activityType": "bpmn:ServiceTask:start",
+  "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+  "pluginActionDefinitionKey": "get-digitale-adressen",
+  "actionProperties": {
+    "resultPvName": "digitaleAdressen",
+    "queryParams": "doc:/apiRequest/getDigitaleAdressen/queryParams"
+  },
+  "processLinkType": "plugin"
+}
+```
+
+## Digitaal Adres aanmaken
+![Digitaal adres aanmaken](img/maak-digitaal-adres-aan-1.png)
+![Digitaal adres aanmaken](img/maak-digitaal-adres-aan-2.png)
+Een nieuw digitaal adres kan worden aangemaakt met de onderstaande proceskoppeling. De volgende velden zijn verplicht:
+- `resultPvName` (in deze procesvariabele wordt het resultaat opgeslagen)
+- `adres`
+- `soortDigitaalAdres` (`email`, `telefoonnummer` of `overig`)
+
+```json
+{
+  "activityId": "maakDigitaalAdresAan",
+  "activityType": "bpmn:ServiceTask:start",
+  "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+  "pluginActionDefinitionKey": "create-digitaal-adres",
+  "actionProperties": {
+    "resultPvName": "digitaalAdres",
+    "verstrektDoorBetrokkene": "doc:/apiRequest/createDigitaalAdres/verstrektDoorBetrokkene",
+    "verstrektDoorPartij": "doc:/partijUuid",
+    "adres": "doc:/apiRequest/createDigitaalAdres/adres",
+    "soortDigitaalAdres": "doc:/apiRequest/createDigitaalAdres/soortDigitaalAdres",
+    "isStandaardAdres": "doc:/apiRequest/createDigitaalAdres/isStandaardAdres",
+    "omschrijving": "doc:/apiRequest/createDigitaalAdres/omschrijving",
+    "referentie": "doc:/apiRequest/createDigitaalAdres/referentie",
+    "verificatieDatum": "doc:/apiRequest/createDigitaalAdres/verificatieDatum"
+  },
+  "processLinkType": "plugin"
+}
+```
+## Digitaal Adres aanpassen
+![Digitaal adres aanpassen](img/pas-bestaand-digitaal-adres-aan-1.png)
+![Digitaal adres aanpassen](img/pas-bestaand-digitaal-adres-aan-2.png)
+
+De enige velden die verplicht zijn: 
+- `resultPvName` (in deze procesvariabele wordt het resultaat opgeslagen)
+- `digitaalAdresUuid` (de UUID van het Digitaal Adres dat je wilt aanpassen)
+
+Verder is het natuurlijk logisch dat er een veld wordt megegeven met data die moet worden aangepast, maar dit is, om flexibel te blijven, niet verplicht.
+
+```json
+{
+  "activityId": "pasBestaandDigitaalAdresAan",
+  "activityType": "bpmn:ServiceTask:start",
+  "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+  "pluginActionDefinitionKey": "update-digitaal-adres",
+  "actionProperties": {
+    "resultPvName": "digitaalAdres",
+    "digitaalAdresUuid": "doc:/digitaalAdresUuid",
+    "verstrektDoorBetrokkene": "doc:/apiRequest/updateDigitaalAdres/verstrektDoorBetrokkene",
+    "verstrektDoorPartij": "doc:/partijUuid",
+    "adres": "doc:/apiRequest/updateDigitaalAdres/adres",
+    "soortDigitaalAdres": "doc:/apiRequest/updateDigitaalAdres/soortDigitaalAdres",
+    "isStandaardAdres": "doc:/apiRequest/updateDigitaalAdres/isStandaardAdres",
+    "omschrijving": "doc:/apiRequest/updateDigitaalAdres/omschrijving",
+    "referentie": "doc:/apiRequest/updateDigitaalAdres/referentie",
+    "verificatieDatum": "doc:/apiRequest/updateDigitaalAdres/verificatieDatum"
   },
   "processLinkType": "plugin"
 }
