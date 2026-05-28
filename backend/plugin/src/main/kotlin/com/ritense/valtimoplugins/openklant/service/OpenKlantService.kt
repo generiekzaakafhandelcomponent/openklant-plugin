@@ -1,35 +1,56 @@
 package com.ritense.valtimoplugins.openklant.service
 
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.dto.Klantcontact
 import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
 
 interface OpenKlantService {
     fun storeContactInformation(
-        properties: OpenKlantProperties,
         contactInformation: ContactInformation,
+        properties: OpenKlantProperties,
     ): String
 
     fun getOrCreatePartij(
-        properties: OpenKlantProperties,
         partijInformation: PartijInformation,
+        properties: OpenKlantProperties,
     ): Partij
 
-    fun setDefaultDigitaalAdres(
+    fun getAllDigitaleAdressen(
+        query: DigitaalAdresQuery,
         properties: OpenKlantProperties,
-        adresInformation: AdresInformation,
+    ): List<DigitaalAdres>
+
+    fun createDigitaalAdres(
+        request: DigitaalAdres,
+        properties: OpenKlantProperties,
     ): DigitaalAdres
 
-    fun getAllKlantcontacten(properties: KlantcontactOptions): List<Klantcontact>
+    fun setDefaultDigitaalAdres(
+        request: DigitaalAdres,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres
+
+    fun updateDigitaalAdres(
+        digitaalAdresUuid: NestedUuid,
+        request: DigitaalAdresPatch,
+        properties: OpenKlantProperties,
+    ): DigitaalAdres
+
+    fun getAllKlantcontacten(
+        query: KlantcontactQuery,
+        properties: OpenKlantProperties,
+    ): List<Klantcontact>
 
     fun postKlantcontact(
-        properties: OpenKlantProperties,
         klantcontactCreationInformation: KlantcontactCreationInformation,
+        properties: OpenKlantProperties,
     )
 }

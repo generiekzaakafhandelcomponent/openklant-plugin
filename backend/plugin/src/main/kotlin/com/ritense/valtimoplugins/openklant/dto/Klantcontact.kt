@@ -1,10 +1,11 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.UUID
 
 data class Klantcontact(
     @field:JsonProperty("uuid")
-    override val uuid: String,
+    override val uuid: UUID,
     @field:JsonProperty("url")
     override val url: String,
     @field:JsonProperty("gingOverOnderwerpobjecten")

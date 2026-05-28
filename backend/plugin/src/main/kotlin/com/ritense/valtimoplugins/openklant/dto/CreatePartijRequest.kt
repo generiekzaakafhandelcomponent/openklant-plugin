@@ -2,6 +2,7 @@ package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CreatePartijRequest(
@@ -10,13 +11,13 @@ data class CreatePartijRequest(
     @JsonProperty("interneNotitie")
     val interneNotitie: String,
     @JsonProperty("digitaleAdressen")
-    val digitaleAdressen: List<UuidReference>?,
+    val digitaleAdressen: List<NestedUuid>?,
     @JsonProperty("voorkeursDigitaalAdres")
-    val voorkeursDigitaalAdres: UuidReference?,
+    val voorkeursDigitaalAdres: NestedUuid?,
     @JsonProperty("rekeningnummers")
-    val rekeningnummers: List<UuidReference>?,
+    val rekeningnummers: List<NestedUuid>?,
     @JsonProperty("voorkeursRekeningnummer")
-    val voorkeursRekeningnummer: UuidReference?,
+    val voorkeursRekeningnummer: NestedUuid?,
     @JsonProperty("partijIdentificatoren")
     val partijIdentificatoren: List<Map<String, Identificator>>,
     @JsonProperty("soortPartij")

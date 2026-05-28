@@ -1,0 +1,70 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "key": "apiResponse",
+            "type": "hidden",
+            "input": true,
+            "label": "apiResponse",
+            "tableView": false,
+            "attributes": {
+                "data-testid": "open-klant-api-response-apiResponse"
+            }
+        },
+        {
+            "key": "apiRequest",
+            "type": "hidden",
+            "input": true,
+            "label": "apiRequest",
+            "tableView": false,
+            "attributes": {
+                "data-testid": "open-klant-api-response-apiRequest"
+            }
+        },
+        {
+            "key": "data.apiResponse.createDigitaalAdres",
+            "type": "textarea",
+            "label": "Maak digitaal adres aan — API-response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.createDigitaalAdres"
+            },
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.createDigitaalAdres, null, 4)}</div>`;",
+            "customConditional": "show = data.apiResponse.createDigitaalAdres"
+        },
+        {
+            "key": "data.apiResponse.updateDigitaalAdres",
+            "type": "textarea",
+            "label": "Pas bestaand digitaal adres aan — API-response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.updateDigitaalAdres"
+            },
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.updateDigitaalAdres, null, 4)}</div>`;",
+
+            "customConditional": "show = data.apiResponse.updateDigitaalAdres"
+        },
+        {
+            "key": "data.apiRequest.getDigitaleAdressen.queryParams",
+            "type": "textarea",
+            "label": "Query parameters",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiRequest.getDigitaleAdressen.queryParams"
+            },
+            "calculateValue": "value = \n`<ul class=\"cds--list--unordered\">${data.apiRequest.getDigitaleAdressen.queryParams.map((element) => {\nreturn `<li class=\"cds--list__item\"><code>${element.key}</code>: <code>${element.value}</code></li>`;\n}).join('')}</ul>`;",
+            "customConditional": "show = data.apiResponse.getDigitaleAdressen && data.apiRequest.getDigitaleAdressen.queryParams.filter(pair => !!pair.key && !!pair.value).length > 0; console.log('length: ' + data.apiRequest.getDigitaleAdressen.queryParams.filter(pair => !!pair.key && !!pair.value).length);"
+        },
+        {
+            "key": "data.apiResponse.getDigitaleAdressen",
+            "type": "textarea",
+            "label": "Haal digitale adressen op — API-response",
+            "disabled": true,
+            "attributes": {
+                "data-testid": "open-klant-api-response-data.apiResponse.getDigitaleAdressen"
+            },
+            "calculateValue": "value = `<div class=\"cds--snippet--multi\" style=\"white-space: pre-wrap;\">${JSON.stringify(data.apiResponse.getDigitaleAdressen, null, 4)}</div>`;",
+            "customConditional": "show = data.apiResponse.getDigitaleAdressen"
+        }
+    ]
+}

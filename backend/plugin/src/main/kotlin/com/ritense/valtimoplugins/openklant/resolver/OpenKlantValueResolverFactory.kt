@@ -2,7 +2,7 @@ package com.ritense.valtimoplugins.openklant.resolver
 
 import com.ritense.processdocument.domain.impl.OperatonProcessInstanceId
 import com.ritense.processdocument.service.ProcessDocumentService
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
@@ -53,14 +53,20 @@ class OpenKlantValueResolverFactory(
     private fun getKlantcontacten(zaakUuid: UUID) = getKlantcontactenOrNull(zaakUuid) ?: emptyList<Any>()
 
     private fun getKlantcontactenOrNull(zaakUuid: UUID) =
-        runCatching { openKlantService.getAllKlantcontacten(createKlantcontactOptions(zaakUuid)) }
+        runCatching {
+            openKlantService.getAllKlantcontacten(
+                createKlantcontactQuery(zaakUuid),
+                OpenKlantProperties(
+                    klantinteractiesUrl = properties.klantinteractiesUrl,
+                    token = properties.token
+                ),
+            )
+        }
             .getOrNull()
             ?.let { reflectionUtil.deepReflectedMapOf(it) }
 
-    private fun createKlantcontactOptions(zaakUuid: UUID): KlantcontactOptions =
-        KlantcontactOptions(
-            klantinteractiesUrl = properties.klantinteractiesUrl,
-            token = properties.token,
+    private fun createKlantcontactQuery(zaakUuid: UUID): KlantcontactQuery =
+        KlantcontactQuery(
             objectTypeId = OBJECT_TYPE_ID,
             objectUuid = zaakUuid.toString(),
         )
