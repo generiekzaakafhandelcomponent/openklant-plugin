@@ -1,6 +1,5 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import com.ritense.valtimoplugins.openklant.dto.KeyValueQueryParam
 import mu.KotlinLogging
 
 data class DigitaalAdresQuery(

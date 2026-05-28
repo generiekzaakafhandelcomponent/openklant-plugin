@@ -1,7 +1,5 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import com.ritense.valtimoplugins.openklant.dto.ObjectReference
-import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import java.net.URI
 import java.util.UUID
 

@@ -3,10 +3,10 @@ package com.ritense.valtimoplugins.openklant.mapper
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
-import com.ritense.valtimoplugins.openklant.dto.NestedUuid
 import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import java.net.URI
 
 fun DigitaalAdresCreationRequest.toModel(): DigitaalAdres =

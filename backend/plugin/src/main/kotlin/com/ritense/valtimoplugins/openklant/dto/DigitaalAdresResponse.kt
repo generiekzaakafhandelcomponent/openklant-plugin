@@ -1,9 +1,7 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Pattern
-import jakarta.validation.constraints.Size
+import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 import java.util.UUID
 
 data class DigitaalAdresResponse(

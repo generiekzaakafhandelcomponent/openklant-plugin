@@ -1,6 +1,5 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import com.ritense.valtimoplugins.openklant.dto.SoortDigitaalAdres
 import java.util.UUID
 
 data class DigitaalAdresPatch(
