@@ -85,14 +85,16 @@ class DefaultOpenKlantService(
         request: DigitaalAdres,
         properties: OpenKlantProperties,
     ): DigitaalAdres {
+        val creationRequest = request.toCreationRequest()
+
         clearReferentieForCurrentDigitaalAdressen(
-            adresInformation = request.toCreationRequest(),
+            adresInformation = creationRequest,
             properties = properties,
         )
 
         return openKlantClient
             .createDigitaalAdres(
-                request = request.toCreationRequest(),
+                request = creationRequest,
                 properties = properties,
             ).toModel()
     }
@@ -136,12 +138,12 @@ class DefaultOpenKlantService(
         val query = DigitaalAdresQuery()
 
         query.add(
-            paramName = DigitaalAdresQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value,
+            paramName = DigitaalAdresQueryParamNames.VERSTREKTDOORPARTIJ_UUID.value,
             value = adresInformation.verstrektDoorPartij.toString(),
         )
         query.add(
             paramName = DigitaalAdresQueryParamNames.SOORTDIGITAALADRES.value,
-            value = adresInformation.soortDigitaalAdres.toString(),
+            value = adresInformation.soortDigitaalAdres.value,
         )
         query.add(
             paramName = DigitaalAdresQueryParamNames.REFERENTIE.value,
@@ -210,7 +212,7 @@ class DefaultOpenKlantService(
                         DigitaalAdresQuery(
                             queryParams =
                                 mutableMapOf(
-                                    DigitaalAdresQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value to
+                                    DigitaalAdresQueryParamNames.VERSTREKTDOORPARTIJ_UUID.value to
                                         partij.uuid.toString(),
                                 ),
                         ),
