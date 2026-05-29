@@ -808,6 +808,7 @@
                         "disableWeekdays": false
                     },
                     "enableTime": false,
+                    "calculateValue": "if (value) { value = moment(value).format('YYYY-MM-DD'); }",
                     "enableMinDateInput": false,
                     "enableMaxDateInput": false,
                     "validateWhenHidden": false,
