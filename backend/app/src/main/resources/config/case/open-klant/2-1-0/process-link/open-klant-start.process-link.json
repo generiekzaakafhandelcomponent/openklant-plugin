@@ -76,7 +76,7 @@
         "actionProperties": {
             "resultPvName": "digitaalAdresUuid",
             "partijUuid": "doc:/partijUuid",
-            "adres": "doc:/apiRequest/setDefaultDigitaalAdres/apiRequest/adres",
+            "adres": "doc:/apiRequest/setDefaultDigitaalAdres/adres",
             "soortDigitaalAdres": "doc:/apiRequest/setDefaultDigitaalAdres/soortDigitaalAdres",
             "verificatieDatum": "doc:/apiRequest/setDefaultDigitaalAdres/verificatieDatum"
         },
