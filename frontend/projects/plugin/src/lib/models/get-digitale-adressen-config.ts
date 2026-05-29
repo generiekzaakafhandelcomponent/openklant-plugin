@@ -1,4 +1,9 @@
 export interface GetDigitaleAdressenConfig {
     resultPvName: string;
-    queryParams: string;
+    queryParams: KeyValueQueryParam[];
+}
+
+interface KeyValueQueryParam {
+    key: string;
+    value: string;
 }

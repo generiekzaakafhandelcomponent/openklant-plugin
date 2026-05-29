@@ -20,7 +20,7 @@
     [title]="'queryParams' | pluginTranslate: pluginId | async"
     [tooltip]="'queryParamsTooltip' | pluginTranslate: pluginId | async"
     [margin]="true"
-    [defaultValue]="obs.prefill?.queryParams"
+    [defaultValue]="obs.prefill?.queryParams.toString()"
     [disabled]="obs.disabled"
     [required]="true"
   >
