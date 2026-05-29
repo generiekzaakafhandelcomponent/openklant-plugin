@@ -71,7 +71,8 @@
                     "validate": {
                         "required": true
                     },
-                    "validateWhenHidden": false
+                    "validateWhenHidden": false,
+                    "tableView": true
                 }
             ],
             "collapsible": false,
@@ -79,7 +80,8 @@
                 "when": "selectedDemo",
                 "eq": "contactgeschiedenisOphalenBsn",
                 "show": true
-            }
+            },
+            "key": "panel"
         },
         {
             "title": "Partij ophalen of aanmaken nieuw Partij",
@@ -286,22 +288,22 @@
                     "label": "Date / Time",
                     "format": "yyyy-MM-ddTHH:mm:ss.sss",
                     "widget": {
-                        "mode": "single",
                         "type": "calendar",
-                        "format": "yyyy-MM-ddTHH:mm:ss.sss",
+                        "displayInTimezone": "viewer",
                         "locale": "en",
-                        "maxDate": null,
-                        "minDate": null,
-                        "time_24hr": false,
+                        "useLocaleSettings": false,
                         "allowInput": true,
+                        "mode": "single",
                         "enableTime": true,
                         "noCalendar": false,
+                        "format": "yyyy-MM-ddTHH:mm:ss.sss",
                         "hourIncrement": 1,
-                        "disableWeekdays": false,
-                        "disableWeekends": false,
                         "minuteIncrement": 1,
-                        "displayInTimezone": "viewer",
-                        "useLocaleSettings": false
+                        "time_24hr": false,
+                        "minDate": null,
+                        "disableWeekends": false,
+                        "disableWeekdays": false,
+                        "maxDate": null
                     },
                     "tableView": false,
                     "attributes": {
@@ -328,7 +330,8 @@
                         "label": "Value",
                         "input": true,
                         "hideLabel": true,
-                        "tableView": true
+                        "tableView": true,
+                        "key": "value"
                     }
                 },
                 {
@@ -502,40 +505,14 @@
                     "input": true
                 },
                 {
-                    "label": "Verificatie datum",
-                    "format": "yyyy-MM-dd",
-                    "tableView": false,
-                    "datePicker": {
-                        "disableWeekends": false,
-                        "disableWeekdays": false
-                    },
-                    "enableTime": false,
-                    "defaultDate": "moment().format('YYYY-MM-DD')",
-                    "calculateValue": "value = moment(value).format('YYYY-MM-DD');",
-                    "enableMinDateInput": false,
-                    "enableMaxDateInput": false,
+                    "label": "Verificatiedatum (yyyy-MM-dd)",
+                    "placeholder": "2026-05-29",
+                    "applyMaskOn": "change",
+                    "tableView": true,
                     "validateWhenHidden": false,
                     "key": "apiRequest.setDefaultDigitaalAdres.verificatieDatum",
-                    "type": "datetime",
-                    "input": true,
-                    "widget": {
-                        "type": "calendar",
-                        "displayInTimezone": "viewer",
-                        "locale": "en",
-                        "useLocaleSettings": false,
-                        "allowInput": true,
-                        "mode": "single",
-                        "enableTime": false,
-                        "noCalendar": false,
-                        "format": "yyyy-MM-dd",
-                        "hourIncrement": 1,
-                        "minuteIncrement": 1,
-                        "time_24hr": false,
-                        "minDate": null,
-                        "disableWeekends": false,
-                        "disableWeekdays": false,
-                        "maxDate": null
-                    }
+                    "type": "textfield",
+                    "input": true
                 }
             ]
         },
@@ -622,20 +599,21 @@
                     "key": "apiRequest.createDigitaalAdres.isStandaardAdres",
                     "type": "checkbox",
                     "input": true,
-                    "defaultValue": false
+                    "defaultValue": false,
+                    "tableView": false
                 },
                 {
                     "label": "Omschrijving",
                     "key": "apiRequest.createDigitaalAdres.omschrijving",
                     "type": "textarea",
                     "input": true,
-                    "rows": 2
+                    "rows": 2,
+                    "tableView": true
                 },
                 {
                     "label": "Referentie",
                     "applyMaskOn": "change",
                     "tableView": true,
-                    "defaultValue": "",
                     "validateWhenHidden": false,
                     "key": "apiRequest.createDigitaalAdres.referentie",
                     "type": "textfield",
@@ -646,40 +624,14 @@
                     }
                 },
                 {
-                    "label": "Verificatiedatum",
-                    "format": "yyyy-MM-dd",
-                    "tableView": false,
-                    "datePicker": {
-                        "disableWeekends": false,
-                        "disableWeekdays": false
-                    },
-                    "enableTime": false,
-                    "defaultDate": "moment().format('YYYY-MM-DD')",
-                    "calculateValue": "value = moment(value).format('YYYY-MM-DD');",
-                    "enableMinDateInput": false,
-                    "enableMaxDateInput": false,
+                    "label": "Verificatiedatum (yyyy-MM-dd)",
+                    "placeholder": "2026-05-29",
+                    "applyMaskOn": "change",
+                    "tableView": true,
                     "validateWhenHidden": false,
                     "key": "apiRequest.createDigitaalAdres.verificatieDatum",
-                    "type": "datetime",
-                    "input": true,
-                    "widget": {
-                        "type": "calendar",
-                        "displayInTimezone": "viewer",
-                        "locale": "en",
-                        "useLocaleSettings": false,
-                        "allowInput": true,
-                        "mode": "single",
-                        "enableTime": false,
-                        "noCalendar": false,
-                        "format": "yyyy-MM-dd",
-                        "hourIncrement": 1,
-                        "minuteIncrement": 1,
-                        "time_24hr": false,
-                        "minDate": null,
-                        "disableWeekends": false,
-                        "disableWeekdays": false,
-                        "maxDate": null
-                    }
+                    "type": "textfield",
+                    "input": true
                 }
             ]
         },
@@ -776,20 +728,20 @@
                             "value": false
                         }
                     ],
-                    "defaultValue": null
+                    "tableView": false
                 },
                 {
                     "label": "Omschrijving",
                     "key": "apiRequest.updateDigitaalAdres.omschrijving",
                     "type": "textarea",
                     "input": true,
-                    "rows": 2
+                    "rows": 2,
+                    "tableView": true
                 },
                 {
                     "label": "Referentie",
                     "applyMaskOn": "change",
                     "tableView": true,
-                    "defaultValue": "",
                     "validateWhenHidden": false,
                     "key": "apiRequest.updateDigitaalAdres.referentie",
                     "type": "textfield",
@@ -800,39 +752,13 @@
                     }
                 },
                 {
-                    "label": "Verificatiedatum",
-                    "format": "yyyy-MM-dd",
-                    "tableView": false,
-                    "datePicker": {
-                        "disableWeekends": false,
-                        "disableWeekdays": false
-                    },
-                    "enableTime": false,
-                    "calculateValue": "if (value) { value = moment(value).format('YYYY-MM-DD'); }",
-                    "enableMinDateInput": false,
-                    "enableMaxDateInput": false,
+                    "label": "Verificatiedatum (yyyy-MM-dd)",
+                    "applyMaskOn": "change",
+                    "tableView": true,
                     "validateWhenHidden": false,
                     "key": "apiRequest.updateDigitaalAdres.verificatieDatum",
-                    "type": "datetime",
-                    "input": true,
-                    "widget": {
-                        "type": "calendar",
-                        "displayInTimezone": "viewer",
-                        "locale": "en",
-                        "useLocaleSettings": false,
-                        "allowInput": true,
-                        "mode": "single",
-                        "enableTime": false,
-                        "noCalendar": false,
-                        "format": "yyyy-MM-dd",
-                        "hourIncrement": 1,
-                        "minuteIncrement": 1,
-                        "time_24hr": false,
-                        "minDate": null,
-                        "disableWeekends": false,
-                        "disableWeekdays": false,
-                        "maxDate": null
-                    }
+                    "type": "textfield",
+                    "input": true
                 }
             ]
         },
@@ -854,8 +780,11 @@
                     "type": "htmlelement",
                     "tag": "p",
                     "content": "Voor een lijst van de mogelijke query-parameternamen, zie <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml#tag/digitale-adressen/operation/digitaleadressenList' target='_blank'>de Open-Klant-API-docs</a>.",
-
-                    "className": "cds--form__helper-text"
+                    "className": "cds--form__helper-text",
+                    "input": false,
+                    "key": "",
+                    "tableView": false,
+                    "label": "HTML"
                 },
                 {
                     "type": "datagrid",
@@ -869,15 +798,18 @@
                             "key": "key",
                             "type": "textfield",
                             "input": true,
-                            "tooltip": "Bijvoorbeeld 'verstrektDoorBetrokkene__uuid'"
+                            "tooltip": "Bijvoorbeeld 'verstrektDoorBetrokkene__uuid'",
+                            "tableView": true
                         },
                         {
                             "label": "Waarde",
                             "key": "value",
                             "type": "textfield",
-                            "input": true
+                            "input": true,
+                            "tableView": true
                         }
-                    ]
+                    ],
+                    "tableView": false
                 }
             ]
         },
