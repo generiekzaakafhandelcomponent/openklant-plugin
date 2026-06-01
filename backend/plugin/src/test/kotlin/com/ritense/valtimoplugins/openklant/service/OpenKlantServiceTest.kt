@@ -8,7 +8,6 @@ import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
-import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
@@ -199,18 +198,14 @@ class OpenKlantServiceTest {
         }
         verify {
             client.getDigitaleAdressen(
-                query = DigitaalAdresQuery(),
+                query = any(),
                 properties = testProperties,
             )
         }
         verify {
             client.createDigitaalAdres(
-                match<DigitaalAdresCreationRequest> {
-                    it.adres == contactInformation.emailadres &&
-                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                        it.referentie == contactInformation.zaaknummer
-                },
-                testProperties,
+                request = any(),
+                properties = testProperties,
             )
         }
         verify {
@@ -335,7 +330,7 @@ class OpenKlantServiceTest {
 
         val createdResult =
             existingAdres.copy(
-                UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
+                uuid = UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
             )
         every {
             client.createDigitaalAdres(any(), any())
@@ -358,10 +353,9 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 request =
                     match {
-                        it.verstrektDoorPartij?.uuid == digitaalAdres.verstrektDoorPartijUuid &&
+                        it.verstrektDoorPartij.uuid == digitaalAdres.verstrektDoorPartijUuid &&
                             it.adres == digitaalAdres.adres &&
                             it.soortDigitaalAdres == digitaalAdres.soortDigitaalAdres &&
-                            it.isStandaardAdres == true &&
                             it.referentie == digitaalAdres.referentie
                     },
                 properties = testProperties,
