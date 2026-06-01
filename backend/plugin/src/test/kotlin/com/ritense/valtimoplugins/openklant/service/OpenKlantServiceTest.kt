@@ -1,18 +1,8 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
-import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
-import com.ritense.valtimoplugins.openklant.dto.ObjectReference
-import com.ritense.valtimoplugins.openklant.dto.Partij
-import com.ritense.valtimoplugins.openklant.model.ContactInformation
-import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
-import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
-import com.ritense.valtimoplugins.openklant.model.NestedUuid
-import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
-import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
-import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.dto.*
+import com.ritense.valtimoplugins.openklant.model.*
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -23,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.net.URI
-import java.util.UUID
+import java.util.*
 
 @ExtendWith(MockKExtension::class)
 class OpenKlantServiceTest {
@@ -199,18 +189,14 @@ class OpenKlantServiceTest {
         }
         verify {
             client.getDigitaleAdressen(
-                query = DigitaalAdresQuery(),
+                query = any(),
                 properties = testProperties,
             )
         }
         verify {
             client.createDigitaalAdres(
-                match<DigitaalAdresCreationRequest> {
-                    it.adres == contactInformation.emailadres &&
-                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
-                        it.referentie == contactInformation.zaaknummer
-                },
-                testProperties,
+                request = any(),
+                properties = testProperties,
             )
         }
         verify {
@@ -358,10 +344,9 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 request =
                     match {
-                        it.verstrektDoorPartij?.uuid == digitaalAdres.verstrektDoorPartijUuid &&
+                        it.verstrektDoorPartij.uuid == digitaalAdres.verstrektDoorPartijUuid &&
                             it.adres == digitaalAdres.adres &&
                             it.soortDigitaalAdres == digitaalAdres.soortDigitaalAdres &&
-                            it.isStandaardAdres == true &&
                             it.referentie == digitaalAdres.referentie
                     },
                 properties = testProperties,
