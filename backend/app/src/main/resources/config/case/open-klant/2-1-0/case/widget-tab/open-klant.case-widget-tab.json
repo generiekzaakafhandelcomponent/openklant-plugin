@@ -4,8 +4,8 @@
     "widgets": [
       {
         "type": "fields",
-        "key": "klant-informatie",
-        "title": "Klant Informatie",
+        "key": "klantinformatie",
+        "title": "Klantinformatie",
         "width": 1,
         "highContrast": false,
         "properties": {
@@ -22,7 +22,7 @@
               },
               {
                 "key": "partij-uuid",
-                "title": "Partij Uuid",
+                "title": "Partij-UUID",
                 "value": "doc:partijUuid",
                 "displayProperties": {
                   "type": "text",
@@ -31,8 +31,8 @@
               },
               {
                 "key": "digitaal-adres-uuid",
-                "title": "Digitaal adres Uuid",
-                "value": "doc:digitaalAdres.uuid",
+                "title": "Digitaal-adres-UUID",
+                "value": "doc:digitaalAdresUuid",
                 "displayProperties": {
                   "type": "text",
                   "hideWhenEmpty": true
@@ -40,6 +40,17 @@
               }
             ]
           ]
+        }
+      },
+      {
+        "type": "formio",
+        "key": "open-klant-api-response",
+        "title": "Open-Klant-API-response",
+        "icon": "",
+        "width": 2,
+        "highContrast": false,
+        "properties": {
+          "formDefinitionName": "open-klant-api-response"
         }
       }
     ]

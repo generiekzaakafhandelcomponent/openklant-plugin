@@ -1,6 +1,7 @@
-package com.ritense.valtimoplugins.openklant.dto
+package com.ritense.valtimoplugins.openklant.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
 
 enum class SoortDigitaalAdres(
     val value: String,
@@ -12,5 +13,8 @@ enum class SoortDigitaalAdres(
     TELEFOONNUMMER("telefoonnummer"),
 
     @JsonProperty("overig")
-    OVERIG("overig"),
+    OVERIG("overig");
+
+    @JsonValue
+    fun toJson() = value
 }

@@ -4,12 +4,19 @@
   "title": "Open Klant",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "properties": {
+    "selectedDemo": {
+      "type": "string"
+    },
     "bsn": {
       "type": "string",
       "default": ""
     },
     "partijUuid": {
       "type": "string",
+      "default": ""
+    },
+    "digitaalAdresUuid": {
+      "type": ["string", "null"],
       "default": ""
     },
     "contactgeschiedenis": {
@@ -19,100 +26,13 @@
       },
       "default": []
     },
-    "partij": {
+    "apiRequest": {
       "type": "object",
-      "properties": {
-        "voorletters": {
-          "type": "string"
-        },
-        "voornaam": {
-          "type": "string"
-        },
-        "voorvoegselAchternaam": {
-          "type": "string"
-        },
-        "achternaam": {
-          "type": "string"
-        },
-        "partijUuid": {
-          "type": "string"
-        }
-      }
+      "properties": {}
     },
-    "klantcontact": {
+    "apiResponse": {
       "type": "object",
-      "properties": {
-        "referentienummer": {
-          "type": "string"
-        },
-        "kanaal": {
-          "type": "string"
-        },
-        "onderwerp": {
-          "type": "string"
-        },
-        "inhoud": {
-          "type": "string"
-        },
-        "reactie": {
-          "type": "string"
-        },
-        "indicatieContactGelukt": {
-          "type": "boolean"
-        },
-        "vertrouwelijk": {
-          "type": "boolean"
-        },
-        "taal": {
-          "type": "string"
-        },
-        "plaatsgevondenOp": {
-          "type": "string"
-        },
-        "metadata": {
-          "type": "object"
-        },
-        "hasBetrokkene": {
-          "type": "boolean"
-        },
-        "betrokkene": {
-          "type": "object",
-          "properties": {
-            "voornaam": {
-              "type": "string"
-            },
-            "achternaam": {
-              "type": "string"
-            },
-            "voorletters": {
-              "type": "string"
-            },
-            "voorvoegselAchternaam": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "digitaalAdres": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string"
-        },
-        "adres": {
-          "type": "string"
-        },
-        "soortDigitaalAdres": {
-          "type": "string"
-        },
-        "verificatieDatum": {
-          "type": "string"
-        }
-      }
-    },
-    "selectedDemo": {
-      "type": "string"
+      "properties": {}
     }
   },
   "additionalProperties": false

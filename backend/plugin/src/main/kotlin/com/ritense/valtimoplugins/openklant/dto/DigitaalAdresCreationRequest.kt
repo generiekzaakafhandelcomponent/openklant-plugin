@@ -2,13 +2,15 @@ package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
+import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class CreateDigitaalAdresRequest(
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class DigitaalAdresCreationRequest(
     @JsonProperty("verstrektDoorBetrokkene")
-    val verstrektDoorBetrokkene: UuidReference? = null,
+    val verstrektDoorBetrokkene: NestedUuid? = null,
     @JsonProperty("verstrektDoorPartij")
-    val verstrektDoorPartij: UuidReference?,
+    val verstrektDoorPartij: NestedUuid,
     @JsonProperty("adres")
     val adres: String,
     @JsonProperty("soortDigitaalAdres")

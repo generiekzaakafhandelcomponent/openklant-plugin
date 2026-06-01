@@ -1,85 +1,133 @@
 [
-  {
-    "activityId": "StartEvent_1",
-    "activityType": "bpmn:StartEvent:start",
-    "formDefinitionName": "open-klant-start",
-    "viewModelEnabled": false,
-    "formDisplayType": "modal",
-    "formSize": "medium",
-    "subtitles": [],
-    "processLinkType": "form"
-  },
-  {
-    "activityId": "verstuurKlantcontact",
-    "activityType": "bpmn:ServiceTask:start",
-    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-    "pluginActionDefinitionKey": "register-klantcontact",
-    "actionProperties": {
-      "hasBetrokkene": true,
-      "referentienummer": "doc:/klantcontact/referentienummer",
-      "kanaal": "doc:/klantcontact/kanaal",
-      "onderwerp": "doc:/klantcontact/onderwerp",
-      "inhoud": "doc:/klantcontact/inhoud",
-      "reactie": "doc:/klantcontact/reactie",
-      "indicatieContactGelukt": "doc:/klantcontact/indicatieContactGelukt",
-      "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
-      "taal": "doc:/klantcontact/taal",
-      "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp",
-      "metadata": "doc:/klantcontact/metadata",
-      "partijUuid": "doc:/partijUuid",
-      "voorletters": "doc:/klantcontact/betrokkene/voorletters",
-      "voornaam": "doc:/klantcontact/betrokkene/voornaam",
-      "voorvoegselAchternaam": "doc:/klantcontact/betrokkene/voorvoegselAchternaam",
-      "achternaam": "doc:/klantcontact/betrokkene/achternaam"
+    {
+        "activityId": "StartEvent_1",
+        "activityType": "bpmn:StartEvent:start",
+        "formDefinitionName": "open-klant-start",
+        "viewModelEnabled": false,
+        "formDisplayType": "modal",
+        "formSize": "medium",
+        "subtitles": [],
+        "processLinkType": "form"
     },
-    "processLinkType": "plugin"
-  },
-  {
-    "activityId": "verstuurKlantcontactZonderBetrokkene",
-    "activityType": "bpmn:ServiceTask:start",
-    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-    "pluginActionDefinitionKey": "register-klantcontact",
-    "actionProperties": {
-      "hasBetrokkene": false,
-      "referentienummer": "doc:/klantcontact/referentienummer",
-      "kanaal": "doc:/klantcontact/kanaal",
-      "onderwerp": "doc:/klantcontact/onderwerp",
-      "inhoud": "doc:/klantcontact/inhoud",
-      "reactie": "doc:/klantcontact/reactie",
-      "indicatieContactGelukt": "doc:/klantcontact/indicatieContactGelukt",
-      "vertrouwelijk": "doc:/klantcontact/vertrouwelijk",
-      "taal": "doc:/klantcontact/taal",
-      "plaatsgevondenOp": "doc:/klantcontact/plaatsgevondenOp",
-      "metadata": "doc:/klantcontact/metadata"
+    {
+        "activityId": "verstuurKlantcontact",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "register-klantcontact",
+        "actionProperties": {
+            "hasBetrokkene": true,
+            "referentienummer": "doc:/apiRequest/registerNewKlantcontact/referentienummer",
+            "kanaal": "doc:/apiRequest/registerNewKlantcontact/kanaal",
+            "onderwerp": "doc:/apiRequest/registerNewKlantcontact/onderwerp",
+            "inhoud": "doc:/apiRequest/registerNewKlantcontact/inhoud",
+            "reactie": "doc:/apiRequest/registerNewKlantcontact/reactie",
+            "indicatieContactGelukt": "doc:/apiRequest/registerNewKlantcontact/indicatieContactGelukt",
+            "vertrouwelijk": "doc:/apiRequest/registerNewKlantcontact/vertrouwelijk",
+            "taal": "doc:/apiRequest/registerNewKlantcontact/taal",
+            "plaatsgevondenOp": "doc:/apiRequest/registerNewKlantcontact/plaatsgevondenOp",
+            "metadata": "doc:/apiRequest/registerNewKlantcontact/metadata",
+            "partijUuid": "doc:/partijUuid",
+            "voorletters": "doc:/apiRequest/registerNewKlantcontact/betrokkene/voorletters",
+            "voornaam": "doc:/apiRequest/registerNewKlantcontact/betrokkene/voornaam",
+            "voorvoegselAchternaam": "doc:/apiRequest/registerNewKlantcontact/betrokkene/voorvoegselAchternaam",
+            "achternaam": "doc:/apiRequest/registerNewKlantcontact/betrokkene/achternaam"
+        },
+        "processLinkType": "plugin"
     },
-    "processLinkType": "plugin"
-  },
-  {
-    "activityId": "haalPartijOpOfMaakNieuwe",
-    "activityType": "bpmn:ServiceTask:start",
-    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-    "pluginActionDefinitionKey": "get-or-create-partij",
-    "actionProperties": {
-      "bsn": "doc:/bsn",
-      "voorletters": "doc:/partij/voorletters",
-      "voornaam": "doc:/partij/voornaam",
-      "voorvoegselAchternaam": "doc:/partij/voorvoegselAchternaam",
-      "achternaam": "doc:/partij/achternaam"
+    {
+        "activityId": "verstuurKlantcontactZonderBetrokkene",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "register-klantcontact",
+        "actionProperties": {
+            "hasBetrokkene": false,
+            "referentienummer": "doc:/apiRequest/klantcontact/referentienummer",
+            "kanaal": "doc:/apiRequest/klantcontact/kanaal",
+            "onderwerp": "doc:/apiRequest/klantcontact/onderwerp",
+            "inhoud": "doc:/apiRequest/klantcontact/inhoud",
+            "reactie": "doc:/apiRequest/klantcontact/reactie",
+            "indicatieContactGelukt": "doc:/apiRequest/klantcontact/indicatieContactGelukt",
+            "vertrouwelijk": "doc:/apiRequest/klantcontact/vertrouwelijk",
+            "taal": "doc:/apiRequest/klantcontact/taal",
+            "plaatsgevondenOp": "doc:/apiRequest/klantcontact/plaatsgevondenOp",
+            "metadata": "doc:/apiRequest/klantcontact/metadata"
+        },
+        "processLinkType": "plugin"
     },
-    "processLinkType": "plugin"
-  },
-  {
-    "activityId": "zetStandaardDigitaalAdres",
-    "activityType": "bpmn:ServiceTask:start",
-    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
-    "pluginActionDefinitionKey": "set-default-digitaal-adres",
-    "actionProperties": {
-      "resultPvName": "digitaalAdresUuid",
-      "partijUuid": "doc:/partijUuid",
-      "adres": "doc:/digitaalAdres/adres",
-      "soortDigitaalAdres": "doc:/digitaalAdres/soortDigitaalAdres",
-      "verificatieDatum": "doc:/digitaalAdres/verificatieDatum"
+    {
+        "activityId": "haalPartijOpOfMaakNieuwe",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "get-or-create-partij",
+        "actionProperties": {
+            "bsn": "doc:/bsn",
+            "voorletters": "doc:/apiRequest/getOrCreatePartij/voorletters",
+            "voornaam": "doc:/apiRequest/getOrCreatePartij/voornaam",
+            "voorvoegselAchternaam": "doc:/apiRequest/getOrCreatePartij/voorvoegselAchternaam",
+            "achternaam": "doc:/apiRequest/getOrCreatePartij/achternaam"
+        },
+        "processLinkType": "plugin"
     },
-    "processLinkType": "plugin"
-  }
+    {
+        "activityId": "zetStandaardDigitaalAdres",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "set-default-digitaal-adres",
+        "actionProperties": {
+            "resultPvName": "digitaalAdresUuid",
+            "partijUuid": "doc:/partijUuid",
+            "adres": "doc:/apiRequest/setDefaultDigitaalAdres/adres",
+            "soortDigitaalAdres": "doc:/apiRequest/setDefaultDigitaalAdres/soortDigitaalAdres",
+            "verificatieDatum": "doc:/apiRequest/setDefaultDigitaalAdres/verificatieDatum"
+        },
+        "processLinkType": "plugin"
+    },
+    {
+        "activityId": "maakDigitaalAdresAan",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "create-digitaal-adres",
+        "actionProperties": {
+            "resultPvName": "digitaalAdres",
+            "verstrektDoorBetrokkene": "doc:/apiRequest/createDigitaalAdres/verstrektDoorBetrokkene",
+            "verstrektDoorPartij": "doc:/partijUuid",
+            "adres": "doc:/apiRequest/createDigitaalAdres/adres",
+            "soortDigitaalAdres": "doc:/apiRequest/createDigitaalAdres/soortDigitaalAdres",
+            "isStandaardAdres": "doc:/apiRequest/createDigitaalAdres/isStandaardAdres",
+            "omschrijving": "doc:/apiRequest/createDigitaalAdres/omschrijving",
+            "referentie": "doc:/apiRequest/createDigitaalAdres/referentie",
+            "verificatieDatum": "doc:/apiRequest/createDigitaalAdres/verificatieDatum"
+        },
+        "processLinkType": "plugin"
+    },
+    {
+        "activityId": "pasBestaandDigitaalAdresAan",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "update-digitaal-adres",
+        "actionProperties": {
+            "resultPvName": "digitaalAdres",
+            "digitaalAdresUuid": "doc:/digitaalAdresUuid",
+            "verstrektDoorBetrokkene": "doc:/apiRequest/updateDigitaalAdres/verstrektDoorBetrokkene",
+            "verstrektDoorPartij": "doc:/partijUuid",
+            "adres": "doc:/apiRequest/updateDigitaalAdres/adres",
+            "soortDigitaalAdres": "doc:/apiRequest/updateDigitaalAdres/soortDigitaalAdres",
+            "isStandaardAdres": "doc:/apiRequest/updateDigitaalAdres/isStandaardAdres",
+            "omschrijving": "doc:/apiRequest/updateDigitaalAdres/omschrijving",
+            "referentie": "doc:/apiRequest/updateDigitaalAdres/referentie",
+            "verificatieDatum": "doc:/apiRequest/updateDigitaalAdres/verificatieDatum"
+        },
+        "processLinkType": "plugin"
+    },
+    {
+        "activityId": "haalDigitaleAdressenOp",
+        "activityType": "bpmn:ServiceTask:start",
+        "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+        "pluginActionDefinitionKey": "get-digitale-adressen",
+        "actionProperties": {
+            "resultPvName": "digitaleAdressen",
+            "queryParams": "doc:/apiRequest/getDigitaleAdressen/queryParams"
+        },
+        "processLinkType": "plugin"
+    }
 ]

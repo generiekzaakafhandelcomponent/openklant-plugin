@@ -1,5 +1,8 @@
 package com.ritense.valtimoplugins.openklant.plugin
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -7,15 +10,24 @@ import com.ritense.plugin.annotation.PluginProperty
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.valtimoplugins.openklant.model.AdresInformation
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
+import com.ritense.valtimoplugins.openklant.model.KeyValueQueryParam
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
-import com.ritense.valtimoplugins.openklant.model.KlantcontactOptions
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
+import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
+import com.ritense.valtimoplugins.openklant.util.StringToBooleanDeserializer
 import mu.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 import java.net.URI
+import java.util.UUID
+import kotlin.collections.count
 
 @Plugin(
     key = "openklant",
@@ -26,6 +38,7 @@ import java.net.URI
 class OpenKlantPlugin(
     private val openKlantPluginService: OpenKlantService,
     private val reflectionUtil: ReflectionUtil,
+    private val objectMapper: ObjectMapper,
 ) {
     @PluginProperty(key = "klantinteractiesUrl", secret = false, required = true)
     lateinit var klantinteractiesUrl: URI
@@ -48,8 +61,7 @@ class OpenKlantPlugin(
         @PluginActionProperty emailAddress: String,
         @PluginActionProperty caseUuid: String,
     ) {
-        logger.info { "Store Contactinformation in Open Klant - ${execution.processBusinessKey}" }
-
+        logger.info { "Storing contact information..." }
         val contactInformation =
             ContactInformation.fromActionProperties(
                 bsn = bsn,
@@ -60,7 +72,16 @@ class OpenKlantPlugin(
                 zaaknummer = caseUuid,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
-        val partijUuid = openKlantPluginService.storeContactInformation(properties, contactInformation)
+        val partijUuid =
+            openKlantPluginService
+                .storeContactInformation(
+                    contactInformation = contactInformation,
+                    properties = properties,
+                ).also {
+                    logger.info {
+                        "Successfully stored contact information in Open Klant - ${execution.processBusinessKey}"
+                    }
+                }
 
         execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
     }
@@ -79,7 +100,7 @@ class OpenKlantPlugin(
         @PluginActionProperty voorvoegselAchternaam: String,
         @PluginActionProperty achternaam: String,
     ) {
-        logger.info { "Get or Create partij in Open Klant - ${execution.processBusinessKey}" }
+        logger.info { "Getting or otherwise creating partij in Open Klant" }
 
         val partijInformation =
             PartijInformationImpl.fromActionProperties(
@@ -90,12 +111,115 @@ class OpenKlantPlugin(
                 achternaam = achternaam,
             )
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
-        val partijUuid =
+        val partij =
             openKlantPluginService
-                .getOrCreatePartij(properties, partijInformation)
-                .uuid
+                .getOrCreatePartij(partijInformation = partijInformation, properties = properties)
 
-        execution.setVariable(OUTPUT_PARTIJ_UUID, partijUuid)
+        execution.setVariable(OUTPUT_PARTIJ_UUID, partij.uuid.toString())
+    }
+
+    fun getDigitaleAdressen(query: DigitaalAdresQuery): List<DigitaalAdres> {
+        logger.info { "Retrieving DigitaleAdressen..." }
+        return openKlantPluginService
+            .getAllDigitaleAdressen(
+                query = query,
+                properties = OpenKlantProperties(klantinteractiesUrl, token),
+            ).also {
+                logger.info {
+                    "Successfully retrieved ${it.count()} DigitaalAdres(sen) from Open Klant)"
+                }
+            }
+    }
+
+    @PluginAction(
+        key = "get-digitale-adressen",
+        title = "Get digitale adressen",
+        description = "Fetches digitale adressen from Open Klant based on provided filters",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getDigitaleAdressen(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty
+        queryParams: List<KeyValueQueryParam> = emptyList(),
+    ) {
+        val query = DigitaalAdresQuery.fromKeyValueQueryParamList(queryParams)
+
+        val digitaleAdressen = getDigitaleAdressen(query = query)
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
+        val digitaleAdressenJson = objectMapper.valueToTree<JsonNode>(digitaleAdressen)
+
+        execution.setVariable(resultPvName, digitaleAdressenJson)
+    }
+
+    fun createDigitaalAdres(request: DigitaalAdres): DigitaalAdres {
+        logger.info { "Creating DigitaalAdres..." }
+        return openKlantPluginService
+            .createDigitaalAdres(
+                request = request,
+                properties = OpenKlantProperties(klantinteractiesUrl, token),
+            ).also {
+                logger.info {
+                    "Successfully created DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
+                }
+            }
+    }
+
+    @PluginAction(
+        key = "create-digitaal-adres",
+        title = "Create Digitaal Adres",
+        description = "Create a digitaal adres in Open Klant",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun createDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty verstrektDoorBetrokkene: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String,
+        @PluginActionProperty adres: String,
+        @PluginActionProperty soortDigitaalAdres: String,
+        @PluginActionProperty isStandaardAdres: Boolean? = null,
+        @PluginActionProperty omschrijving: String = "",
+        @PluginActionProperty referentie: String? = null,
+        @PluginActionProperty verificatieDatum: String? = null,
+    ) {
+        val request =
+            DigitaalAdres(
+                verstrektDoorBetrokkeneUuid =
+                    verstrektDoorBetrokkene
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
+                verstrektDoorPartijUuid =
+                    verstrektDoorPartij
+                        .takeIf { it.isNotBlank() }
+                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
+                adres = adres.trim(),
+                soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
+                isStandaardAdres = isStandaardAdres,
+                omschrijving = omschrijving.trim(),
+                referentie = referentie?.takeIf { it.isNotBlank() }?.trim(),
+                verificatieDatum = verificatieDatum?.takeIf { it.isNotBlank() }?.trim(),
+            )
+
+        val digitaalAdres = createDigitaalAdres(request)
+
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
+        val digitaalAdresJson = objectMapper.valueToTree<JsonNode>(digitaalAdres)
+
+        execution.setVariable(resultPvName, digitaalAdresJson)
+    }
+
+    fun setDefaultDigitaalAdres(digitaalAdres: DigitaalAdres): DigitaalAdres {
+        logger.info { "Setting default DigitaalAdres..." }
+        return openKlantPluginService
+            .setDefaultDigitaalAdres(
+                request = digitaalAdres,
+                properties = OpenKlantProperties(klantinteractiesUrl = klantinteractiesUrl, token = token),
+            ).also {
+                logger.info {
+                    "Successfully set a default DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
+                }
+            }
     }
 
     @PluginAction(
@@ -112,8 +236,6 @@ class OpenKlantPlugin(
         @PluginActionProperty soortDigitaalAdres: String,
         @PluginActionProperty verificatieDatum: String,
     ) {
-        logger.info { "Sets a default Digitaal Adres in Open Klant - ${execution.processBusinessKey}" }
-
         val adresInformation =
             AdresInformation.fromActionProperties(
                 partijUuid = partijUuid,
@@ -122,11 +244,95 @@ class OpenKlantPlugin(
                 referentie = DEFAULT_DIGITALE_ADRES_REFERENCE,
                 verificatieDatum = verificatieDatum,
             )
-        val properties = OpenKlantProperties(klantinteractiesUrl, token)
+        val request = adresInformation.toDigitaalAdresCreationRequest(isStandaardAdres = true)
 
-        val digitaalAdres = openKlantPluginService.setDefaultDigitaalAdres(properties, adresInformation)
+        val digitaalAdres = setDefaultDigitaalAdres(request)
 
-        execution.setVariable(resultPvName, digitaalAdres.uuid)
+        execution.setVariable(resultPvName, digitaalAdres.uuid.toString())
+    }
+
+    fun updateDigitaalAdres(
+        digitaalAdresUuid: NestedUuid,
+        digitaalAdresPatchRequest: DigitaalAdresPatch,
+    ): DigitaalAdres {
+        logger.info { "Updating DigitaalAdres..." }
+        return openKlantPluginService
+            .updateDigitaalAdres(
+                digitaalAdresUuid = digitaalAdresUuid,
+                request = digitaalAdresPatchRequest,
+                properties = OpenKlantProperties(klantinteractiesUrl, token),
+            ).also {
+                logger.info {
+                    "Successfully updated DigitaalAdres in Open Klant (digitaalAdresUuid: ${it.uuid})"
+                }
+            }
+    }
+
+    @PluginAction(
+        key = "update-digitaal-adres",
+        title = "Update Digitaal Adres",
+        description = "Update any value of the digitaal adres in Open Klant",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun updateDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String,
+        @PluginActionProperty digitaalAdresUuid: String,
+        @PluginActionProperty verstrektDoorBetrokkene: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
+        @PluginActionProperty adres: String? = null,
+        @PluginActionProperty soortDigitaalAdres: String? = null,
+        // When null is passed to a Formio form, Formio stubbornly
+        // returns an empty string, thus we use this deserializer
+        @JsonDeserialize(using = StringToBooleanDeserializer::class)
+        @PluginActionProperty isStandaardAdres: Boolean? = null,
+        @PluginActionProperty omschrijving: String? = null,
+        @PluginActionProperty referentie: String? = null,
+        @PluginActionProperty verificatieDatum: String? = null,
+    ) {
+        val patchRequest =
+            DigitaalAdresPatch(
+                verstrektDoorBetrokkeneUuid =
+                    verstrektDoorBetrokkene
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
+                verstrektDoorPartijUuid =
+                    verstrektDoorPartij
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
+                adres =
+                    adres
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { adres.trim() },
+                soortDigitaalAdres =
+                    soortDigitaalAdres
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()) },
+                isStandaardAdres = isStandaardAdres,
+                omschrijving =
+                    omschrijving
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { omschrijving.trim() },
+                referentie =
+                    referentie
+                        ?.takeIf { it.isNotBlank() }
+                        ?.trim(),
+                verificatieDatum =
+                    verificatieDatum
+                        ?.takeIf { it.isNotBlank() }
+                        ?.trim(),
+            )
+
+        val digitaalAdres =
+            updateDigitaalAdres(
+                digitaalAdresUuid = NestedUuid.fromString(digitaalAdresUuid),
+                digitaalAdresPatchRequest = patchRequest,
+            )
+
+//      Map to JSON preemptively, as Operaton has issues serializing it itself
+        val digitaalAdresJson = objectMapper.valueToTree<JsonNode>(digitaalAdres)
+
+        execution.setVariable(resultPvName, digitaalAdresJson)
     }
 
     @PluginAction(
@@ -140,26 +346,33 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info { "Fetching contact history from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}" }
-
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
-                token = token,
-                objectUuid = caseUuid,
-            )
-
-        fetchKlantcontactenAndStore(
+        logger.info { "Fetching contact history (Klantcontacten)..." }
+        return fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
-        )
+            query =
+                KlantcontactQuery(
+                    objectUuid = caseUuid,
+                ),
+            properties =
+                OpenKlantProperties(
+                    klantinteractiesUrl = klantinteractiesUrl,
+                    token = token,
+                ),
+        ).also {
+            logger.info {
+                "Successfully fetched and stored contact history" +
+                    " from Open Klant by case UUID: $caseUuid - ${execution.processBusinessKey}"
+            }
+        }
     }
 
     @PluginAction(
         key = "get-contact-moments-by-bsn",
         title = "Get contact history by BSN",
-        description = "Get contact history by BSN from Open Klant. Queries the API using the 'partij-identificator object-ID' parameter.",
+        description =
+            "Get contact history by BSN from Open Klant. " +
+                "Queries the API using the 'partij-identificator object-ID' parameter.",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getContactMomentsByBsn(
@@ -167,18 +380,22 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info { "Fetching contact history from Open Klant by BSN number — business key: ${execution.processBusinessKey}" }
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
+        logger.info {
+            "Fetching contact history from Open Klant by " +
+                "BSN number — business key: ${execution.processBusinessKey}"
+        }
+        val properties =
+            OpenKlantProperties(
+                klantinteractiesUrl = klantinteractiesUrl,
                 token = token,
-                bsn = bsn,
             )
+        val query = KlantcontactQuery(bsn = bsn)
 
         fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
+            query = query,
+            properties = properties,
         )
     }
 
@@ -193,19 +410,24 @@ class OpenKlantPlugin(
         @PluginActionProperty resultPvName: String,
         execution: DelegateExecution,
     ) {
-        logger.info { "Fetching contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}" }
-        val pluginProperties =
-            KlantcontactOptions.fromActionProperties(
-                klantinteractiesUrl,
-                token = token,
-                partijUuid = partijUuid,
-            )
-
+        logger.info { "Fetching contact history..." }
         fetchKlantcontactenAndStore(
             execution = execution,
             resultPvName = resultPvName,
-            pluginProperties = pluginProperties,
-        )
+            query =
+                KlantcontactQuery(
+                    partijUuid = partijUuid,
+                ),
+            properties =
+                OpenKlantProperties(
+                    klantinteractiesUrl = klantinteractiesUrl,
+                    token = token,
+                ),
+        ).also {
+            logger.info {
+                "Successfully fetched contact history from Open Klant by Partij UUID — business key: ${execution.processBusinessKey}"
+            }
+        }
     }
 
     @PluginAction(
@@ -233,7 +455,7 @@ class OpenKlantPlugin(
         @PluginActionProperty metadata: Map<String, String>?,
         execution: DelegateExecution,
     ) {
-        logger.info { "Registering klantcontact - ${execution.processBusinessKey}" }
+        logger.info { "Registering klantcontact..." }
 
         val klantcontactCreationInformation =
             KlantcontactCreationInformation.fromActionProperties(
@@ -257,17 +479,18 @@ class OpenKlantPlugin(
         val properties = OpenKlantProperties(klantinteractiesUrl, token)
 
         openKlantPluginService.postKlantcontact(
-            properties,
-            klantcontactCreationInformation,
+            klantcontactCreationInformation = klantcontactCreationInformation,
+            properties = properties,
         )
     }
 
     private fun fetchKlantcontactenAndStore(
         execution: DelegateExecution,
         resultPvName: String,
-        pluginProperties: KlantcontactOptions,
+        query: KlantcontactQuery,
+        properties: OpenKlantProperties,
     ) {
-        val klantcontacten = openKlantPluginService.getAllKlantcontacten(pluginProperties)
+        val klantcontacten = openKlantPluginService.getAllKlantcontacten(query = query, properties = properties)
         val contactenMaps = klantcontacten.map { reflectionUtil.deepReflectedMapOf(it) }
         execution.setVariable(resultPvName, contactenMaps)
     }
