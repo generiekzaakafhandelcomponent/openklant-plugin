@@ -1,8 +1,17 @@
 package com.ritense.valtimoplugins.openklant.service
 
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
-import com.ritense.valtimoplugins.openklant.dto.*
-import com.ritense.valtimoplugins.openklant.model.*
+import com.ritense.valtimoplugins.openklant.dto.CreatePartijRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
+import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
+import com.ritense.valtimoplugins.openklant.dto.ObjectReference
+import com.ritense.valtimoplugins.openklant.dto.Partij
+import com.ritense.valtimoplugins.openklant.model.ContactInformation
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.NestedUuid
+import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
+import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
+import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -13,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 class OpenKlantServiceTest {
@@ -321,7 +330,7 @@ class OpenKlantServiceTest {
 
         val createdResult =
             existingAdres.copy(
-                UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
+                uuid = UUID.fromString("0853ba19-7c5e-405b-af4a-60689c0b4e85"),
             )
         every {
             client.createDigitaalAdres(any(), any())
