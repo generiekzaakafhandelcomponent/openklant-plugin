@@ -1,7 +1,9 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import org.junit.jupiter.api.Assertions.*
-import kotlin.test.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class DigitaalAdresQueryTest {
     @Test
