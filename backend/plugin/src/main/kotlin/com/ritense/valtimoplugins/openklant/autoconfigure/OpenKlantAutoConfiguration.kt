@@ -67,7 +67,7 @@ class OpenKlantAutoConfiguration {
         reflectionUtil: ReflectionUtil,
         @Value("\${AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_KLANTINTERACTIES_URL:http://localhost:8006/klantinteracties/api/v1/}")
         klantinteractieUrl: String,
-        @Value("\${AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN}:test-token")
+        @Value("\${AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN:test-token}")
         openKlantToken: String,
     ) = OpenKlantValueResolverFactory(
         processDocumentService,
