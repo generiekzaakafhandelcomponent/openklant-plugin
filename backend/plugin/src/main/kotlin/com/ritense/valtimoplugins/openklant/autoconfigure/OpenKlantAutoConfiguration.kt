@@ -50,13 +50,13 @@ class OpenKlantAutoConfiguration {
         pluginService: PluginService,
         openKlantService: OpenKlantService,
         reflectionUtil: ReflectionUtil,
-        objectMapper: ObjectMapper
+        objectMapper: ObjectMapper,
     ): OpenKlantPluginFactory =
         OpenKlantPluginFactory(
             pluginService = pluginService,
             openKlantPluginService = openKlantService,
             reflectionUtil = reflectionUtil,
-            objectMapper = objectMapper
+            objectMapper = objectMapper,
         )
 
     @Bean
