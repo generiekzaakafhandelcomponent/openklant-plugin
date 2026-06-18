@@ -13,7 +13,8 @@ enum class SoortDigitaalAdres(
     TELEFOONNUMMER("telefoonnummer"),
 
     @JsonProperty("overig")
-    OVERIG("overig");
+    OVERIG("overig"),
+    ;
 
     @JsonValue
     fun toJson() = value

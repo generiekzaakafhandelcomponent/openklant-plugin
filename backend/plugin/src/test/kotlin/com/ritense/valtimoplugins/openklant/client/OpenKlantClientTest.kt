@@ -26,9 +26,9 @@ internal class OpenKlantClientTest {
 
         assertEquals(
             "https://example.com/klantcontacten?" +
-                    "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
-                    "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
-                    "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
+                "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
+                "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
+                "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
             result.toString(),
         )
     }
@@ -47,14 +47,13 @@ internal class OpenKlantClientTest {
 
         assertEquals(
             "https://example.com/klantcontacten?" +
-                    "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456",
+                "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456",
             result.toString(),
         )
     }
 
     @Test
     fun `buildDigitaalAdresUri builds correct URI with all options`() {
-
         val query = DigitaalAdresQuery()
 
         query.add("onderwerpobject__onderwerpobjectidentificatorCodeObjecttype", "type123")
@@ -67,16 +66,15 @@ internal class OpenKlantClientTest {
 
         assertEquals(
             "https://example.com/digitaleadressen?" +
-                    "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
-                    "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
-                    "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
+                "onderwerpobject__onderwerpobjectidentificatorCodeObjecttype=type123&" +
+                "hadBetrokkene__wasPartij__partijIdentificator__objectId=bsn456&" +
+                "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
             result.toString(),
         )
     }
 
     @Test
     fun `buildDigitaalAdresUri builds correct URI skipping null and empty options`() {
-
         val query = DigitaalAdresQuery()
 
         query.add(null, null)
@@ -89,7 +87,7 @@ internal class OpenKlantClientTest {
 
         assertEquals(
             "https://example.com/digitaleadressen?" +
-                    "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
+                "onderwerpobject__onderwerpobjectidentificatorObjectId=uuid789",
             result.toString(),
         )
     }
