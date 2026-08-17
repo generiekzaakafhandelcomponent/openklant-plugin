@@ -53,7 +53,6 @@ data class KlantcontactCreationRequest(
         val plaatsgevondenOp: String? = null,
         @field:JsonProperty("metadata")
         val metadata: Map<
-            @Size(max = 100)
             String,
             @Size(max = 255)
             String,
