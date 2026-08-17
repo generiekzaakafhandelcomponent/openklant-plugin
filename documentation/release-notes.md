@@ -2,6 +2,10 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.5.1
+
+Valtimo bijgewerkt naar versie 13.41.0.
+
 ## 2.5.0
 Acties toegevoegd om digitale adressen aan te maken, op te halen en bij te werken, met aanvullende documentatie.
 
