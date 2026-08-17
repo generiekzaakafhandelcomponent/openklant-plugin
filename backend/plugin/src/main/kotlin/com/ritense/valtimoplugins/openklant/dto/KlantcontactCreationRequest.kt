@@ -55,7 +55,7 @@ data class KlantcontactCreationRequest(
         val metadata: Map<
             @Size(max = 100)
             String,
-            @Size(max = 100)
+            @Size(max = 255)
             String,
         >? = null,
     )
