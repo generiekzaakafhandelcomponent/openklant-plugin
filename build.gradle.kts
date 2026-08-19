@@ -73,7 +73,8 @@ subprojects {
         }
 
         dependencies {
-            implementation(platform("com.ritense.valtimo:valtimo-dependency-versions:$valtimoVersion"))
+            compileOnly(platform("com.ritense.valtimo:valtimo-dependency-versions:$valtimoVersion"))
+            testImplementation(platform("com.ritense.valtimo:valtimo-dependency-versions:$valtimoVersion"))
             implementation("cn.lalaki.central:central:$lalakiCentralVersion")
         }
 
@@ -93,12 +94,6 @@ subprojects {
                 setProjectName("${rootProject.name}-${project.name}")
                 executable = "/usr/local/bin/docker-compose"
                 dockerExecutable = "/usr/local/bin/docker"
-            }
-        }
-
-        tasks.test {
-            useJUnitPlatform {
-                excludeTags("integration")
             }
         }
 

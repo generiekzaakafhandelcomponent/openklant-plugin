@@ -1,9 +1,9 @@
 dockerCompose {
     setProjectName("openklant")
-    isRequiredBy(project.tasks.integrationTesting)
+    isRequiredBy(project.tasks.test)
 
-    tasks.integrationTesting {
-        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
+    tasks.test {
+        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml")
     }
 }
 
@@ -20,6 +20,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.mockk:mockk:1.13.9")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testImplementation("org.postgresql:postgresql")
 }
 
 apply(from = "gradle/publishing.gradle")

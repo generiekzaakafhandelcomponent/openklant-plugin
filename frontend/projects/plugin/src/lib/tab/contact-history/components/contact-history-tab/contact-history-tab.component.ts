@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { CommonModule, NgClass, NgForOf, NgIf } from "@angular/common";
 import {
@@ -50,7 +50,7 @@ import { pluginNlTranslations } from "../../../../translations/nl";
   templateUrl: "./contact-history-tab.component.html",
   styleUrl: "./contact-history-tab.component.scss",
 })
-export class ContactHistoryTabComponent implements OnInit {
+export class ContactHistoryTabComponent implements OnInit, OnDestroy {
   private PROCESS_KEY: string = "contactgeschiedenis-ophalen";
   private EXP_POLLING_START_INTERVAL_IN_MS = 1000;
   private MAX_POLLING_TIME_IN_MS = 20000;

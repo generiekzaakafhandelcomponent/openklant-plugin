@@ -58,11 +58,10 @@ class OpenKlantValueResolverFactory(
                 createKlantcontactQuery(zaakUuid),
                 OpenKlantProperties(
                     klantinteractiesUrl = properties.klantinteractiesUrl,
-                    token = properties.token
+                    token = properties.token,
                 ),
             )
-        }
-            .getOrNull()
+        }.getOrNull()
             ?.let { reflectionUtil.deepReflectedMapOf(it) }
 
     private fun createKlantcontactQuery(zaakUuid: UUID): KlantcontactQuery =
