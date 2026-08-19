@@ -35,7 +35,7 @@ data class KlantcontactCreationRequest(
         @field:Size(max = 1000)
         val inhoud: String? = null,
         @field:JsonProperty("reactie")
-        @field:Size(max = 1000)
+        @field:Size(max = 4000)
         val reactie: String? = null,
         @field:JsonProperty("indicatieContactGelukt")
         val indicatieContactGelukt: Boolean? = null,
@@ -53,9 +53,8 @@ data class KlantcontactCreationRequest(
         val plaatsgevondenOp: String? = null,
         @field:JsonProperty("metadata")
         val metadata: Map<
-            @Size(max = 100)
             String,
-            @Size(max = 100)
+            @Size(max = 255)
             String,
         >? = null,
     )
