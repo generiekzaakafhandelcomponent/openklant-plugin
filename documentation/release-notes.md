@@ -2,6 +2,10 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.6.1
+
+Ondersteuning voor Valtimo 13.42.0.
+
 ## 2.6.0
 Voor aanmaken van een klantcontact, character limiet voor "reactie" en de "metadata" values verhoogd naar 4000 en 255 tekens. 
 
