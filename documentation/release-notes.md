@@ -2,7 +2,7 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
-## 2.6.1-PENDING
+## 2.6.1
 
 Ondersteuning voor Valtimo 13.42.0.
 
