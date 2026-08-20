@@ -2,9 +2,12 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
-## 2.5.1
+## 2.6.1-PENDING
 
-Valtimo bijgewerkt naar versie 13.41.0.
+Ondersteuning voor Valtimo 13.42.0.
+
+## 2.6.0
+Voor aanmaken van een klantcontact, character limiet voor "reactie" en de "metadata" values verhoogd naar 4000 en 255 tekens. 
 
 ## 2.5.0
 Acties toegevoegd om digitale adressen aan te maken, op te halen en bij te werken, met aanvullende documentatie.
