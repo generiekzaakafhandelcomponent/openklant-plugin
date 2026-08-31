@@ -70,7 +70,7 @@
       <bpmn:incoming>Flow_0v73k3m</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1dy3wjd" sourceRef="haalPartijOpOfMaakNieuwe" targetRef="Activity_07k2g6k" />
-    <bpmn:serviceTask id="haalPartijOpOfMaakNieuwe" name="Haal partij op of maak een nieuwe" camunda:expression="{true]">
+    <bpmn:serviceTask id="haalPartijOpOfMaakNieuwe" name="Haal partij op of maak een nieuwe" camunda:expression="${true}">
       <bpmn:incoming>Flow_01e4b7b</bpmn:incoming>
       <bpmn:outgoing>Flow_1dy3wjd</bpmn:outgoing>
     </bpmn:serviceTask>

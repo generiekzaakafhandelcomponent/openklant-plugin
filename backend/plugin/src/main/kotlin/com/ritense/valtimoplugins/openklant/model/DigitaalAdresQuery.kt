@@ -1,6 +1,6 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 data class DigitaalAdresQuery(
     val queryParams: MutableMap<String, String> = mutableMapOf(),

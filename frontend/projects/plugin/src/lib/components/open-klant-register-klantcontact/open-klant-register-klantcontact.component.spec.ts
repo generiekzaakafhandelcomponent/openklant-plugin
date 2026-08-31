@@ -10,6 +10,8 @@ import {
   TranslateFakeLoader,
 } from "@ngx-translate/core";
 import { PluginService } from "@valtimo/plugin";
+import { InputComponent } from "@valtimo/components";
+import { By } from "@angular/platform-browser";
 
 const pluginServiceMock: Partial<PluginService> = {} as any;
 
@@ -27,6 +29,7 @@ describe("RegisterKlantcontactComponent", () => {
     onderwerp: "Subject",
     inhoud: "Content",
     reactie: "Reactie",
+    indicatieContactGelukt: "true",
     vertrouwelijk: "true",
     taal: "nld",
     plaatsgevondenOp: new Date().toISOString(),
@@ -45,6 +48,7 @@ describe("RegisterKlantcontactComponent", () => {
     onderwerp: "Subject",
     inhoud: "Content",
     reactie: "Reactie",
+    indicatieContactGelukt: "true",
     vertrouwelijk: "true",
     taal: "nld",
     plaatsgevondenOp: new Date().toISOString(),
@@ -124,6 +128,7 @@ describe("RegisterKlantcontactComponent", () => {
           onderwerp: "Subject",
           inhoud: "Content",
           reactie: "Reactie",
+          indicatieContactGelukt: "true",
           vertrouwelijk: "false",
           taal: "nld",
           plaatsgevondenOp: new Date().toISOString(),
@@ -197,6 +202,80 @@ describe("RegisterKlantcontactComponent", () => {
 
       component.formValueChange(validFormValue);
       expect(component.valid.emit).toHaveBeenCalledWith(true);
+    });
+  });
+
+  // Regression coverage for Github Issue #14
+  describe("hasBetrokkene", () => {
+    const inputByName = (name: string): InputComponent | undefined =>
+      fixture.debugElement
+        .queryAll(By.directive(InputComponent))
+        .map(reference => reference.componentInstance as InputComponent)
+        .find(input => input.name === name);
+
+    const setInput = (name: string, value: unknown): void => {
+      const input = inputByName(name);
+      expect(input)
+        .withContext(`the form should contain a v-input named '${name}'`)
+        .toBeDefined();
+      input.onValueChange(value);
+    };
+
+    const fillRequiredKlantcontactFields = (): void => {
+      setInput("kanaal", '"E-mail"');
+      setInput("onderwerp", '"Herinnering: openstaande taak"');
+      setInput("vertrouwelijk", "false");
+      setInput("taal", "nld");
+      setInput("plaatsgevondenOp", "pv:datumTijd");
+    };
+
+    it("should render hasBetrokkene as a form control so v-form collects it", () => {
+      expect(inputByName("hasBetrokkene")).toBeDefined();
+    });
+
+    it("should hide the betrokkene fields until hasBetrokkene is enabled", () => {
+      expect(inputByName("partijUuid")).toBeUndefined();
+
+      setInput("hasBetrokkene", true);
+      fixture.detectChanges();
+
+      expect(inputByName("partijUuid")).toBeDefined();
+    });
+
+    it("should persist hasBetrokkene as true along with the betrokkene fields", () => {
+      fillRequiredKlantcontactFields();
+      setInput("hasBetrokkene", true);
+      fixture.detectChanges();
+
+      setInput("partijUuid", "pv:partijUuid");
+      setInput("voorletters", '"P"');
+      setInput("voornaam", '"Pietje"');
+      setInput("voorvoegselAchternaam", '""');
+      setInput("achternaam", '"Puk"');
+      fixture.detectChanges();
+
+      save$.next();
+
+      expect(component.configuration.emit).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          hasBetrokkene: true,
+          partijUuid: "pv:partijUuid",
+          voornaam: '"Pietje"',
+          achternaam: '"Puk"',
+        }),
+      );
+    });
+
+    it("should persist hasBetrokkene as false for an anonymous klantcontact", () => {
+      fillRequiredKlantcontactFields();
+      setInput("hasBetrokkene", false);
+      fixture.detectChanges();
+
+      save$.next();
+
+      expect(component.configuration.emit).toHaveBeenCalledWith(
+        jasmine.objectContaining({hasBetrokkene: false}),
+      );
     });
   });
 });

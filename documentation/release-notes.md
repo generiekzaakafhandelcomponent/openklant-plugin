@@ -2,6 +2,11 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.6.2
+
+Fix voor 'Registreer nieuw klantcontact': de instelling 'Heeft betrokkene' werd niet opgeslagen in de
+proceskoppeling, waardoor de service task altijd faalde.
+
 ## 2.6.1
 
 Ondersteuning voor Valtimo 13.42.0.

@@ -45,3 +45,25 @@ jobs:
       - name: Lint
         run: npm run lint
         working-directory: frontend
+
+  frontend-test:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Resolve Chrome
+        run: echo "CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")" >> $GITHUB_ENV
+        working-directory: frontend
+
+      - name: Test
+        run: npx ng test @valtimo-plugins/openklant --watch=false
+        working-directory: frontend

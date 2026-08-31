@@ -23,10 +23,11 @@ import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.util.ReflectionUtil
 import com.ritense.valtimoplugins.openklant.util.StringToBooleanDeserializer
-import mu.KotlinLogging
+import com.ritense.valtimoplugins.openklant.util.toUuidIfPresent
+import com.ritense.valtimoplugins.openklant.util.trimToNull
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 import java.net.URI
-import java.util.UUID
 import kotlin.collections.count
 
 @Plugin(
@@ -185,20 +186,14 @@ class OpenKlantPlugin(
     ) {
         val request =
             DigitaalAdres(
-                verstrektDoorBetrokkeneUuid =
-                    verstrektDoorBetrokkene
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
-                verstrektDoorPartijUuid =
-                    verstrektDoorPartij
-                        .takeIf { it.isNotBlank() }
-                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
+                verstrektDoorBetrokkeneUuid = verstrektDoorBetrokkene.toUuidIfPresent(),
+                verstrektDoorPartijUuid = verstrektDoorPartij.toUuidIfPresent(),
                 adres = adres.trim(),
                 soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
                 isStandaardAdres = isStandaardAdres,
                 omschrijving = omschrijving.trim(),
-                referentie = referentie?.takeIf { it.isNotBlank() }?.trim(),
-                verificatieDatum = verificatieDatum?.takeIf { it.isNotBlank() }?.trim(),
+                referentie = referentie.trimToNull(),
+                verificatieDatum = verificatieDatum.trimToNull(),
             )
 
         val digitaalAdres = createDigitaalAdres(request)
@@ -292,35 +287,17 @@ class OpenKlantPlugin(
     ) {
         val patchRequest =
             DigitaalAdresPatch(
-                verstrektDoorBetrokkeneUuid =
-                    verstrektDoorBetrokkene
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { UUID.fromString(verstrektDoorBetrokkene.trim()) },
-                verstrektDoorPartijUuid =
-                    verstrektDoorPartij
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { UUID.fromString(verstrektDoorPartij.trim()) },
-                adres =
-                    adres
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { adres.trim() },
+                verstrektDoorBetrokkeneUuid = verstrektDoorBetrokkene.toUuidIfPresent(),
+                verstrektDoorPartijUuid = verstrektDoorPartij.toUuidIfPresent(),
+                adres = adres.trimToNull(),
                 soortDigitaalAdres =
                     soortDigitaalAdres
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()) },
+                        .trimToNull()
+                        ?.let { SoortDigitaalAdres.valueOf(it.uppercase()) },
                 isStandaardAdres = isStandaardAdres,
-                omschrijving =
-                    omschrijving
-                        ?.takeIf { it.isNotBlank() }
-                        ?.let { omschrijving.trim() },
-                referentie =
-                    referentie
-                        ?.takeIf { it.isNotBlank() }
-                        ?.trim(),
-                verificatieDatum =
-                    verificatieDatum
-                        ?.takeIf { it.isNotBlank() }
-                        ?.trim(),
+                omschrijving = omschrijving.trimToNull(),
+                referentie = referentie.trimToNull(),
+                verificatieDatum = verificatieDatum.trimToNull(),
             )
 
         val digitaalAdres =
@@ -446,7 +423,7 @@ class OpenKlantPlugin(
         @PluginActionProperty vertrouwelijk: String,
         @PluginActionProperty taal: String,
         @PluginActionProperty plaatsgevondenOp: String,
-        @PluginActionProperty hasBetrokkene: Boolean,
+        @PluginActionProperty hasBetrokkene: Boolean?,
         @PluginActionProperty partijUuid: String?,
         @PluginActionProperty voorletters: String?,
         @PluginActionProperty voornaam: String?,

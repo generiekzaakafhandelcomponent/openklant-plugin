@@ -84,9 +84,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             voornaam: 'Voornaam',
             voorvoegselAchternaam: 'Voorvoegsel achternaam',
             achternaam: 'Achternaam',
-            heeftBetrokkene: 'Bevat het klantcontact een betrokkene of is het anoniem?',
-            'heeftBetrokkene.betrokkene': 'Heeft betrokkene',
-            'heeftBetrokkene.anoniem': 'Is anoniem',
+            heeftBetrokkene: 'Heeft betrokkene (niet aanvinken voor een anoniem klantcontact)',
 
             // Set standaard digitaal adres
             'set-default-digitaal-adres': 'Instellen van standaard digitaal adres',
@@ -177,9 +175,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             voornaam: 'First name',
             voorvoegselAchternaam: 'Name infix',
             achternaam: 'Last name',
-            heeftBetrokkene: 'Does the contact moment involve an individual or is it anonymous?',
-            'heeftBetrokkene.betrokkene': 'Has an individual',
-            'heeftBetrokkene.anoniem': 'Is anonymous',
+            heeftBetrokkene: 'Has an involved party (leave unchecked for an anonymous contact moment)',
 
             // Set default digital address
             'set-default-digitaal-adres': 'Set default digital address',
