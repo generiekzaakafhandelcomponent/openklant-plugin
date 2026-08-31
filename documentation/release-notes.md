@@ -2,6 +2,11 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.7.0
+
+De Open Klant-plugin vereist geen ENV-variabelen meer. De klantinteracties-URL en het token worden nu runtime uit de
+plugin-configuratie gehaald.
+
 ## 2.6.2
 
 Fix voor 'Registreer nieuw klantcontact': de instelling 'Heeft betrokkene' werd niet opgeslagen in de

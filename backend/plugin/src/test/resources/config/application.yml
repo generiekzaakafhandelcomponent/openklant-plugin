@@ -41,6 +41,3 @@ operaton:
       properties:
         deploy-changed-only: true
         enforceHistoryTimeToLive: false
-
-AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_KLANTINTERACTIES_URL: http://localhost:8080
-AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN: test-token
