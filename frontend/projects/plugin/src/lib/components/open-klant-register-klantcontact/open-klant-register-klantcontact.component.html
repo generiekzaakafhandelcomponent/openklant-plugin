@@ -79,7 +79,7 @@
             name="hasBetrokkene"
             type="checkbox"
             [title]="'heeftBetrokkene' | pluginTranslate: pluginId | async"
-            [defaultValue]="$any(!!obs.prefill?.hasBetrokkene)"
+            [defaultValue]="$any(resolveHasBetrokkene(obs.prefill))"
             [disabled]="obs.disabled"
     ></v-input>
     <ng-container

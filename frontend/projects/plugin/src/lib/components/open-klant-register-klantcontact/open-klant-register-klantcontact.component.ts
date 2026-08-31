@@ -56,14 +56,17 @@ export class RegisterKlantcontactComponent
     new BehaviorSubject<RegisterKlantcontactConfig | null>(null);
 
   private saveSubscription: Subscription;
+  private prefillSubscription: Subscription;
   private readonly valid$ = new BehaviorSubject<boolean>(false);
 
   ngOnInit(): void {
+    this.openPrefillSubscription();
     this.openSaveSubscription();
   }
 
   ngOnDestroy(): void {
     this.saveSubscription?.unsubscribe();
+    this.prefillSubscription?.unsubscribe();
   }
 
   formValueChange(formOutput: FormOutput): void {
@@ -72,6 +75,29 @@ export class RegisterKlantcontactComponent
     this.hasBetrokkene = !!formValue.hasBetrokkene;
     this.formValue$.next(formValue);
     this.handleValid(formValue);
+  }
+
+  /**
+   * Process links configured before plugin version 2.6.2, when the 'heeftBetrokkene' toggle was
+   * not persisted, have no hasBetrokkene property at all. Falling back to false would render them
+   * as anonymous and drop the configured betrokkene as soon as the process link is re-saved, so
+   * derive the intent from the presence of a partijUuid instead. This mirrors the fallback in the
+   * backend's KlantcontactCreationInformation.
+   *
+   * Can be removed once no process links predating 2.6.2 are in use.
+   */
+  protected resolveHasBetrokkene(
+    prefill: RegisterKlantcontactConfig | null,
+  ): boolean {
+    return !!(prefill?.hasBetrokkene ?? prefill?.partijUuid);
+  }
+
+  private openPrefillSubscription(): void {
+    this.prefillSubscription = this.prefillConfiguration$
+      ?.pipe(take(1))
+      .subscribe(prefill => {
+        this.hasBetrokkene = this.resolveHasBetrokkene(prefill);
+      });
   }
 
   private handleValid(formOutput: RegisterKlantcontactConfig): void {

@@ -23,12 +23,6 @@ describe('UpdateDigitaalAdresComponent', () => {
 
         fixture = TestBed.createComponent(UpdateDigitaalAdresComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(UpdateDigitaalAdresComponent);
-        component = fixture.componentInstance;
 
         component.save$ = EMPTY;
         component.disabled$ = of(false);

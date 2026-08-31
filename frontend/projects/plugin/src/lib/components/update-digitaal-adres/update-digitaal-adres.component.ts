@@ -16,7 +16,7 @@ export class UpdateDigitaalAdresComponent implements FunctionConfigurationCompon
   @Input() disabled$: Observable<boolean>;
   @Input() pluginId: string;
   @Input() prefillConfiguration$?: Observable<DigitaalAdresConfig>;
-  @Output() valid: EventEmitter<boolean>;
+  @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() configuration: EventEmitter<FunctionConfigurationData> = new EventEmitter<FunctionConfigurationData>();
 
   private saveSubscription!: Subscription;
