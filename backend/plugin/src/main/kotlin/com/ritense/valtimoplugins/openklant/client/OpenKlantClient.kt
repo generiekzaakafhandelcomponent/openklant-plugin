@@ -13,8 +13,8 @@ import com.ritense.valtimoplugins.openklant.model.KlantcontactQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.zgw.Page
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
-import mu.KotlinLogging
 import org.jetbrains.annotations.VisibleForTesting
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody

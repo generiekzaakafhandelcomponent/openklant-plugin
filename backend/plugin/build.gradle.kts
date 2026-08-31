@@ -1,8 +1,7 @@
-val kotlinLoggingMicroutilsVersion: String by project
-val kotlinxCoroutinesVersion: String by project
+val jetbrainsAnnotationsVersion: String by project
+val kotlinLoggingVersion: String by project
 val mockkVersion: String by project
-val reactorNettyVersion: String by project
-val springWebfluxVersion: String by project
+val operatonVersion: String by project
 
 dockerCompose {
     setProjectName("openklant")
@@ -18,23 +17,27 @@ dependencies {
     compileOnly("com.ritense.valtimo:plugin-valtimo")
     compileOnly("com.ritense.valtimo:valtimo-gzac-dependencies")
 
+    compileOnly("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
+    compileOnly("org.jetbrains:annotations:$jetbrainsAnnotationsVersion")
+    compileOnly("org.operaton.bpm:operaton-engine:$operatonVersion")
+
     compileOnly("org.springframework.boot:spring-boot-starter-security")
-
-    // Netty and WebClient
-    implementation("io.projectreactor.netty:reactor-netty-core:$reactorNettyVersion")
-    implementation("io.projectreactor.netty:reactor-netty-http:$reactorNettyVersion")
-    compileOnly("org.springframework:spring-webflux:$springWebfluxVersion")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
-    implementation("io.github.microutils:kotlin-logging:$kotlinLoggingMicroutilsVersion")
+    compileOnly("org.springframework.boot:spring-boot-starter-validation")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
 
     // Testing
     testImplementation("com.ritense.valtimo:core")
     testImplementation("com.ritense.valtimo:plugin-valtimo")
     testImplementation("com.ritense.valtimo:valtimo-gzac-dependencies")
 
+    testImplementation("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
+    testImplementation("org.jetbrains:annotations:$jetbrainsAnnotationsVersion")
+    testImplementation("org.operaton.bpm:operaton-engine:$operatonVersion")
+
     testImplementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-validation")
+    testImplementation("org.springframework.boot:spring-boot-starter-web")
 
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")

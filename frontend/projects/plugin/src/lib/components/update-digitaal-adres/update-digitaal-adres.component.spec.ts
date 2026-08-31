@@ -3,6 +3,8 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UpdateDigitaalAdresComponent} from './update-digitaal-adres.component';
 import {DigitaalAdresConfig} from '../../models/digitaal-adres-config';
 import {EMPTY, of} from 'rxjs';
+import {TranslateFakeLoader, TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {PluginService} from '@valtimo/plugin';
 
 describe('UpdateDigitaalAdresComponent', () => {
     let component: UpdateDigitaalAdresComponent;
@@ -10,15 +12,15 @@ describe('UpdateDigitaalAdresComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [UpdateDigitaalAdresComponent]
+            imports: [
+                UpdateDigitaalAdresComponent,
+                TranslateModule.forRoot({
+                    loader: {provide: TranslateLoader, useClass: TranslateFakeLoader}
+                })
+            ],
+            providers: [{provide: PluginService, useValue: {} as Partial<PluginService>}]
         }).compileComponents();
 
-        fixture = TestBed.createComponent(UpdateDigitaalAdresComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(UpdateDigitaalAdresComponent);
         component = fixture.componentInstance;
 

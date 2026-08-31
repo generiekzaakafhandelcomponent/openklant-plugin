@@ -1,6 +1,6 @@
 package com.ritense.valtimoplugins.openklant.model
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 data class AdresInformation(
     val partijReference: NestedUuid,
