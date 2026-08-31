@@ -24,7 +24,7 @@ Het communiceert met een Open Klant (v2) implementatie.
 Een algemene beschrijving van het configureren van plug-ins vind je
 hier:[https://docs.valtimo.nl/features/plugins#configuring-plugins](https://docs.valtimo.nl/features/plugins#configuring-plugins)
 
-Voorbeeld `*.pluginconfig.json`:
+De configuratie kan ook worden geautodeployed. Voorbeeld `*.pluginconfig.json`:
 
 ```json   
 {
@@ -32,18 +32,14 @@ Voorbeeld `*.pluginconfig.json`:
   "title": "Open Klant",
   "pluginDefinitionKey": "openklant",
   "properties": {
-    "klantinteractiesUrl": "${AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_KLANTINTERACTIES_URL}",
-    "token": "${AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN}"
+    "klantinteractiesUrl": "https://openklant.gemeente.nl/klantinteracties/api/v1/",
+    "token": "${OPENKLANT_AUTHORIZATION_TOKEN}"
   }
 }   
 ```
 
-Voorbeeld `.env.properties`:
-
-```properties
-AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_KLANTINTERACTIES_URL=https://openklant.gemeente.nl/klantinteracties/api/v1/
-AUTODEPLOYMENT_PLUGINCONFIG_OPENKLANT_AUTHORIZATION_TOKEN=AAAAAAAAAAAAAAAAAA
-```
+Elke waarde kan een `${ENV_VARIABELE}`-placeholder zijn. Gebruik dit voor het token, zodat het niet in de repository
+terechtkomt.
 
 ## Opslaan partij:
 

@@ -376,7 +376,8 @@
                             "attributes": {
                                 "data-testid": "open-klant.start-klantcontact.betrokkene.partijUuid"
                             },
-                            "applyMaskOn": "change"
+                            "applyMaskOn": "change",
+                            "defaultValue": "b39c60c0-6575-42bf-b9e2-5fb4f4c56f3f"
                         },
                         {
                             "key": "apiRequest.registerNewKlantcontact.betrokkene.voorletters",
@@ -460,6 +461,7 @@
                     "label": "Partij UUID",
                     "applyMaskOn": "change",
                     "tableView": true,
+                    "defaultValue": "b39c60c0-6575-42bf-b9e2-5fb4f4c56f3f",
                     "validate": {
                         "required": true
                     },
@@ -547,7 +549,7 @@
                     "key": "partijUuid",
                     "type": "textfield",
                     "input": true,
-                    "defaultValue": "b8cef7e3-b16c-4bb6-9b2f-9cd1583d6578",
+                    "defaultValue": "b39c60c0-6575-42bf-b9e2-5fb4f4c56f3f",
                     "validate": {
                         "required": true
                     }
@@ -674,6 +676,7 @@
                     "label": "Partij-UUID",
                     "applyMaskOn": "change",
                     "tableView": true,
+                    "defaultValue": "b39c60c0-6575-42bf-b9e2-5fb4f4c56f3f",
                     "validateWhenHidden": false,
                     "key": "apiRequest.updateDigitaalAdres.verstrektDoorPartij",
                     "type": "textfield",
