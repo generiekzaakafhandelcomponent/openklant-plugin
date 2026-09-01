@@ -1,0 +1,174 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-betrokkene",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Fixture",
+      "objectId": "999900043",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-klantcontact",
+    "actionProperties": {
+      "resultPvName": "klantcontactUuid",
+      "kanaal": "telefoon",
+      "onderwerp": "Fixture klantcontact",
+      "taal": "nld",
+      "vertrouwelijk": "false",
+      "rol": "klant",
+      "initiator": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+      "codeObjecttype": "zaak",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "createBetrokkene",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-betrokkene",
+    "actionProperties": {
+      "resultPvName": "betrokkeneUuid",
+      "klantcontactUuid": "pv:klantcontactUuid",
+      "rol": "klant",
+      "initiator": "true",
+      "partijUuid": "pv:partijUuid",
+      "voorletters": "P",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "correspondentieadres": {
+        "straatnaam": "Dorpsstraat",
+        "huisnummer": 1,
+        "postcode": "1234 AB",
+        "stad": "Utrecht",
+        "land": "NL"
+      }
+    }
+  },
+  {
+    "activityId": "getBetrokkene",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-betrokkene",
+    "actionProperties": {
+      "uuid": "pv:betrokkeneUuid",
+      "resultPvName": "betrokkeneOpgehaald"
+    }
+  },
+  {
+    "activityId": "listBetrokkenen",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-betrokkenen",
+    "actionProperties": {
+      "resultPvName": "betrokkenen",
+      "queryParams": [
+        {
+          "key": "contactnaamAchternaam",
+          "value": "Puk"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateBetrokkene",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-betrokkene",
+    "actionProperties": {
+      "uuid": "pv:betrokkeneUuid",
+      "resultPvName": "betrokkeneBijgewerkt",
+      "organisatienaam": "Ritense BV"
+    }
+  },
+  {
+    "activityId": "deleteBetrokkene",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-betrokkene",
+    "actionProperties": {
+      "uuid": "pv:betrokkeneUuid"
+    }
+  },
+  {
+    "activityId": "deleteKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "deletePartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetBetrokkene",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-betrokkene-show-get-betrokkene",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListBetrokkenen",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-betrokkene-show-list-betrokkenen",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

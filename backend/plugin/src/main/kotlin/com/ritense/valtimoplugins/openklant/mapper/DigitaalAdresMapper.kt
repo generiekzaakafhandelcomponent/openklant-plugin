@@ -3,7 +3,6 @@ package com.ritense.valtimoplugins.openklant.mapper
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresCreationRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresPatchRequest
 import com.ritense.valtimoplugins.openklant.dto.DigitaalAdresResponse
-import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
@@ -55,29 +54,6 @@ fun DigitaalAdres.toCreationRequest(): DigitaalAdresCreationRequest =
         referentie = referentie,
         verificatieDatum = verificatieDatum,
     )
-
-fun DigitaalAdres.toResponse(): DigitaalAdresResponse {
-    val uuid = requireNotNull(uuid) { "uuid is required" }
-
-    val betrokkeneUuid = requireNotNull(verstrektDoorBetrokkeneUuid)
-    val betrokkeneUrl = requireNotNull(verstrektDoorBetrokkeneUrl)
-
-    val partijUuid = requireNotNull(verstrektDoorPartijUuid)
-    val partijUrl = requireNotNull(verstrektDoorPartijUrl)
-
-    return DigitaalAdresResponse(
-        uuid = uuid,
-        url = url.toString(),
-        verstrektDoorBetrokkene = ObjectReference(uuid = betrokkeneUuid, url = betrokkeneUrl.toString()),
-        verstrektDoorPartij = ObjectReference(uuid = partijUuid, url = partijUrl.toString()),
-        adres = adres,
-        soortDigitaalAdres = soortDigitaalAdres,
-        isStandaardAdres = isStandaardAdres,
-        omschrijving = omschrijving,
-        referentie = referentie,
-        verificatieDatum = verificatieDatum,
-    )
-}
 
 fun DigitaalAdresPatchRequest.toModel(): DigitaalAdresPatch =
     DigitaalAdresPatch(

@@ -5,4 +5,5 @@ export interface StoreContactInfoConfig {
   lastName: string;
   emailAddress: string;
   caseUuid: string;
+  resultPvName?: string;
 }

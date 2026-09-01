@@ -2,6 +2,11 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.8.0
+
+Alle resources van de klantinteracties-API zijn nu als plugin-actie beschikbaar. Waar de plugin eerder 10 acties had,
+zijn dat nu 67.
+
 ## 2.7.0
 
 De Open Klant-plugin vereist geen ENV-variabelen meer. De klantinteracties-URL en het token worden nu runtime uit de

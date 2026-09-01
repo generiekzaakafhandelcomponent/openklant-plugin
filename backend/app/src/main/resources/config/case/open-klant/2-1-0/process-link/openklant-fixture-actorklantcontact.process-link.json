@@ -1,0 +1,153 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-actorklantcontact",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createActorVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-actor",
+    "actionProperties": {
+      "resultPvName": "actorUuid",
+      "naam": "Fixture actor",
+      "soortActor": "medewerker",
+      "functie": "Baliemedewerker",
+      "telefoonnummer": "0612345678"
+    }
+  },
+  {
+    "activityId": "createKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-klantcontact",
+    "actionProperties": {
+      "resultPvName": "klantcontactUuid",
+      "kanaal": "telefoon",
+      "onderwerp": "Fixture klantcontact",
+      "taal": "nld",
+      "vertrouwelijk": "false",
+      "rol": "klant",
+      "initiator": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+      "codeObjecttype": "zaak",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "createActorklantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-actorklantcontact",
+    "actionProperties": {
+      "resultPvName": "actorklantcontactUuid",
+      "actorUuid": "pv:actorUuid",
+      "klantcontactUuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "getActorklantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-actorklantcontact",
+    "actionProperties": {
+      "uuid": "pv:actorklantcontactUuid",
+      "resultPvName": "actorklantcontactOpgehaald"
+    }
+  },
+  {
+    "activityId": "listActorklantcontacten",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-actorklantcontacten",
+    "actionProperties": {
+      "resultPvName": "actorklantcontacten",
+      "queryParams": [
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateActorklantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-actorklantcontact",
+    "actionProperties": {
+      "uuid": "pv:actorklantcontactUuid",
+      "resultPvName": "actorklantcontactBijgewerkt",
+      "actorUuid": "pv:actorUuid"
+    }
+  },
+  {
+    "activityId": "deleteActorklantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-actorklantcontact",
+    "actionProperties": {
+      "uuid": "pv:actorklantcontactUuid"
+    }
+  },
+  {
+    "activityId": "deleteKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "deleteActorVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-actor",
+    "actionProperties": {
+      "uuid": "pv:actorUuid"
+    }
+  },
+  {
+    "activityId": "showGetActorklantcontact",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-actorklantcontact-show-get-actorklantcontact",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListActorklantcontacten",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-actorklantcontact-show-list-actorklantcontacten",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

@@ -53,4 +53,16 @@
     [disabled]="obs.disabled"
     [required]="true"
   ></v-input>
+
+    <v-input
+        name="resultPvName"
+        [title]="'resultPvName' | pluginTranslate: pluginId | async"
+        [tooltip]="'resultPvNameTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.resultPvName"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
 </v-form>

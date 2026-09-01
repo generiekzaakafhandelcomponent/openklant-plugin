@@ -1,6 +1,8 @@
 package com.ritense.valtimoplugins.openklant.dto
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
 import java.util.UUID
 
 data class Betrokkene(
@@ -29,11 +31,24 @@ data class Betrokkene(
     @JsonProperty("initiator")
     val initiator: Boolean,
 ) : Referable {
-    enum class Rol {
-        @JsonProperty("vertegenwoordiger")
-        VERTEGENWOORDIGER,
+    enum class Rol(
+        val value: String,
+    ) {
+        VERTEGENWOORDIGER("vertegenwoordiger"),
+        KLANT("klant"),
+        ;
 
-        @JsonProperty("klant")
-        KLANT,
+        @JsonValue
+        fun toJson() = value
+
+        companion object {
+            @JvmStatic
+            @JsonCreator
+            fun fromValue(value: String): Rol =
+                entries.firstOrNull { it.value.equals(value.trim(), ignoreCase = true) }
+                    ?: throw IllegalArgumentException(
+                        "Unknown rol '$value'. Supported values: ${entries.joinToString { it.value }}",
+                    )
+        }
     }
 }

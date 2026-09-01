@@ -13,7 +13,7 @@ data class Onderwerpobjectidentificator(
     @JsonProperty("codeRegister")
     @field:Size(max = 200)
     val codeRegister: String,
-    @JsonProperty("CodeSoortObjectId")
+    @JsonProperty("codeSoortObjectId")
     @field:Size(max = 200)
     val codeSoortObjectId: String,
 )

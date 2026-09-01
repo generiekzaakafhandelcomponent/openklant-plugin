@@ -26,9 +26,11 @@ export interface KlantcontactDTO {
   onderwerp: string;
   inhoud?: string;
   reactie?: string;
-  indicatieContactGelukt?: string | null; // Although the API docs type this as a boolean, in practice, the API returns a string, e.g. 'true'
+  // The plugin used to serialise booleans as strings ('true'), so documents written before that was
+  // fixed still hold the string form. Both encodings are accepted.
+  indicatieContactGelukt?: boolean | string | null;
   taal: string;
-  vertrouwelijk: boolean;
+  vertrouwelijk: boolean | string;
   plaatsgevondenOp?: string;
 }
 
@@ -45,7 +47,7 @@ export function mapDtoToModel(dto: KlantcontactDTO): Klantcontact {
     reaction: dto.reactie,
     outcome: parseWasSuccessfulToContactOutcome(dto.indicatieContactGelukt),
     preferredLanguage: dto.taal,
-    isConfidential: dto.vertrouwelijk,
+    isConfidential: dto.vertrouwelijk === true || dto.vertrouwelijk === "true",
     occurredAt: dto.plaatsgevondenOp
       ? new Date(dto.plaatsgevondenOp)
       : undefined,
@@ -70,13 +72,15 @@ export function mapModelToDto(model: Klantcontact): KlantcontactDTO {
 }
 
 function parseWasSuccessfulToContactOutcome(
-  wasSuccessful?: string | null
+  wasSuccessful?: boolean | string | null
 ): ContactOutcome {
   switch (wasSuccessful) {
     case null:
       return ContactOutcome.NOT_APPLICABLE;
+    case true:
     case "true":
       return ContactOutcome.SUCCESS;
+    case false:
     case "false":
       return ContactOutcome.FAILURE;
     default:

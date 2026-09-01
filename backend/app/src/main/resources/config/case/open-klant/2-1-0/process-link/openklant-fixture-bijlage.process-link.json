@@ -1,0 +1,132 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-bijlage",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-klantcontact",
+    "actionProperties": {
+      "resultPvName": "klantcontactUuid",
+      "kanaal": "telefoon",
+      "onderwerp": "Fixture klantcontact",
+      "taal": "nld",
+      "vertrouwelijk": "false",
+      "rol": "klant",
+      "initiator": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+      "codeObjecttype": "zaak",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "createBijlage",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-bijlage",
+    "actionProperties": {
+      "resultPvName": "bijlageUuid",
+      "klantcontactUuid": "pv:klantcontactUuid",
+      "objectId": "9193b03f-93c2-4bfc-badf-b61494bd31d6",
+      "codeObjecttype": "DOCUMENT",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "getBijlage",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-bijlage",
+    "actionProperties": {
+      "uuid": "pv:bijlageUuid",
+      "resultPvName": "bijlageOpgehaald"
+    }
+  },
+  {
+    "activityId": "listBijlagen",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-bijlagen",
+    "actionProperties": {
+      "resultPvName": "bijlagen",
+      "queryParams": [
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateBijlage",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-bijlage",
+    "actionProperties": {
+      "uuid": "pv:bijlageUuid",
+      "resultPvName": "bijlageBijgewerkt",
+      "objectId": "3f30b391-2c39-4cfb-fdab-6b4149db136d"
+    }
+  },
+  {
+    "activityId": "deleteBijlage",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-bijlage",
+    "actionProperties": {
+      "uuid": "pv:bijlageUuid"
+    }
+  },
+  {
+    "activityId": "deleteKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "showGetBijlage",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-bijlage-show-get-bijlage",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListBijlagen",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-bijlage-show-list-bijlagen",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

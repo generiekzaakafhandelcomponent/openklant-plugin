@@ -1,0 +1,22 @@
+<v-paragraph [margin]="true" [italic]="true">
+    {{ 'delete-partijDescription' | pluginTranslate: pluginId | async }}
+</v-paragraph>
+<v-form
+    (valueChange)="formValueChange($event)"
+    *ngIf="{
+        disabled: disabled$ | async,
+        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
+    } as obs"
+>
+    <v-input
+        name="uuid"
+        [title]="'uuid' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.uuid"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+</v-form>

@@ -1,0 +1,284 @@
+<v-paragraph [margin]="true" [italic]="true">
+    {{ 'create-klantcontactDescription' | pluginTranslate: pluginId | async }}
+</v-paragraph>
+<v-form
+    (valueChange)="formValueChange($event)"
+    *ngIf="{
+        disabled: disabled$ | async,
+        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
+    } as obs"
+>
+    <v-input
+        name="kanaal"
+        [title]="'kanaal' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.kanaal"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="onderwerp"
+        [title]="'onderwerp' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.onderwerp"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="taal"
+        [title]="'taal' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.taal"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="vertrouwelijk"
+        [title]="'vertrouwelijk' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.vertrouwelijk"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="referentienummer"
+        [title]="'referentienummer' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.referentienummer"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="inhoud"
+        [title]="'inhoud' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.inhoud"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="reactie"
+        [title]="'reactie' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.reactie"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="indicatieContactGelukt"
+        [title]="'indicatieContactGelukt' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.indicatieContactGelukt"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="plaatsgevondenOp"
+        [title]="'plaatsgevondenOp' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.plaatsgevondenOp"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="metadata"
+        [title]="'metadata' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.metadata"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="rol"
+        [title]="'rol' | pluginTranslate: pluginId | async"
+        [tooltip]="'rolTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.rol"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="initiator"
+        [title]="'initiator' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.initiator"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="partijUuid"
+        [title]="'partijUuid' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.partijUuid"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorletters"
+        [title]="'voorletters' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorletters"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voornaam"
+        [title]="'voornaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voornaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorvoegselAchternaam"
+        [title]="'voorvoegselAchternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorvoegselAchternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="achternaam"
+        [title]="'achternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.achternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="organisatienaam"
+        [title]="'organisatienaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.organisatienaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="objectId"
+        [title]="'objectId' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.objectId"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeObjecttype"
+        [title]="'codeObjecttype' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeObjecttype"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeRegister"
+        [title]="'codeRegister' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeRegister"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeSoortObjectId"
+        [title]="'codeSoortObjectId' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeSoortObjectId"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="resultPvName"
+        [title]="'resultPvName' | pluginTranslate: pluginId | async"
+        [tooltip]="'resultPvNameTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.resultPvName"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="betrokkeneResultPvName"
+        [title]="'betrokkeneResultPvName' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.betrokkeneResultPvName"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="onderwerpobjectResultPvName"
+        [title]="'onderwerpobjectResultPvName' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.onderwerpobjectResultPvName"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+</v-form>

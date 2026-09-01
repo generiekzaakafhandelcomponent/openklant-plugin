@@ -3,5 +3,65 @@
         "processDefinitionKey": "open-klant-start",
         "canInitializeDocument": true,
         "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-actor",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-actorklantcontact",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-betrokkene",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-bijlage",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-digitaal-adres",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-internetaak",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-klantcontact",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-onderwerpobject",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-partij-identificator",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-partij",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-rekeningnummer",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    },
+    {
+        "processDefinitionKey": "openklant-fixture-vertegenwoordiging",
+        "canInitializeDocument": true,
+        "startableByUser": true
     }
 ]

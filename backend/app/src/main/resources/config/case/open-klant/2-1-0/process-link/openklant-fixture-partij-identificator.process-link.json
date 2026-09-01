@@ -1,0 +1,136 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-partij-identificator",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Fixture",
+      "objectId": "999900031",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createPartij-Identificator",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij-identificator",
+    "actionProperties": {
+      "resultPvName": "partijIdentificatorUuid",
+      "partijUuid": "pv:partijUuid",
+      "objectId": "90000001",
+      "codeObjecttype": "niet_natuurlijk_persoon",
+      "codeRegister": "hr",
+      "codeSoortObjectId": "kvk_nummer"
+    }
+  },
+  {
+    "activityId": "getPartij-Identificator",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-partij-identificator",
+    "actionProperties": {
+      "uuid": "pv:partijIdentificatorUuid",
+      "resultPvName": "partijIdentificatorOpgehaald"
+    }
+  },
+  {
+    "activityId": "listPartij-Identificatoren",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-partij-identificatoren",
+    "actionProperties": {
+      "resultPvName": "partijIdentificatoren",
+      "queryParams": [
+        {
+          "key": "partijIdentificatorCodeSoortObjectId",
+          "value": "kvk_nummer"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updatePartij-Identificator",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-partij-identificator",
+    "actionProperties": {
+      "uuid": "pv:partijIdentificatorUuid",
+      "resultPvName": "partijIdentificatorBijgewerkt",
+      "objectId": "90000002",
+      "codeObjecttype": "niet_natuurlijk_persoon",
+      "codeRegister": "hr",
+      "codeSoortObjectId": "kvk_nummer"
+    }
+  },
+  {
+    "activityId": "deletePartij-Identificator",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij-identificator",
+    "actionProperties": {
+      "uuid": "pv:partijIdentificatorUuid"
+    }
+  },
+  {
+    "activityId": "deletePartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetPartij-Identificator",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-partij-identificator-show-get-partij-identificator",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListPartij-Identificatoren",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-partij-identificator-show-list-partij-identificatoren",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

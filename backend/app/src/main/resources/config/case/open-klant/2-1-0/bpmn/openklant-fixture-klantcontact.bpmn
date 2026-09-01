@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_openklant-fixture-klantcontact" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="openklant-fixture-klantcontact" name="Open Klant fixture: klantcontacten" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="createKlantcontact" name="Maak klantcontact aan">
+      <bpmn:incoming>Flow_0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="getKlantcontact" name="Haal klantcontact op">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showGetKlantcontact" name="Toon resultaat: Haal klantcontact op">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="searchKlantcontacten" name="Zoek klantcontacten">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showSearchKlantcontacten" name="Toon resultaat: Zoek klantcontacten">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="updateKlantcontact" name="Werk klantcontact bij">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deleteKlantcontact" name="Verwijder klantcontact">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Einde">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0" sourceRef="StartEvent_1" targetRef="createKlantcontact" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="createKlantcontact" targetRef="getKlantcontact" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="getKlantcontact" targetRef="showGetKlantcontact" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="showGetKlantcontact" targetRef="searchKlantcontacten" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="searchKlantcontacten" targetRef="showSearchKlantcontacten" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="showSearchKlantcontacten" targetRef="updateKlantcontact" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="updateKlantcontact" targetRef="deleteKlantcontact" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="deleteKlantcontact" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_openklant-fixture-klantcontact">
+    <bpmndi:BPMNPlane id="BPMNPlane_openklant-fixture-klantcontact" bpmnElement="openklant-fixture-klantcontact">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="180" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createKlantcontact_di" bpmnElement="createKlantcontact">
+        <dc:Bounds x="266" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="getKlantcontact_di" bpmnElement="getKlantcontact">
+        <dc:Bounds x="446" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showGetKlantcontact_di" bpmnElement="showGetKlantcontact">
+        <dc:Bounds x="626" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="searchKlantcontacten_di" bpmnElement="searchKlantcontacten">
+        <dc:Bounds x="806" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showSearchKlantcontacten_di" bpmnElement="showSearchKlantcontacten">
+        <dc:Bounds x="986" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="updateKlantcontact_di" bpmnElement="updateKlantcontact">
+        <dc:Bounds x="1166" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleteKlantcontact_di" bpmnElement="deleteKlantcontact">
+        <dc:Bounds x="1346" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1526" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0_di" bpmnElement="Flow_0">
+        <di:waypoint x="216" y="130" />
+        <di:waypoint x="266" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="396" y="130" />
+        <di:waypoint x="446" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="576" y="130" />
+        <di:waypoint x="626" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="756" y="130" />
+        <di:waypoint x="806" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="936" y="130" />
+        <di:waypoint x="986" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="1116" y="130" />
+        <di:waypoint x="1166" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1296" y="130" />
+        <di:waypoint x="1346" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1476" y="130" />
+        <di:waypoint x="1526" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

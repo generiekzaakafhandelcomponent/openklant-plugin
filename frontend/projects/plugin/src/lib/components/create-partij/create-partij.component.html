@@ -1,0 +1,241 @@
+<v-paragraph [margin]="true" [italic]="true">
+    {{ 'create-partijDescription' | pluginTranslate: pluginId | async }}
+</v-paragraph>
+<v-form
+    (valueChange)="formValueChange($event)"
+    *ngIf="{
+        disabled: disabled$ | async,
+        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
+    } as obs"
+>
+    <v-input
+        name="soortPartij"
+        [title]="'soortPartij' | pluginTranslate: pluginId | async"
+        [tooltip]="'soortPartijTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.soortPartij"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="objectId"
+        [title]="'objectId' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.objectId"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeObjecttype"
+        [title]="'codeObjecttype' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeObjecttype"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeRegister"
+        [title]="'codeRegister' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeRegister"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="codeSoortObjectId"
+        [title]="'codeSoortObjectId' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.codeSoortObjectId"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="nummer"
+        [title]="'nummer' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.nummer"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="interneNotitie"
+        [title]="'interneNotitie' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.interneNotitie"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorkeurstaal"
+        [title]="'voorkeurstaal' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorkeurstaal"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="indicatieActief"
+        [title]="'indicatieActief' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.indicatieActief"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="indicatieGeheimhouding"
+        [title]="'indicatieGeheimhouding' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.indicatieGeheimhouding"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="digitaleAdressen"
+        [title]="'digitaleAdressen' | pluginTranslate: pluginId | async"
+        [tooltip]="'uuidListTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.digitaleAdressen"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorkeursDigitaalAdres"
+        [title]="'voorkeursDigitaalAdres' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorkeursDigitaalAdres"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="rekeningnummers"
+        [title]="'rekeningnummers' | pluginTranslate: pluginId | async"
+        [tooltip]="'uuidListTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.rekeningnummers"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorkeursRekeningnummer"
+        [title]="'voorkeursRekeningnummer' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorkeursRekeningnummer"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="bezoekadres"
+        [title]="'bezoekadres' | pluginTranslate: pluginId | async"
+        [tooltip]="'adresObjectTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.bezoekadres"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="correspondentieadres"
+        [title]="'correspondentieadres' | pluginTranslate: pluginId | async"
+        [tooltip]="'adresObjectTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.correspondentieadres"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorletters"
+        [title]="'voorletters' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorletters"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voornaam"
+        [title]="'voornaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voornaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorvoegselAchternaam"
+        [title]="'voorvoegselAchternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorvoegselAchternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="achternaam"
+        [title]="'achternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.achternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="resultPvName"
+        [title]="'resultPvName' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.resultPvName"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+</v-form>

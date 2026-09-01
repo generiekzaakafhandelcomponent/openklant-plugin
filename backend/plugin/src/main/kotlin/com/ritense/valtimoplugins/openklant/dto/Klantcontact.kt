@@ -32,6 +32,11 @@ data class Klantcontact(
     val reactie: String?,
     @field:JsonProperty("indicatieContactGelukt")
     val indicatieContactGelukt: Boolean?,
+    // Added in klantinteracties 0.8.0; absent (null) on older Open Klant instances.
+    @field:JsonProperty("hoofdOnderwerpType")
+    val hoofdOnderwerpType: String? = null,
+    @field:JsonProperty("verdereActieOndernomen")
+    val verdereActieOndernomen: Boolean? = null,
     @field:JsonProperty("taal")
     val taal: String,
     @field:JsonProperty("vertrouwelijk")
@@ -40,6 +45,8 @@ data class Klantcontact(
     val plaatsgevondenOp: String?,
     @field:JsonProperty("metadata")
     val metadata: Map<String, String>,
+    // The Kotlin name deliberately drops the underscore: the 'klant:' value resolver reflects over
+    // property names, so renaming this would change the key it exposes to forms and case tabs.
     @field:JsonProperty("_expand")
     val expand: Any?,
 ) : Referable

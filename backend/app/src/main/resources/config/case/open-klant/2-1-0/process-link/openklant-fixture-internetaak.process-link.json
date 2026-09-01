@@ -1,0 +1,157 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-internetaak",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createActorVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-actor",
+    "actionProperties": {
+      "resultPvName": "actorUuid",
+      "naam": "Fixture actor",
+      "soortActor": "medewerker",
+      "functie": "Baliemedewerker",
+      "telefoonnummer": "0612345678"
+    }
+  },
+  {
+    "activityId": "createKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-klantcontact",
+    "actionProperties": {
+      "resultPvName": "klantcontactUuid",
+      "kanaal": "telefoon",
+      "onderwerp": "Fixture klantcontact",
+      "taal": "nld",
+      "vertrouwelijk": "false",
+      "rol": "klant",
+      "initiator": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+      "codeObjecttype": "zaak",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "createInternetaak",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-internetaak",
+    "actionProperties": {
+      "resultPvName": "internetaakUuid",
+      "gevraagdeHandeling": "Terugbellen",
+      "klantcontactUuid": "pv:klantcontactUuid",
+      "status": "te_verwerken",
+      "toegewezenAanActoren": "pv:actorUuid",
+      "toelichting": "Aangemaakt door de fixture"
+    }
+  },
+  {
+    "activityId": "getInternetaak",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-internetaak",
+    "actionProperties": {
+      "uuid": "pv:internetaakUuid",
+      "resultPvName": "internetaakOpgehaald"
+    }
+  },
+  {
+    "activityId": "listInternetaken",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-internetaken",
+    "actionProperties": {
+      "resultPvName": "internetaken",
+      "queryParams": [
+        {
+          "key": "status",
+          "value": "te_verwerken"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateInternetaak",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-internetaak",
+    "actionProperties": {
+      "uuid": "pv:internetaakUuid",
+      "resultPvName": "internetaakBijgewerkt",
+      "status": "verwerkt",
+      "afgehandeldOp": "2026-02-01T10:00:00Z"
+    }
+  },
+  {
+    "activityId": "deleteInternetaak",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-internetaak",
+    "actionProperties": {
+      "uuid": "pv:internetaakUuid"
+    }
+  },
+  {
+    "activityId": "deleteKlantcontactVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "deleteActorVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-actor",
+    "actionProperties": {
+      "uuid": "pv:actorUuid"
+    }
+  },
+  {
+    "activityId": "showGetInternetaak",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-internetaak-show-get-internetaak",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListInternetaken",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-internetaak-show-list-internetaken",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

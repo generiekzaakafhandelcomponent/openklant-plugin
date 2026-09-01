@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_openklant-fixture-partij-identificator" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="openklant-fixture-partij-identificator" name="Open Klant fixture: partij-identificatoren" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="createPartijVoorFixture" name="Maak partij aan">
+      <bpmn:incoming>Flow_0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="createPartij-Identificator" name="Maak partijIdentificator aan">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="getPartij-Identificator" name="Haal partijIdentificator op">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showGetPartij-Identificator" name="Toon resultaat: Haal partijIdentificator op">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="listPartij-Identificatoren" name="Haal partijIdentificatoren op">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showListPartij-Identificatoren" name="Toon resultaat: Haal partijIdentificatoren op">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="updatePartij-Identificator" name="Werk partijIdentificator bij">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deletePartij-Identificator" name="Verwijder partijIdentificator">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deletePartijVoorFixture" name="Verwijder partij">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Einde">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0" sourceRef="StartEvent_1" targetRef="createPartijVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="createPartijVoorFixture" targetRef="createPartij-Identificator" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="createPartij-Identificator" targetRef="getPartij-Identificator" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="getPartij-Identificator" targetRef="showGetPartij-Identificator" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="showGetPartij-Identificator" targetRef="listPartij-Identificatoren" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="listPartij-Identificatoren" targetRef="showListPartij-Identificatoren" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="showListPartij-Identificatoren" targetRef="updatePartij-Identificator" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="updatePartij-Identificator" targetRef="deletePartij-Identificator" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="deletePartij-Identificator" targetRef="deletePartijVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="deletePartijVoorFixture" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_openklant-fixture-partij-identificator">
+    <bpmndi:BPMNPlane id="BPMNPlane_openklant-fixture-partij-identificator" bpmnElement="openklant-fixture-partij-identificator">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="180" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createPartijVoorFixture_di" bpmnElement="createPartijVoorFixture">
+        <dc:Bounds x="266" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createPartij-Identificator_di" bpmnElement="createPartij-Identificator">
+        <dc:Bounds x="446" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="getPartij-Identificator_di" bpmnElement="getPartij-Identificator">
+        <dc:Bounds x="626" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showGetPartij-Identificator_di" bpmnElement="showGetPartij-Identificator">
+        <dc:Bounds x="806" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="listPartij-Identificatoren_di" bpmnElement="listPartij-Identificatoren">
+        <dc:Bounds x="986" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showListPartij-Identificatoren_di" bpmnElement="showListPartij-Identificatoren">
+        <dc:Bounds x="1166" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="updatePartij-Identificator_di" bpmnElement="updatePartij-Identificator">
+        <dc:Bounds x="1346" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deletePartij-Identificator_di" bpmnElement="deletePartij-Identificator">
+        <dc:Bounds x="1526" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deletePartijVoorFixture_di" bpmnElement="deletePartijVoorFixture">
+        <dc:Bounds x="1706" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1886" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0_di" bpmnElement="Flow_0">
+        <di:waypoint x="216" y="130" />
+        <di:waypoint x="266" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="396" y="130" />
+        <di:waypoint x="446" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="576" y="130" />
+        <di:waypoint x="626" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="756" y="130" />
+        <di:waypoint x="806" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="936" y="130" />
+        <di:waypoint x="986" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="1116" y="130" />
+        <di:waypoint x="1166" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1296" y="130" />
+        <di:waypoint x="1346" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1476" y="130" />
+        <di:waypoint x="1526" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1656" y="130" />
+        <di:waypoint x="1706" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1836" y="130" />
+        <di:waypoint x="1886" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

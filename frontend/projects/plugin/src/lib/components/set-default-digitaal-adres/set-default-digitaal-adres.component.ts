@@ -27,7 +27,7 @@ export class SetDefaultDigitaalAdresComponent
   @Input() disabled$: Observable<boolean>;
   @Input() pluginId: string;
   @Input() prefillConfiguration$?: Observable<SetDefaultDigitaalAdresConfig>;
-  @Output() valid: EventEmitter<boolean>;
+  @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() configuration: EventEmitter<FunctionConfigurationData> =
     new EventEmitter<FunctionConfigurationData>();
 

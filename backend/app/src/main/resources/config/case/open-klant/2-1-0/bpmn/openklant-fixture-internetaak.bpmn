@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_openklant-fixture-internetaak" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="openklant-fixture-internetaak" name="Open Klant fixture: interne taken" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="createActorVoorFixture" name="Maak actor aan">
+      <bpmn:incoming>Flow_0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="createKlantcontactVoorFixture" name="Maak klantcontact aan">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="createInternetaak" name="Maak internetaak aan">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="getInternetaak" name="Haal internetaak op">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showGetInternetaak" name="Toon resultaat: Haal internetaak op">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="listInternetaken" name="Haal internetaken op">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showListInternetaken" name="Toon resultaat: Haal internetaken op">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="updateInternetaak" name="Werk internetaak bij">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deleteInternetaak" name="Verwijder internetaak">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deleteKlantcontactVoorFixture" name="Verwijder klantcontact">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deleteActorVoorFixture" name="Verwijder actor">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Einde">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0" sourceRef="StartEvent_1" targetRef="createActorVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="createActorVoorFixture" targetRef="createKlantcontactVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="createKlantcontactVoorFixture" targetRef="createInternetaak" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="createInternetaak" targetRef="getInternetaak" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="getInternetaak" targetRef="showGetInternetaak" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="showGetInternetaak" targetRef="listInternetaken" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="listInternetaken" targetRef="showListInternetaken" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="showListInternetaken" targetRef="updateInternetaak" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="updateInternetaak" targetRef="deleteInternetaak" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="deleteInternetaak" targetRef="deleteKlantcontactVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="deleteKlantcontactVoorFixture" targetRef="deleteActorVoorFixture" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="deleteActorVoorFixture" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_openklant-fixture-internetaak">
+    <bpmndi:BPMNPlane id="BPMNPlane_openklant-fixture-internetaak" bpmnElement="openklant-fixture-internetaak">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="180" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createActorVoorFixture_di" bpmnElement="createActorVoorFixture">
+        <dc:Bounds x="266" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createKlantcontactVoorFixture_di" bpmnElement="createKlantcontactVoorFixture">
+        <dc:Bounds x="446" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createInternetaak_di" bpmnElement="createInternetaak">
+        <dc:Bounds x="626" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="getInternetaak_di" bpmnElement="getInternetaak">
+        <dc:Bounds x="806" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showGetInternetaak_di" bpmnElement="showGetInternetaak">
+        <dc:Bounds x="986" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="listInternetaken_di" bpmnElement="listInternetaken">
+        <dc:Bounds x="1166" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showListInternetaken_di" bpmnElement="showListInternetaken">
+        <dc:Bounds x="1346" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="updateInternetaak_di" bpmnElement="updateInternetaak">
+        <dc:Bounds x="1526" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleteInternetaak_di" bpmnElement="deleteInternetaak">
+        <dc:Bounds x="1706" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleteKlantcontactVoorFixture_di" bpmnElement="deleteKlantcontactVoorFixture">
+        <dc:Bounds x="1886" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleteActorVoorFixture_di" bpmnElement="deleteActorVoorFixture">
+        <dc:Bounds x="2066" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="2246" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0_di" bpmnElement="Flow_0">
+        <di:waypoint x="216" y="130" />
+        <di:waypoint x="266" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="396" y="130" />
+        <di:waypoint x="446" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="576" y="130" />
+        <di:waypoint x="626" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="756" y="130" />
+        <di:waypoint x="806" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="936" y="130" />
+        <di:waypoint x="986" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="1116" y="130" />
+        <di:waypoint x="1166" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1296" y="130" />
+        <di:waypoint x="1346" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1476" y="130" />
+        <di:waypoint x="1526" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1656" y="130" />
+        <di:waypoint x="1706" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1836" y="130" />
+        <di:waypoint x="1886" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="2016" y="130" />
+        <di:waypoint x="2066" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="2196" y="130" />
+        <di:waypoint x="2246" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

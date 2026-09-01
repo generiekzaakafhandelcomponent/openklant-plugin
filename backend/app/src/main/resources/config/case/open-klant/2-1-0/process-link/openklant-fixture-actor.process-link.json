@@ -1,0 +1,102 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-actor",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createActor",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-actor",
+    "actionProperties": {
+      "resultPvName": "actorUuid",
+      "naam": "Fixture actor",
+      "soortActor": "medewerker",
+      "indicatieActief": "true",
+      "functie": "Baliemedewerker",
+      "emailadres": "balie@example.com",
+      "telefoonnummer": "0612345678"
+    }
+  },
+  {
+    "activityId": "getActor",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-actor",
+    "actionProperties": {
+      "uuid": "pv:actorUuid",
+      "resultPvName": "actorOpgehaald"
+    }
+  },
+  {
+    "activityId": "listActoren",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-actoren",
+    "actionProperties": {
+      "resultPvName": "actoren",
+      "queryParams": [
+        {
+          "key": "soortActor",
+          "value": "medewerker"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateActor",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-actor",
+    "actionProperties": {
+      "uuid": "pv:actorUuid",
+      "resultPvName": "actorBijgewerkt",
+      "naam": "Fixture actor (bijgewerkt)",
+      "functie": "Teamleider"
+    }
+  },
+  {
+    "activityId": "deleteActor",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-actor",
+    "actionProperties": {
+      "uuid": "pv:actorUuid"
+    }
+  },
+  {
+    "activityId": "showGetActor",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-actor-show-get-actor",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListActoren",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-actor-show-list-actoren",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

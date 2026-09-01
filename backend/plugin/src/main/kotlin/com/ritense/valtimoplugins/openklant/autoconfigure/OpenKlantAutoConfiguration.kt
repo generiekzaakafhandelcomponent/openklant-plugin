@@ -50,12 +50,14 @@ class OpenKlantAutoConfiguration {
     fun openKlantPluginFactory(
         pluginService: PluginService,
         openKlantService: OpenKlantService,
+        openKlantClient: OpenKlantClient,
         reflectionUtil: ReflectionUtil,
         objectMapper: ObjectMapper,
     ): OpenKlantPluginFactory =
         OpenKlantPluginFactory(
             pluginService = pluginService,
             openKlantPluginService = openKlantService,
+            openKlantClient = openKlantClient,
             reflectionUtil = reflectionUtil,
             objectMapper = objectMapper,
         )
