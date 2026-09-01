@@ -4,4 +4,5 @@ export interface GetOrCreatePartijConfig {
   voornaam: string;
   voorvoegselAchternaam: string;
   achternaam: string;
+  resultPvName?: string;
 }

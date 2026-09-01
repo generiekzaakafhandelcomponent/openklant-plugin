@@ -32,6 +32,51 @@ describe("mapModelToDto", () => {
     expect(model.occurredAt?.toISOString()).toBe("2025-12-18T15:30:00.000Z");
   });
 
+  it("should map real booleans, as written by the plugin since the projection was unified", () => {
+    const dto: KlantcontactDTO = {
+      kanaal: "email",
+      onderwerp: "Booleans",
+      indicatieContactGelukt: true,
+      taal: "nl",
+      vertrouwelijk: true,
+    };
+
+    const model = mapDtoToModel(dto);
+
+    expect(model.outcome).toBe(ContactOutcome.SUCCESS);
+    expect(model.isConfidential).toBe(true);
+  });
+
+  it("should map a false boolean to a failed contact", () => {
+    const dto: KlantcontactDTO = {
+      kanaal: "email",
+      onderwerp: "Booleans",
+      indicatieContactGelukt: false,
+      taal: "nl",
+      vertrouwelijk: false,
+    };
+
+    const model = mapDtoToModel(dto);
+
+    expect(model.outcome).toBe(ContactOutcome.FAILURE);
+    expect(model.isConfidential).toBe(false);
+  });
+
+  it("should still map the legacy string encoding held by older documents", () => {
+    const dto: KlantcontactDTO = {
+      kanaal: "email",
+      onderwerp: "Legacy",
+      indicatieContactGelukt: "false",
+      taal: "nl",
+      vertrouwelijk: "true",
+    };
+
+    const model = mapDtoToModel(dto);
+
+    expect(model.outcome).toBe(ContactOutcome.FAILURE);
+    expect(model.isConfidential).toBe(true);
+  });
+
   it("should handle missing optional fields and unknown boolean strings", () => {
     const dto: KlantcontactDTO = {
       kanaal: "phone",

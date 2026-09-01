@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_openklant-fixture-actor" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="openklant-fixture-actor" name="Open Klant fixture: actoren" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="createActor" name="Maak actor aan">
+      <bpmn:incoming>Flow_0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="getActor" name="Haal actor op">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showGetActor" name="Toon resultaat: Haal actor op">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="listActoren" name="Haal actoren op">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="showListActoren" name="Toon resultaat: Haal actoren op">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="updateActor" name="Werk actor bij">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="deleteActor" name="Verwijder actor">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Einde">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0" sourceRef="StartEvent_1" targetRef="createActor" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="createActor" targetRef="getActor" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="getActor" targetRef="showGetActor" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="showGetActor" targetRef="listActoren" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="listActoren" targetRef="showListActoren" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="showListActoren" targetRef="updateActor" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="updateActor" targetRef="deleteActor" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="deleteActor" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_openklant-fixture-actor">
+    <bpmndi:BPMNPlane id="BPMNPlane_openklant-fixture-actor" bpmnElement="openklant-fixture-actor">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="180" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="createActor_di" bpmnElement="createActor">
+        <dc:Bounds x="266" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="getActor_di" bpmnElement="getActor">
+        <dc:Bounds x="446" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showGetActor_di" bpmnElement="showGetActor">
+        <dc:Bounds x="626" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="listActoren_di" bpmnElement="listActoren">
+        <dc:Bounds x="806" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="showListActoren_di" bpmnElement="showListActoren">
+        <dc:Bounds x="986" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="updateActor_di" bpmnElement="updateActor">
+        <dc:Bounds x="1166" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="deleteActor_di" bpmnElement="deleteActor">
+        <dc:Bounds x="1346" y="90" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1526" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0_di" bpmnElement="Flow_0">
+        <di:waypoint x="216" y="130" />
+        <di:waypoint x="266" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="396" y="130" />
+        <di:waypoint x="446" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="576" y="130" />
+        <di:waypoint x="626" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="756" y="130" />
+        <di:waypoint x="806" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="936" y="130" />
+        <di:waypoint x="986" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="1116" y="130" />
+        <di:waypoint x="1166" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1296" y="130" />
+        <di:waypoint x="1346" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1476" y="130" />
+        <di:waypoint x="1526" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

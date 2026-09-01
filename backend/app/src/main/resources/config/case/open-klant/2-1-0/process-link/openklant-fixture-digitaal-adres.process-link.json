@@ -1,0 +1,129 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-digitaal-adres",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Fixture",
+      "objectId": "999900055",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createDigitaalAdres",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-digitaal-adres",
+    "actionProperties": {
+      "resultPvName": "digitaalAdres",
+      "verstrektDoorPartij": "pv:partijUuid",
+      "adres": "fixture@example.com",
+      "soortDigitaalAdres": "email",
+      "omschrijving": "Aangemaakt door de fixture",
+      "referentie": "fixture"
+    }
+  },
+  {
+    "activityId": "getDigitaalAdres",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-digitaal-adres",
+    "actionProperties": {
+      "uuid": "pv:/digitaalAdres/uuid",
+      "resultPvName": "digitaalAdresOpgehaald"
+    }
+  },
+  {
+    "activityId": "getDigitaleAdressen",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-digitale-adressen",
+    "actionProperties": {
+      "resultPvName": "digitaleAdressen",
+      "queryParams": [
+        {
+          "key": "soortDigitaalAdres",
+          "value": "email"
+        },
+        {
+          "key": "referentie",
+          "value": "fixture"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateDigitaalAdres",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-digitaal-adres",
+    "actionProperties": {
+      "resultPvName": "digitaalAdresBijgewerkt",
+      "digitaalAdresUuid": "pv:/digitaalAdres/uuid",
+      "omschrijving": "Bijgewerkt door de fixture"
+    }
+  },
+  {
+    "activityId": "deleteDigitaalAdres",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-digitaal-adres",
+    "actionProperties": {
+      "uuid": "pv:/digitaalAdres/uuid"
+    }
+  },
+  {
+    "activityId": "deletePartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetDigitaalAdres",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-digitaal-adres-show-get-digitaal-adres",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showGetDigitaleAdressen",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-digitaal-adres-show-get-digitale-adressen",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

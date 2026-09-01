@@ -21,7 +21,7 @@ class PartijFactory {
             voorkeurstaal = "nld",
             indicatieActief = true,
             bezoekadres = null,
-            correspondentieAdres = null,
+            correspondentieadres = null,
             partijIdentificatie = getPartijIdentificatie(partijInformation),
         )
 

@@ -60,6 +60,7 @@ class RegisterKlantcontactActionTest {
         val plugin =
             OpenKlantPlugin(
                 openKlantPluginService = openKlantService,
+                openKlantClient = mockk(relaxed = true),
                 reflectionUtil = ReflectionUtil(),
                 objectMapper = ObjectMapper(),
             ).apply {

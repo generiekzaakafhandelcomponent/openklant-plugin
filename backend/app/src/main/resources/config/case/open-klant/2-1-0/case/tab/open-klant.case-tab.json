@@ -3,7 +3,8 @@
     "key": "open-klant-widget-tab",
     "name": "Summary",
     "type": "widgets",
-    "contentKey": "-"
+    "contentKey": "-",
+    "showTasks": true
   },
   {
     "key": "contactgeschiedenis",
@@ -15,7 +16,8 @@
     "key": "progress",
     "name": null,
     "type": "standard",
-    "contentKey": "progress"
+    "contentKey": "progress",
+    "showTasks": true
   },
   {
     "key": "audit",

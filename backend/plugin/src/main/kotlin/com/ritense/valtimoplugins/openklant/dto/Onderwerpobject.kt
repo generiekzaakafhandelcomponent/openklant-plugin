@@ -9,7 +9,7 @@ data class Onderwerpobject(
     @JsonProperty("url")
     override val url: String,
     @JsonProperty("klantcontact")
-    val klantContact: UuidAndUrlReference,
+    val klantcontact: UuidAndUrlReference,
     @JsonProperty("wasKlantcontact")
     val wasKlantcontact: UuidAndUrlReference? = null,
     @JsonProperty("onderwerpobjectidentificator")

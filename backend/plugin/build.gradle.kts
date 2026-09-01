@@ -1,6 +1,7 @@
 val jetbrainsAnnotationsVersion: String by project
 val kotlinLoggingVersion: String by project
 val mockkVersion: String by project
+val okhttpVersion: String by project
 val operatonVersion: String by project
 
 dockerCompose {
@@ -39,6 +40,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
 
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.postgresql:postgresql")

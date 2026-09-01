@@ -1,0 +1,21 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "key": "toelichting",
+            "type": "content",
+            "input": false,
+            "label": "Toelichting",
+            "tableView": false,
+            "html": "<h4>Open Klant fixture: rekeningnummers</h4><p>Dit fixtureproces voert onderstaande plugin-acties achter elkaar uit tegen de geconfigureerde Open Klant-omgeving. Elke stap schrijft zijn resultaat naar een procesvariabele.</p><ol class=\"cds--list--ordered\"><li class=\"cds--list__item\">Maak partij aan</li><li class=\"cds--list__item\">Bewaar partij-UUID</li><li class=\"cds--list__item\">Maak rekeningnummer aan</li><li class=\"cds--list__item\">Bewaar rekeningnummer-UUID</li><li class=\"cds--list__item\">Haal rekeningnummer op</li><li class=\"cds--list__item\">Haal rekeningnummers op</li><li class=\"cds--list__item\">Werk rekeningnummer bij</li><li class=\"cds--list__item\">Verwijder rekeningnummer</li><li class=\"cds--list__item\">Verwijder partij</li></ol>"
+        },
+        {
+            "key": "submit",
+            "type": "button",
+            "input": true,
+            "label": "Creëer dossier",
+            "tableView": false,
+            "disableOnInvalid": true
+        }
+    ]
+}

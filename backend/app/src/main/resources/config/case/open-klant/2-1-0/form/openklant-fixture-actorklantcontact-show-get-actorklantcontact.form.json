@@ -1,0 +1,41 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "key": "pv.actorklantcontactOpgehaald",
+            "type": "hidden",
+            "input": true,
+            "label": "actorklantcontactOpgehaald",
+            "tableView": false,
+            "persistent": false
+        },
+        {
+            "key": "toelichting",
+            "type": "content",
+            "input": false,
+            "label": "Toelichting",
+            "tableView": false,
+            "html": "<h4>Haal actorklantcontact op</h4><p>Dit is het antwoord zoals Open Klant het heeft teruggegeven, opgeslagen in procesvariabele <code>actorklantcontactOpgehaald</code>.</p>"
+        },
+        {
+            "key": "pv.weergave",
+            "type": "textarea",
+            "input": true,
+            "tableView": false,
+            "label": "Haal actorklantcontact op",
+            "disabled": true,
+            "rows": 20,
+            "autoExpand": false,
+            "calculateValue": "var d = data || {}; var v = d['pv:actorklantcontactOpgehaald']; if (v === undefined && d.pv) { v = d.pv['actorklantcontactOpgehaald']; } value = (v === undefined || v === null) ? '(geen data)' : (typeof v === 'string' ? v : JSON.stringify(v, null, 4));",
+            "persistent": false
+        },
+        {
+            "key": "submit",
+            "type": "button",
+            "input": true,
+            "tableView": false,
+            "label": "Volgende",
+            "disableOnInvalid": true
+        }
+    ]
+}

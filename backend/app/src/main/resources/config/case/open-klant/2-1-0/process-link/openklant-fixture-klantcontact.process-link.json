@@ -1,0 +1,111 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-klantcontact",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createKlantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-klantcontact",
+    "actionProperties": {
+      "resultPvName": "klantcontactUuid",
+      "kanaal": "telefoon",
+      "onderwerp": "Fixture klantcontact",
+      "taal": "nld",
+      "vertrouwelijk": "false",
+      "inhoud": "Aangemaakt door de fixture",
+      "indicatieContactGelukt": "true",
+      "plaatsgevondenOp": "2026-01-01T09:00:00Z",
+      "rol": "klant",
+      "initiator": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+      "codeObjecttype": "zaak",
+      "codeRegister": "open-zaak",
+      "codeSoortObjectId": "uuid"
+    }
+  },
+  {
+    "activityId": "getKlantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid",
+      "resultPvName": "klantcontactOpgehaald"
+    }
+  },
+  {
+    "activityId": "searchKlantcontacten",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "search-klantcontacten",
+    "actionProperties": {
+      "resultPvName": "klantcontacten",
+      "queryParams": [
+        {
+          "key": "kanaal",
+          "value": "telefoon"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateKlantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid",
+      "resultPvName": "klantcontactBijgewerkt",
+      "onderwerp": "Fixture klantcontact (bijgewerkt)",
+      "reactie": "Teruggebeld"
+    }
+  },
+  {
+    "activityId": "deleteKlantcontact",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-klantcontact",
+    "actionProperties": {
+      "uuid": "pv:klantcontactUuid"
+    }
+  },
+  {
+    "activityId": "showGetKlantcontact",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-klantcontact-show-get-klantcontact",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showSearchKlantcontacten",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-klantcontact-show-search-klantcontacten",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

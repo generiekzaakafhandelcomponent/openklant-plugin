@@ -77,7 +77,7 @@ class OpenKlantServiceTest {
             voorkeurstaal = null,
             indicatieActief = true,
             bezoekadres = null,
-            correspondentieAdres = null,
+            correspondentieadres = null,
             partijIdentificatie = null,
         )
     private val defaultCreatePartijRequest =
@@ -94,7 +94,7 @@ class OpenKlantServiceTest {
             voorkeurstaal = "nl",
             indicatieActief = true,
             bezoekadres = null,
-            correspondentieAdres = null,
+            correspondentieadres = null,
             partijIdentificatie = null,
         )
 
@@ -159,7 +159,7 @@ class OpenKlantServiceTest {
             )
         }
         verify(exactly = 0) { client.createDigitaalAdres(any(), testProperties) }
-        verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
+        verify(exactly = 0) { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) }
         verify(exactly = 0) { client.createPartij(any(), any()) }
     }
 
@@ -181,7 +181,7 @@ class OpenKlantServiceTest {
         } returns listOf()
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
         every { client.createDigitaalAdres(any(), testProperties) } returns newDigitaalAdres
-        every { client.patchPartij(any(), any(), any()) } returns defaultPartij
+        every { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) } returns defaultPartij
 
         // ACT:
         service.storeContactInformation(
@@ -231,7 +231,7 @@ class OpenKlantServiceTest {
         every { client.createPartij(defaultCreatePartijRequest, testProperties) } returns newPartij
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
         every { client.createDigitaalAdres(any(), testProperties) } returns newDigitaalAdres
-        every { client.patchPartij(any(), any(), any()) } returns newPartij
+        every { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) } returns newPartij
 
         // ACT:
         service.storeContactInformation(

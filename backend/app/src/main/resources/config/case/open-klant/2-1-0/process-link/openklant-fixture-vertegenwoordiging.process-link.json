@@ -1,0 +1,155 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-vertegenwoordiging",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Fixture",
+      "objectId": "999900079",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createVertegenwoordigdeVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "vertegenwoordigdeUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Vertegenwoordigde",
+      "objectId": "999900080",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createVertegenwoordiging",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-vertegenwoordiging",
+    "actionProperties": {
+      "resultPvName": "vertegenwoordigingUuid",
+      "vertegenwoordigendePartijUuid": "pv:partijUuid",
+      "vertegenwoordigdePartijUuid": "pv:vertegenwoordigdeUuid"
+    }
+  },
+  {
+    "activityId": "getVertegenwoordiging",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-vertegenwoordiging",
+    "actionProperties": {
+      "uuid": "pv:vertegenwoordigingUuid",
+      "resultPvName": "vertegenwoordigingOpgehaald"
+    }
+  },
+  {
+    "activityId": "listVertegenwoordigingen",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-vertegenwoordigingen",
+    "actionProperties": {
+      "resultPvName": "vertegenwoordigingen",
+      "queryParams": [
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateVertegenwoordiging",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-vertegenwoordiging",
+    "actionProperties": {
+      "uuid": "pv:vertegenwoordigingUuid",
+      "resultPvName": "vertegenwoordigingBijgewerkt",
+      "vertegenwoordigendePartijUuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "deleteVertegenwoordiging",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-vertegenwoordiging",
+    "actionProperties": {
+      "uuid": "pv:vertegenwoordigingUuid"
+    }
+  },
+  {
+    "activityId": "deleteVertegenwoordigdeVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:vertegenwoordigdeUuid"
+    }
+  },
+  {
+    "activityId": "deletePartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetVertegenwoordiging",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-vertegenwoordiging-show-get-vertegenwoordiging",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListVertegenwoordigingen",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-vertegenwoordiging-show-list-vertegenwoordigingen",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

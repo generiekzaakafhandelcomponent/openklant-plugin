@@ -1,0 +1,114 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-partij",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartij",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "interneNotitie": "Aangemaakt door de fixture",
+      "voorletters": "P",
+      "voornaam": "Pietje",
+      "achternaam": "Puk",
+      "objectId": "999990676",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn",
+      "bezoekadres": {
+        "straatnaam": "Dorpsstraat",
+        "huisnummer": 1,
+        "postcode": "1234 AB",
+        "stad": "Utrecht",
+        "land": "NL"
+      }
+    }
+  },
+  {
+    "activityId": "getPartij",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid",
+      "resultPvName": "partijOpgehaald"
+    }
+  },
+  {
+    "activityId": "listPartijen",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-partijen",
+    "actionProperties": {
+      "resultPvName": "partijen",
+      "queryParams": [
+        {
+          "key": "soortPartij",
+          "value": "persoon"
+        },
+        {
+          "key": "pageSize",
+          "value": "10"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updatePartij",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid",
+      "resultPvName": "partijBijgewerkt",
+      "interneNotitie": "Bijgewerkt door de fixture",
+      "indicatieGeheimhouding": "true"
+    }
+  },
+  {
+    "activityId": "deletePartij",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetPartij",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-partij-show-get-partij",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListPartijen",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-partij-show-list-partijen",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

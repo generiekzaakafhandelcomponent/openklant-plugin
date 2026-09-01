@@ -1,7 +1,9 @@
 package com.ritense.valtimoplugins.openklant.dto
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
 import java.util.UUID
 
 data class Partij(
@@ -40,7 +42,7 @@ data class Partij(
     @JsonProperty("bezoekadres")
     val bezoekadres: Adres?,
     @JsonProperty("correspondentieadres")
-    val correspondentieAdres: Adres?,
+    val correspondentieadres: Adres?,
     @JsonProperty("partijIdentificatie")
     val partijIdentificatie: PartijIdentificatie?,
 ) : Referable {
@@ -50,25 +52,34 @@ data class Partij(
         @JsonProperty("url")
         val url: String,
         @JsonProperty("categorieNaam")
-        val categorieNaam: Categorie?,
+        val categorieNaam: String?,
         @JsonProperty("beginDatum")
         val beginDatum: String?,
         @JsonProperty("eindDatum")
         val eindDatum: String?,
     )
 
-    enum class SoortPartij {
-        @JsonProperty("contactpersoon")
-        CONTACTPERSOON,
+    enum class SoortPartij(
+        val value: String,
+    ) {
+        CONTACTPERSOON("contactpersoon"),
+        PERSOON("persoon"),
+        ORGANISATIE("organisatie"),
+        EXPAND_PARTIJ("ExpandPartij"),
+        ;
 
-        @JsonProperty("persoon")
-        PERSOON,
+        @JsonValue
+        fun toJson() = value
 
-        @JsonProperty("organisatie")
-        ORGANISATIE,
-
-        @JsonProperty("ExpandPartij")
-        EXPAND_PARTIJ,
+        companion object {
+            @JvmStatic
+            @JsonCreator
+            fun fromValue(value: String): SoortPartij =
+                entries.firstOrNull { it.value.equals(value.trim(), ignoreCase = true) }
+                    ?: throw IllegalArgumentException(
+                        "Unknown soortPartij '$value'. Supported values: ${entries.joinToString { it.value }}",
+                    )
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

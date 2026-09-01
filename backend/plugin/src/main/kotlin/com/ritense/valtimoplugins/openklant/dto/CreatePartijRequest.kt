@@ -30,8 +30,8 @@ data class CreatePartijRequest(
     val indicatieActief: Boolean,
     @JsonProperty("bezoekadres")
     val bezoekadres: Adres?,
-    @JsonProperty("correspondentieAdres")
-    val correspondentieAdres: Adres?,
+    @JsonProperty("correspondentieadres")
+    val correspondentieadres: Adres?,
     @JsonProperty("partijIdentificatie")
     val partijIdentificatie: Partij.PartijIdentificatie?,
 )

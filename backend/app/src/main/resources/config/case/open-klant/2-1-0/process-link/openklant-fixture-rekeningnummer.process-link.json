@@ -1,0 +1,127 @@
+[
+  {
+    "activityId": "StartEvent_1",
+    "activityType": "bpmn:StartEvent:start",
+    "formDefinitionName": "openklant-fixture-rekeningnummer",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "medium",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "createPartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-partij",
+    "actionProperties": {
+      "resultPvName": "partijUuid",
+      "soortPartij": "persoon",
+      "voorkeurstaal": "nld",
+      "indicatieActief": "true",
+      "voornaam": "Pietje",
+      "achternaam": "Fixture",
+      "objectId": "999900067",
+      "codeObjecttype": "natuurlijk_persoon",
+      "codeRegister": "brp",
+      "codeSoortObjectId": "bsn"
+    }
+  },
+  {
+    "activityId": "createRekeningnummer",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "create-rekeningnummer",
+    "actionProperties": {
+      "resultPvName": "rekeningnummerUuid",
+      "iban": "NL02ABNA0123456789",
+      "bic": "ABNANL2A",
+      "partijUuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "getRekeningnummer",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-rekeningnummer",
+    "actionProperties": {
+      "uuid": "pv:rekeningnummerUuid",
+      "resultPvName": "rekeningnummerOpgehaald"
+    }
+  },
+  {
+    "activityId": "listRekeningnummers",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-rekeningnummers",
+    "actionProperties": {
+      "resultPvName": "rekeningnummers",
+      "queryParams": [
+        {
+          "key": "pageSize",
+          "value": "10"
+        },
+        {
+          "key": "page",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  {
+    "activityId": "updateRekeningnummer",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "update-rekeningnummer",
+    "actionProperties": {
+      "uuid": "pv:rekeningnummerUuid",
+      "resultPvName": "rekeningnummerBijgewerkt",
+      "iban": "NL91ABNA0417164300"
+    }
+  },
+  {
+    "activityId": "deleteRekeningnummer",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-rekeningnummer",
+    "actionProperties": {
+      "uuid": "pv:rekeningnummerUuid"
+    }
+  },
+  {
+    "activityId": "deletePartijVoorFixture",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "delete-partij",
+    "actionProperties": {
+      "uuid": "pv:partijUuid"
+    }
+  },
+  {
+    "activityId": "showGetRekeningnummer",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-rekeningnummer-show-get-rekeningnummer",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  },
+  {
+    "activityId": "showListRekeningnummers",
+    "activityType": "bpmn:UserTask:create",
+    "formDefinitionName": "openklant-fixture-rekeningnummer-show-list-rekeningnummers",
+    "viewModelEnabled": false,
+    "formDisplayType": "modal",
+    "formSize": "large",
+    "subtitles": [],
+    "processLinkType": "form"
+  }
+]

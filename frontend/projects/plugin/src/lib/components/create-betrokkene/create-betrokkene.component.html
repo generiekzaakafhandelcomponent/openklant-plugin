@@ -1,0 +1,142 @@
+<v-paragraph [margin]="true" [italic]="true">
+    {{ 'create-betrokkeneDescription' | pluginTranslate: pluginId | async }}
+</v-paragraph>
+<v-form
+    (valueChange)="formValueChange($event)"
+    *ngIf="{
+        disabled: disabled$ | async,
+        prefill: prefillConfiguration$ ? (prefillConfiguration$ | async) : null
+    } as obs"
+>
+    <v-input
+        name="klantcontactUuid"
+        [title]="'klantcontactUuid' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.klantcontactUuid"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="rol"
+        [title]="'rol' | pluginTranslate: pluginId | async"
+        [tooltip]="'rolTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.rol"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+    <v-input
+        name="initiator"
+        [title]="'initiator' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.initiator"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="partijUuid"
+        [title]="'partijUuid' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.partijUuid"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorletters"
+        [title]="'voorletters' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorletters"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voornaam"
+        [title]="'voornaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voornaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="voorvoegselAchternaam"
+        [title]="'voorvoegselAchternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.voorvoegselAchternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="achternaam"
+        [title]="'achternaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.achternaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="organisatienaam"
+        [title]="'organisatienaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'variableFieldTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.organisatienaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="bezoekadres"
+        [title]="'bezoekadres' | pluginTranslate: pluginId | async"
+        [tooltip]="'adresObjectTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.bezoekadres"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="correspondentieadres"
+        [title]="'correspondentieadres' | pluginTranslate: pluginId | async"
+        [tooltip]="'adresObjectTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.correspondentieadres"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
+        name="resultPvName"
+        [title]="'resultPvName' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.resultPvName"
+        [disabled]="obs.disabled"
+        [required]="true"
+    >
+    </v-input>
+
+</v-form>
