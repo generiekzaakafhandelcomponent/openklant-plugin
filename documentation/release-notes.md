@@ -2,6 +2,10 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.8.1
+
+Ondersteuning voor Valtimo 13.48.0.
+
 ## 2.8.0
 
 Alle resources van de klantinteracties-API zijn nu als plugin-actie beschikbaar. Waar de plugin eerder 10 acties had,
