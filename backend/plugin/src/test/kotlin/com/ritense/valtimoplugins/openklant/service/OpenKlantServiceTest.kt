@@ -159,7 +159,7 @@ class OpenKlantServiceTest {
             )
         }
         verify(exactly = 0) { client.createDigitaalAdres(any(), testProperties) }
-        verify(exactly = 0) { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) }
+        verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
         verify(exactly = 0) { client.createPartij(any(), any()) }
     }
 
@@ -181,7 +181,6 @@ class OpenKlantServiceTest {
         } returns listOf()
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
         every { client.createDigitaalAdres(any(), testProperties) } returns newDigitaalAdres
-        every { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) } returns defaultPartij
 
         // ACT:
         service.storeContactInformation(
@@ -204,20 +203,17 @@ class OpenKlantServiceTest {
         }
         verify {
             client.createDigitaalAdres(
-                request = any(),
-                properties = testProperties,
-            )
-        }
-        verify {
-            client.patchPartij(
-                defaultPartij.uuid.toString(),
-                match<Map<String, Any>> { partij ->
-                    val digitaleAdressen = partij["digitaleAdressen"] as List<UUID>
-                    digitaleAdressen.any { it == newDigitaalAdres.uuid }
+                match<DigitaalAdresCreationRequest> {
+                    it.verstrektDoorPartij.uuid == defaultPartij.uuid &&
+                        it.adres == contactInformation.emailadres &&
+                        it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
+                        it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
         }
+        // The address is linked through verstrektDoorPartij, so the partij itself is never patched.
+        verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
         verify(exactly = 0) { client.createPartij(any(), any()) }
     }
 
@@ -231,7 +227,6 @@ class OpenKlantServiceTest {
         every { client.createPartij(defaultCreatePartijRequest, testProperties) } returns newPartij
         val newDigitaalAdres = defaultDigitaalAdres.copy(adres = contactInformation.emailadres)
         every { client.createDigitaalAdres(any(), testProperties) } returns newDigitaalAdres
-        every { client.patchPartij(any<String>(), any<Map<String, Any>>(), any()) } returns newPartij
 
         // ACT:
         service.storeContactInformation(
@@ -245,23 +240,15 @@ class OpenKlantServiceTest {
         verify {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
-                    it.adres == contactInformation.emailadres &&
+                    it.verstrektDoorPartij.uuid == newPartij.uuid &&
+                        it.adres == contactInformation.emailadres &&
                         it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
                         it.referentie == contactInformation.zaaknummer
                 },
                 testProperties,
             )
         }
-        verify {
-            client.patchPartij(
-                newPartij.uuid.toString(),
-                match<Map<String, Any>> { partij ->
-                    val digitaleAdressen = partij["digitaleAdressen"] as List<UUID>
-                    digitaleAdressen.any { it == newDigitaalAdres.uuid }
-                },
-                testProperties,
-            )
-        }
+        verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
         verify(exactly = 0) { client.getDigitaalAdres(any(), testProperties) }
     }
 

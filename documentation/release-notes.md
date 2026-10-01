@@ -2,6 +2,12 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## 2.8.2
+
+Bugfix: updateDigitaleAdressenForPartij was overbodig & de patchPartij call resulteerde in een Bad Request vanuit 
+OpenKlant. Foutieve patchPartij overload is weggehaald, updateDigitaleAdressenForPartij is weggehaald. De functionele 
+werking van createAndStoreNewPartij / updateExistingPartij is hetzelfde gebleven.
+
 ## 2.8.1
 
 Ondersteuning voor Valtimo 13.48.0.
