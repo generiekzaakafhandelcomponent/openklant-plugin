@@ -69,7 +69,7 @@ class DefaultOpenKlantService(
             .getDigitaleAdressen(
                 query = query,
                 properties = properties,
-            ).map { response -> response.toModel() }
+            ).map { it.toModel() }
 
     override fun createDigitaalAdres(
         request: DigitaalAdres,
