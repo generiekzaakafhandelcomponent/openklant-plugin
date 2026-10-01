@@ -69,7 +69,7 @@ class DefaultOpenKlantService(
             .getDigitaleAdressen(
                 query = query,
                 properties = properties,
-            ).map { it -> it.toModel() }
+            ).map { response -> response.toModel() }
 
     override fun createDigitaalAdres(
         request: DigitaalAdres,
@@ -217,21 +217,18 @@ class DefaultOpenKlantService(
                                 ),
                         ),
                     properties = properties,
-                ).toMutableList()
+                )
 
         val digitaleUniekeReferenties =
             digitaleAdressen.map {
                 "${it.verstrektDoorPartij?.uuid},${it.referentie},${it.soortDigitaalAdres}"
             }
 
-        // Maak alleen nieuwe aan wanneer deze uniek is (niet bestaat)
         if ("${partij.uuid},${contactInformation.zaaknummer},${SoortDigitaalAdres.EMAIL}" !in
             digitaleUniekeReferenties
         ) {
-            digitaleAdressen.add(createDigitalAddress(partij, contactInformation, properties))
+            createDigitalAddress(partij, contactInformation, properties)
         }
-
-        updateDigitaleAdressenForPartij(partij, digitaleAdressen.toList(), properties)
     }
 
     private fun createAndStoreNewPartij(
@@ -250,28 +247,8 @@ class DefaultOpenKlantService(
             partij.uuid.toString()
         } else {
             val nieuwePartij = createNewPartij(contactInformation, properties)
-            val nieuweDigitaleAdress = createDigitalAddress(nieuwePartij, contactInformation, properties)
-
-            updateDigitaleAdressenForPartij(nieuwePartij, nieuweDigitaleAdress, properties)
-            return nieuwePartij.uuid.toString()
+            createDigitalAddress(nieuwePartij, contactInformation, properties)
+            nieuwePartij.uuid.toString()
         }
     }
-
-    private fun updateDigitaleAdressenForPartij(
-        partij: Partij,
-        digitaleAdressen: List<DigitaalAdresResponse>,
-        properties: OpenKlantProperties,
-    ) {
-        val patchData =
-            mapOf(
-                "digitaleAdressen" to digitaleAdressen.map { it.uuid },
-            )
-        openKlantClient.patchPartij(partij.uuid.toString(), patchData, properties)
-    }
-
-    private fun updateDigitaleAdressenForPartij(
-        partij: Partij,
-        digitaleAdress: DigitaalAdresResponse,
-        properties: OpenKlantProperties,
-    ) = updateDigitaleAdressenForPartij(partij, listOf(digitaleAdress), properties)
 }

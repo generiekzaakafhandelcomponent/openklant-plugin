@@ -107,12 +107,6 @@ class OpenKlantClient(
         properties: OpenKlantProperties,
     ): Partij = patch(OK_PARTIJEN_PATH, uuid, request, properties)
 
-    fun patchPartij(
-        id: String,
-        patchData: Map<String, Any>,
-        properties: OpenKlantProperties,
-    ): Partij = patch(OK_PARTIJEN_PATH, UUID.fromString(id), patchData, properties)
-
     fun deletePartij(
         uuid: UUID,
         properties: OpenKlantProperties,

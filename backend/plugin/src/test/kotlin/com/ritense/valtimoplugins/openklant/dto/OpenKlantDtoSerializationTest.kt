@@ -182,6 +182,24 @@ internal class OpenKlantDtoSerializationTest {
     }
 
     @Test
+    fun `patch partij writes digitaleAdressen as a list of objects holding the uuid`() {
+        val json =
+            objectMapper.writeValueAsString(
+                PatchPartijRequest(
+                    digitaleAdressen =
+                        listOf(NestedUuid(UUID.fromString(UUID_A)), NestedUuid(UUID.fromString(UUID_B))),
+                    voorkeursDigitaalAdres = NestedUuid(UUID.fromString(UUID_A)),
+                ),
+            )
+
+        // Open Klant rejects a list of bare uuid strings ("Expected a dictionary, but got str").
+        assertEquals(
+            """{"digitaleAdressen":[{"uuid":"$UUID_A"},{"uuid":"$UUID_B"}],"voorkeursDigitaalAdres":{"uuid":"$UUID_A"}}""",
+            json,
+        )
+    }
+
+    @Test
     fun `klantcontact request bodies never carry the fields that only exist from klantinteracties 0 8 0`() {
         val createFields =
             objectMapper.readTree(
