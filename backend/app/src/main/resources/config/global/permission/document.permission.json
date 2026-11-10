@@ -6,6 +6,8 @@
             "view_list",
             "create",
             "modify",
+            "inspect",
+            "inspect_modify",
             "delete",
             "claim",
             "assign",
