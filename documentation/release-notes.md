@@ -8,6 +8,15 @@ Overzicht van wijzigingen per versie van de Open Klant-plugin.
   als URI-variabele naar Open Klant. Een `+` kwam eerder aan als spatie, een `&` begon een nieuwe parameter en een `{`
   gaf een fout. Let op: wie een waarde zelf al codeerde (bijvoorbeeld `%2B` voor `+`), moet dat weghalen; anders wordt
   de waarde dubbel gecodeerd. Lege filters voor klantcontacten worden niet meer meegestuurd.
+- **Alle pagina's voor digitale adressen en klantcontacten.** `get-digitale-adressen` met een filter en het ophalen
+  van klantcontacten (onder meer de contactgeschiedenis) gaven alleen de eerste 100 resultaten. Nu komen alle pagina's
+  terug, zoals bij de andere lijstacties. `get-digitale-adressen` zonder filter geeft nog steeds alleen de eerste
+  pagina.
+- **Gewijzigd gedrag bij meer dan 100 pagina's.** Alle lijstacties die alle pagina's ophalen, geven nu een fout als er
+  meer dan 100 pagina's zijn. Voorheen kapte de plugin de lijst daar stil af (alleen een melding in het log), en
+  rekende een proces verder met een onvolledige lijst. Filter verder, of haal met `page` één pagina op. Een resultaat
+  dat tijdens het ophalen naar de volgende pagina verschuift (doordat er intussen iets is aangemaakt), komt nu één keer
+  terug in plaats van twee keer.
 
 ## 2.8.2
 

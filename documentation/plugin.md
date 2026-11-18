@@ -152,9 +152,10 @@ Voorbeeld `*.processlink.json`
 
 Hiermee kan een lijst van digitale adressen opgehaald worden.
 
-Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. De response kan
-zonder `queryParams` erg groot kan worden. Om het verwerken van de response-data in Valtimo simpel om mee te werken te
-houden, wordt er namelijk geen paginatie toegepast door de plugin.
+Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. Met een filter
+haalt de plugin alle pagina's op, zodat ook een partij met meer dan 100 adressen volledig terugkomt. Zonder filter
+(alleen `page` of `pageSize`, of niets) haalt de plugin alleen de eerste pagina op, zoals voorheen: alle adressen uit
+Open Klant in één procesvariabele is nooit de bedoeling. Geef je zelf `page` mee, dan wordt precies die pagina opgehaald.
 
 `queryParams` moeten als volgt geformatteerd worden:
 
@@ -295,9 +296,15 @@ Welke filters zijn toegestaan verschilt per resource; zie
 <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml' target='_blank'>
 de Open-Klant-API-docs</a>.
 
-In tegenstelling tot `get-digitale-adressen` volgen deze acties standaard wél de paginatie en leveren ze alle
-pagina's op. Geef je zelf een `page`-parameter mee, dan wordt exact die pagina opgehaald. Filter waar mogelijk,
+Deze acties volgen standaard de paginatie en leveren alle pagina's op. Geef je zelf een `page`-parameter mee, dan
+wordt exact die pagina opgehaald. Filter waar mogelijk,
 of gebruik `page` en `pageSize`, om te voorkomen dat er een zeer groot resultaat in een procesvariabele belandt.
+
+Bij meer dan 100 pagina's geeft de actie een fout (een incident in het proces), in plaats van een afgekapte lijst.
+Open Klant pagineert op positie, nieuwste eerst. Wordt er tijdens het ophalen iets aangemaakt, dan schuift een
+resultaat door naar de volgende pagina; de plugin houdt elk resultaat één keer over (op `uuid`). Wordt er tijdens het
+ophalen iets verwijderd, dan kan een resultaat juist een pagina terugschuiven en ontbreken. Dat kan de plugin niet
+zien; het geldt alleen voor de korte tijd waarin de pagina's worden opgehaald.
 
 ### Bijwerken is een PATCH
 
