@@ -14,6 +14,7 @@ import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
+import com.ritense.valtimoplugins.openklant.model.GetOrCreateResult
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.KvkIdentificator
@@ -21,6 +22,7 @@ import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
 import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
+import com.ritense.valtimoplugins.openklant.util.DigitaalAdresNormalizer
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -31,6 +33,7 @@ class DefaultOpenKlantService(
     private val openKlantClient: OpenKlantClient,
     private val partijFactory: PartijFactory,
     private val klantcontactFactory: KlantcontactFactory,
+    private val digitaalAdresLock: DigitaalAdresLock = LocalDigitaalAdresLock(),
 ) : OpenKlantService {
     override fun storeContactInformation(
         contactInformation: ContactInformation,
@@ -129,6 +132,90 @@ class DefaultOpenKlantService(
                 request = request.toCreationRequest(),
                 properties = properties,
             ).toModel()
+
+    override fun getOrCreateDigitaalAdres(
+        request: DigitaalAdres,
+        properties: OpenKlantProperties,
+    ): GetOrCreateResult<DigitaalAdres> {
+        val creationRequest = request.toCreationRequest()
+        require(request.adres.isNotBlank()) { "An adres is required to get or create a digitaal adres" }
+
+        // The partij is the lasting owner of an adres; a betrokkene only counts when there is no partij
+        val query = DigitaalAdresQuery()
+        val partij = creationRequest.verstrektDoorPartij
+        if (partij != null) {
+            query.add(DigitaalAdresQueryParamNames.VERSTREKTDOORPARTIJ_UUID.value, partij.toString())
+        } else {
+            query.add(
+                DigitaalAdresQueryParamNames.VERSTREKTDOORBETROKKENE_UUID.value,
+                checkNotNull(creationRequest.verstrektDoorBetrokkene).toString(),
+            )
+        }
+        query.add(DigitaalAdresQueryParamNames.SOORTDIGITAALADRES.value, request.soortDigitaalAdres.value)
+
+        val wanted = DigitaalAdresNormalizer.normalize(request.soortDigitaalAdres, request.adres)
+        // GZAC processes take turns per partij (or betrokkene), soort and adres, so they cannot both create it
+        val owner = partij ?: checkNotNull(creationRequest.verstrektDoorBetrokkene)
+        return digitaalAdresLock.withLock("$owner:${request.soortDigitaalAdres.value}:$wanted") {
+            findOrCreateDigitaalAdres(query, wanted, creationRequest, properties)
+        }
+    }
+
+    private fun findOrCreateDigitaalAdres(
+        query: DigitaalAdresQuery,
+        wanted: String,
+        creationRequest: DigitaalAdresCreationRequest,
+        properties: OpenKlantProperties,
+    ): GetOrCreateResult<DigitaalAdres> {
+        oldestMatch(query, wanted, properties)?.let {
+            logger.debug { "Digitaal adres already exists (uuid: '${it.uuid}')" }
+            return GetOrCreateResult(it.toModel(), created = false)
+        }
+
+        // Open Klant only accepts a telefoonnummer without separators, so a new one is stored in its compared form
+        val toCreate =
+            if (creationRequest.soortDigitaalAdres == SoortDigitaalAdres.TELEFOONNUMMER) {
+                creationRequest.copy(adres = wanted)
+            } else {
+                creationRequest
+            }
+        val created = openKlantClient.createDigitaalAdres(toCreate, properties)
+
+        // The lock keeps other GZAC processes out, but another system writing to Open Klant can still create the
+        // same adres at the same moment. Then the oldest one is kept and ours is removed; nobody uses ours yet, as
+        // lookups take the oldest one too.
+        val oldest = oldestMatch(query, wanted, properties)
+        if (oldest == null || oldest.uuid == created.uuid) {
+            logger.debug { "Digitaal adres created (uuid: '${created.uuid}')" }
+            return GetOrCreateResult(created.toModel(), created = true)
+        }
+        try {
+            openKlantClient.deleteDigitaalAdres(created.uuid, properties)
+            logger.info {
+                "Digitaal adres was created concurrently, using the existing one (uuid: '${oldest.uuid}', " +
+                    "removed: '${created.uuid}')"
+            }
+        } catch (e: RuntimeException) {
+            // Cleaning up is best effort: the process continues with the oldest adres either way
+            logger.warn(e) {
+                "Digitaal adres was created concurrently, using the existing one (uuid: '${oldest.uuid}'), " +
+                    "but the duplicate '${created.uuid}' could not be removed"
+            }
+        }
+        return GetOrCreateResult(oldest.toModel(), created = false)
+    }
+
+    // Open Klant lists digitale adressen newest first (ordering -pk, checked in 2.16.0 up to 2.19.2), so the last
+    // match is the oldest one.
+    // Every caller settles on that one, which keeps processes that run at the same time consistent.
+    private fun oldestMatch(
+        query: DigitaalAdresQuery,
+        wanted: String,
+        properties: OpenKlantProperties,
+    ): DigitaalAdresResponse? =
+        openKlantClient
+            .getDigitaleAdressen(query, properties)
+            .lastOrNull { DigitaalAdresNormalizer.normalize(it.soortDigitaalAdres, it.adres) == wanted }
 
     override fun setDefaultDigitaalAdres(
         request: DigitaalAdres,

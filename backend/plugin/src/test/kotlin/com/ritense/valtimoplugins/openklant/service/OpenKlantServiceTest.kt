@@ -8,6 +8,7 @@ import com.ritense.valtimoplugins.openklant.dto.ObjectReference
 import com.ritense.valtimoplugins.openklant.dto.Partij
 import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformationImpl
@@ -16,13 +17,19 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
+import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.server.ResponseStatusException
 import java.net.URI
 import java.util.UUID
@@ -120,6 +127,14 @@ class OpenKlantServiceTest {
             voorvoegselAchternaam = "",
             achternaam = "Doe",
         )
+
+    private val ouderUuid = UUID.fromString("0a0a0001-0000-4000-8000-000000000001")
+    private val nieuwerUuid = UUID.fromString("0a0a0002-0000-4000-8000-000000000002")
+
+    private fun email(
+        uuid: UUID,
+        adres: String,
+    ) = defaultDigitaalAdres.copy(uuid = uuid, adres = adres, soortDigitaalAdres = SoortDigitaalAdres.EMAIL)
 
     private val digitaalAdres =
         DigitaalAdres(
@@ -407,6 +422,163 @@ class OpenKlantServiceTest {
     }
 
     @Test
+    fun `getOrCreateDigitaalAdres returns the adres the partij already has in another notation`() {
+        val query = slot<DigitaalAdresQuery>()
+        val partij = UUID.fromString("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df")
+        val telefoon = SoortDigitaalAdres.TELEFOONNUMMER
+        every { client.getDigitaleAdressen(capture(query), testProperties) } returns
+            listOf(
+                defaultDigitaalAdres.copy(adres = "0687654321", soortDigitaalAdres = telefoon),
+                defaultDigitaalAdres.copy(adres = "06 12 34 56 78", soortDigitaalAdres = telefoon),
+            )
+
+        val result =
+            service.getOrCreateDigitaalAdres(
+                DigitaalAdres(
+                    verstrektDoorPartijUuid = partij,
+                    adres = "+31 6 1234 5678",
+                    soortDigitaalAdres = SoortDigitaalAdres.TELEFOONNUMMER,
+                ),
+                testProperties,
+            )
+
+        assertFalse(result.created)
+        assertEquals("06 12 34 56 78", result.value.adres)
+        assertEquals(partij.toString(), query.captured.queryParams["verstrektDoorPartij__uuid"])
+        assertEquals("telefoonnummer", query.captured.queryParams["soortDigitaalAdres"])
+        verify(exactly = 0) { client.createDigitaalAdres(any(), any()) }
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres creates the adres when there is no match`() {
+        val created = slot<DigitaalAdresCreationRequest>()
+        every { client.getDigitaleAdressen(any(), testProperties) } returns
+            listOf(
+                defaultDigitaalAdres.copy(adres = "ander@voorbeeld.nl", soortDigitaalAdres = SoortDigitaalAdres.EMAIL),
+            )
+        every { client.createDigitaalAdres(capture(created), testProperties) } returns
+            defaultDigitaalAdres.copy(adres = "Jan@Voorbeeld.nl", soortDigitaalAdres = SoortDigitaalAdres.EMAIL)
+
+        val result = service.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = "Jan@Voorbeeld.nl"), testProperties)
+
+        assertTrue(result.created)
+        // The adres is stored as entered; normalising is only for comparing
+        assertEquals("Jan@Voorbeeld.nl", created.captured.adres)
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres stores a new telefoonnummer without separators, as Open Klant requires`() {
+        val created = slot<DigitaalAdresCreationRequest>()
+        every { client.getDigitaleAdressen(any(), testProperties) } returns emptyList()
+        every { client.createDigitaalAdres(capture(created), testProperties) } returns defaultDigitaalAdres
+
+        service.getOrCreateDigitaalAdres(
+            digitaalAdres.copy(adres = "+31 6 1234 5678", soortDigitaalAdres = SoortDigitaalAdres.TELEFOONNUMMER),
+            testProperties,
+        )
+
+        assertEquals("0612345678", created.captured.adres)
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres takes the oldest of two equal adressen`() {
+        val nieuwer = email(nieuwerUuid, "jan@voorbeeld.nl")
+        val ouder = email(ouderUuid, "Jan@Voorbeeld.nl")
+        // Open Klant lists newest first
+        every { client.getDigitaleAdressen(any(), testProperties) } returns listOf(nieuwer, ouder)
+
+        val result = service.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = "jan@voorbeeld.nl"), testProperties)
+
+        assertFalse(result.created)
+        assertEquals(ouderUuid, result.value.uuid)
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres removes its own adres when another process created the same one first`() {
+        val ouder = email(ouderUuid, "jan@voorbeeld.nl")
+        val eigen = email(nieuwerUuid, "jan@voorbeeld.nl")
+        every { client.getDigitaleAdressen(any(), testProperties) } returnsMany
+            listOf(emptyList(), listOf(eigen, ouder))
+        every { client.createDigitaalAdres(any(), testProperties) } returns eigen
+        every { client.deleteDigitaalAdres(nieuwerUuid, testProperties) } just runs
+
+        val result = service.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = "jan@voorbeeld.nl"), testProperties)
+
+        assertFalse(result.created)
+        assertEquals(ouderUuid, result.value.uuid)
+        verify(exactly = 1) { client.deleteDigitaalAdres(nieuwerUuid, testProperties) }
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres uses the oldest adres when removing its own duplicate fails`() {
+        val ouder = email(ouderUuid, "jan@voorbeeld.nl")
+        val eigen = email(nieuwerUuid, "jan@voorbeeld.nl")
+        every { client.getDigitaleAdressen(any(), testProperties) } returnsMany
+            listOf(emptyList(), listOf(eigen, ouder))
+        every { client.createDigitaalAdres(any(), testProperties) } returns eigen
+        every { client.deleteDigitaalAdres(nieuwerUuid, testProperties) } throws
+            ResourceAccessException("Open Klant is not reachable")
+
+        val result = service.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = "jan@voorbeeld.nl"), testProperties)
+
+        assertFalse(result.created)
+        assertEquals(ouderUuid, result.value.uuid)
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres looks up and creates under a lock on partij, soort and the normalised adres`() {
+        val lock = RecordingLock()
+        val lockedService = DefaultOpenKlantService(client, partijFactory, klantContactFactory, lock)
+        every { client.getDigitaleAdressen(any(), testProperties) } answers {
+            assertTrue(lock.held, "looked up outside the lock")
+            emptyList()
+        }
+        every { client.createDigitaalAdres(any(), testProperties) } answers {
+            assertTrue(lock.held, "created outside the lock")
+            email(ouderUuid, "jan@voorbeeld.nl")
+        }
+
+        lockedService.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = " Jan@Voorbeeld.NL "), testProperties)
+
+        assertEquals(listOf("aaf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df:email:jan@voorbeeld.nl"), lock.keys)
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres keeps its own adres when it is the oldest`() {
+        val eigen = email(ouderUuid, "jan@voorbeeld.nl")
+        val later = email(nieuwerUuid, "jan@voorbeeld.nl")
+        every { client.getDigitaleAdressen(any(), testProperties) } returnsMany
+            listOf(emptyList(), listOf(later, eigen))
+        every { client.createDigitaalAdres(any(), testProperties) } returns eigen
+
+        val result = service.getOrCreateDigitaalAdres(digitaalAdres.copy(adres = "jan@voorbeeld.nl"), testProperties)
+
+        assertTrue(result.created)
+        assertEquals(ouderUuid, result.value.uuid)
+        verify(exactly = 0) { client.deleteDigitaalAdres(any(), any()) }
+    }
+
+    @Test
+    fun `getOrCreateDigitaalAdres looks at the betrokkene when there is no partij`() {
+        val query = slot<DigitaalAdresQuery>()
+        val betrokkene = UUID.fromString("bbf0d5ec-f2f5-4f41-9d5a-fc04d9cca9df")
+        every { client.getDigitaleAdressen(capture(query), testProperties) } returns emptyList()
+        every { client.createDigitaalAdres(any(), testProperties) } returns defaultDigitaalAdres
+
+        service.getOrCreateDigitaalAdres(
+            DigitaalAdres(
+                verstrektDoorBetrokkeneUuid = betrokkene,
+                adres = "a@b.nl",
+                soortDigitaalAdres = SoortDigitaalAdres.EMAIL,
+            ),
+            testProperties,
+        )
+
+        assertEquals(betrokkene.toString(), query.captured.queryParams["verstrektDoorBetrokkene__uuid"])
+        assertFalse(query.captured.queryParams.containsKey("verstrektDoorPartij__uuid"))
+    }
+
+    @Test
     fun `setDefaultDigitaalAdres clears existing defaults and creates new one`() {
         // ARRANGE
         val existingAdres =
@@ -461,5 +633,23 @@ class OpenKlantServiceTest {
         }
 
         assertEquals("0853ba19-7c5e-405b-af4a-60689c0b4e85", result.uuid.toString())
+    }
+}
+
+private class RecordingLock : DigitaalAdresLock {
+    val keys = mutableListOf<String>()
+    var held = false
+
+    override fun <T> withLock(
+        key: String,
+        block: () -> T,
+    ): T {
+        keys += key
+        held = true
+        try {
+            return block()
+        } finally {
+            held = false
+        }
     }
 }

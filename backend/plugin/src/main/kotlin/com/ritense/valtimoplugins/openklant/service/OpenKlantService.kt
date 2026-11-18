@@ -6,6 +6,7 @@ import com.ritense.valtimoplugins.openklant.model.ContactInformation
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresPatch
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
+import com.ritense.valtimoplugins.openklant.model.GetOrCreateResult
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
@@ -43,6 +44,18 @@ interface OpenKlantService {
         request: DigitaalAdres,
         properties: OpenKlantProperties,
     ): DigitaalAdres
+
+    /**
+     * Returns the adres of the same soort that the partij (or, without a partij, the betrokkene) already has and
+     * that matches after normalising, or creates it. A new telefoonnummer is stored normalised, as Open Klant does
+     * not accept spaces or dashes in it; e-mail and overig are stored as entered. Has a default so that other
+     * implementations of this interface keep compiling.
+     */
+    fun getOrCreateDigitaalAdres(
+        request: DigitaalAdres,
+        properties: OpenKlantProperties,
+    ): GetOrCreateResult<DigitaalAdres> =
+        throw UnsupportedOperationException("getOrCreateDigitaalAdres is not implemented by ${javaClass.name}")
 
     fun setDefaultDigitaalAdres(
         request: DigitaalAdres,

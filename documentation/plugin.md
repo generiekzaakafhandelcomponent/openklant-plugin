@@ -227,6 +227,67 @@ Een nieuw digitaal adres kan worden aangemaakt met de onderstaande proceskoppeli
 }
 ```
 
+## Digitaal adres ophalen of aanmaken
+
+`get-or-create-digitaal-adres` geeft het adres terug dat de partij al heeft, of maakt het aan. Zonder partij wordt
+gekeken naar de adressen van de betrokkene. Adressen worden na normaliseren vergeleken, zodat hetzelfde adres in een
+andere schrijfwijze geen dubbel adres oplevert:
+
+| Soort | Vergelijking |
+|---|---|
+| `email` | zonder spaties eromheen en zonder verschil in hoofdletters |
+| `telefoonnummer` | zonder spaties, streepjes, punten en haakjes; `+31` en `0031` (met of zonder `(0)`) gelezen als `0`; negen cijfers die met `6` beginnen krijgen een `0` ervoor (`612345678` wordt `0612345678`); een buitenlands nummer met `00` of `+` wordt geschreven met `+` (`0032470123456` wordt `+32470123456`), behalve een nummer van minder dan 9 cijfers, dat houdt `00` |
+| `overig` | zonder spaties eromheen |
+
+Een nieuw e-mailadres of overig adres wordt bewaard zoals het is ingevoerd. Een nieuw telefoonnummer wordt bewaard in
+de vergeleken vorm (bijvoorbeeld `0612345678` of `+32470123456`), omdat Open Klant geen spaties of streepjes in een
+telefoonnummer accepteert. Open Klant staat na `+` 9 tot 15 cijfers toe en na `00` 7 tot 13; met `+` past dus elk
+buitenlands nummer volgens E.164, en alleen een korter nummer krijgt `00`. Een bestaand adres wordt niet gewijzigd.
+De UUID van het adres komt in `resultPvName`; `createdPvName` (optioneel) krijgt `true` als het adres nieuw is.
+
+```json
+{
+    "activityId": "emailVastleggen",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-or-create-digitaal-adres",
+    "actionProperties": {
+        "verstrektDoorPartij": "pv:partijUuid",
+        "adres": "doc:/contactgegevens/email",
+        "soortDigitaalAdres": "email",
+        "resultPvName": "emailUuid",
+        "createdPvName": "emailAangemaakt"
+    },
+    "processLinkType": "plugin"
+}
+```
+
+Open Klant kent geen unieke sleutel op het adres zelf. Twee processen die tegelijk hetzelfde adres vastleggen, zouden
+het dus allebei kunnen aanmaken. Daarom zoekt en maakt de actie het adres aan onder een slot in de GZAC-database (een
+PostgreSQL advisory lock per partij of betrokkene, soort en genormaliseerd adres). Dat slot geldt voor alle GZAC-instanties
+die dezelfde database gebruiken. Het wordt in een processtap vastgehouden tot de transactie van die stap eindigt (tot
+de volgende wachttoestand of asynchrone voortzetting in het proces), en PostgreSQL geeft het altijd vrij, ook bij een
+fout of een verbroken verbinding. Een proces dat moet wachten, wacht in PostgreSQL zelf, tot 60 seconden
+(`lock_timeout`, alleen tijdens het wachten). Daarna faalt de stap en probeert Operaton de job opnieuw. Wachten twee
+transacties op elkaars slot (bijvoorbeeld twee processen die in één stap twee adressen in omgekeerde volgorde
+vastleggen), dan beëindigt PostgreSQL er één na `deadlock_timeout` (standaard 1 seconde), die dan opnieuw wordt
+geprobeerd.
+
+Valtimo ondersteunt naast PostgreSQL ook MySQL. Op MySQL (of een andere database) geldt het slot alleen binnen één
+GZAC-instantie en staat er bij de eerste aanroep een waarschuwing in de log. Draai je meerdere GZAC-instanties op
+MySQL, dan blijft het opruimen hieronder de enige bescherming.
+
+Welke weg de actie nam (bestaand adres gevonden, aangemaakt, slot binnen of buiten een transactie) staat op
+DEBUG-niveau in de log: `logging.level.com.ritense.valtimoplugins.openklant.service=DEBUG` (als omgevingsvariabele
+`LOGGING_LEVEL_COM_RITENSE_VALTIMOPLUGINS_OPENKLANT_SERVICE=DEBUG`).
+
+Systemen buiten GZAC (een portaal, een formulier) vallen niet onder het slot. Maakt zo'n systeem op hetzelfde moment
+hetzelfde adres aan, dan zoekt de actie na het aanmaken opnieuw, houdt zij het oudste adres en verwijdert zij het eigen,
+nieuwere adres. Mislukt dat verwijderen, dan gaat het proces verder met het oudste adres en staat er een waarschuwing
+in de log. Bestaande dubbele adressen worden niet opgeruimd.
+
+Een eigen implementatie van het slot is mogelijk met een bean van het type `DigitaalAdresLock`.
+
 ## Digitaal Adres aanpassen
 
 ![Digitaal adres aanpassen](img/pas-bestaand-digitaal-adres-aan-1.png)

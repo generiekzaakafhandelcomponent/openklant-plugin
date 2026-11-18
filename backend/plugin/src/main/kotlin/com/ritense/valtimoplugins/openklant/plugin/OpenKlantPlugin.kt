@@ -250,6 +250,48 @@ class OpenKlantPlugin(
         }
     }
 
+    @PluginAction(
+        key = "get-or-create-digitaal-adres",
+        title = "Get or create digitaal adres",
+        description =
+            "Returns the digitaal adres the partij (or betrokkene) already has, or creates it. Adressen are compared " +
+                "after normalising: e-mail ignoring case, telefoonnummers ignoring spaces and dashes and with " +
+                "+31 and 0031 read as 0. A new telefoonnummer is stored in that form. GZAC processes look up and " +
+                "create the same adres one at a time, under a lock in the GZAC database. Stores the uuid of the adres.",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getOrCreateDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
+        @PluginActionProperty verstrektDoorBetrokkene: String? = null,
+        @PluginActionProperty adres: String? = null,
+        @PluginActionProperty soortDigitaalAdres: String? = null,
+        @PluginActionProperty omschrijving: String? = null,
+        @PluginActionProperty referentie: String? = null,
+        @PluginActionProperty createdPvName: String? = null,
+    ) {
+        val request =
+            DigitaalAdres(
+                verstrektDoorPartijUuid = verstrektDoorPartij.toUuidIfPresent(),
+                verstrektDoorBetrokkeneUuid = verstrektDoorBetrokkene.toUuidIfPresent(),
+                adres = adres.toRequiredString("adres"),
+                soortDigitaalAdres =
+                    SoortDigitaalAdres.valueOf(soortDigitaalAdres.toRequiredString("soortDigitaalAdres").uppercase()),
+                omschrijving = omschrijving.trimToNull(),
+                referentie = referentie.trimToNull(),
+            )
+
+        val result = openKlantPluginService.getOrCreateDigitaalAdres(request, openKlantProperties)
+        resultPvName.trimToNull()?.let { execution.setVariable(it, result.value.uuid?.toString()) }
+        createdPvName.trimToNull()?.let { execution.setVariable(it, result.created) }
+
+        logger.info {
+            "Successfully ${if (result.created) "created" else "found"} digitaal adres in Open Klant " +
+                "(uuid: '${result.value.uuid}')"
+        }
+    }
+
     fun setDefaultDigitaalAdres(digitaalAdres: DigitaalAdres): DigitaalAdres =
         openKlantPluginService.setDefaultDigitaalAdres(request = digitaalAdres, properties = openKlantProperties)
 

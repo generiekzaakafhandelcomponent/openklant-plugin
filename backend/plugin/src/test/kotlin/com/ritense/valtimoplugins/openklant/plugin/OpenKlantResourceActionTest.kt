@@ -26,6 +26,7 @@ import com.ritense.valtimoplugins.openklant.dto.PatchRekeningnummerRequest
 import com.ritense.valtimoplugins.openklant.dto.Rekeningnummer
 import com.ritense.valtimoplugins.openklant.dto.UuidAndUrlReference
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdres
+import com.ritense.valtimoplugins.openklant.model.GetOrCreateResult
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.OpenKlantQuery
 import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
@@ -803,6 +804,42 @@ internal class OpenKlantResourceActionTest {
 
         assertTrue(neither.message!!.contains("neither"), neither.message)
         assertTrue(both.message!!.contains("both"), both.message)
+    }
+
+    @Test
+    fun `get-or-create-digitaal-adres stores the uuid and whether it was created`() {
+        val request = slot<DigitaalAdres>()
+        every { openKlantService.getOrCreateDigitaalAdres(capture(request), any()) } returns
+            GetOrCreateResult(digitaalAdres(), created = false)
+
+        invoke(
+            "get-or-create-digitaal-adres",
+            mapOf(
+                "resultPvName" to "emailUuid",
+                "createdPvName" to "emailAangemaakt",
+                "verstrektDoorPartij" to UUID_B,
+                "adres" to " jamie@example.com ",
+                "soortDigitaalAdres" to "email",
+            ),
+        )
+
+        assertEquals(UUID_A, storedVariables["emailUuid"])
+        assertEquals(false, storedVariables["emailAangemaakt"])
+        assertEquals("jamie@example.com", request.captured.adres)
+        assertEquals(SoortDigitaalAdres.EMAIL, request.captured.soortDigitaalAdres)
+    }
+
+    @Test
+    fun `get-or-create-digitaal-adres requires an adres`() {
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                invoke(
+                    "get-or-create-digitaal-adres",
+                    mapOf("verstrektDoorPartij" to UUID_B, "soortDigitaalAdres" to "email"),
+                )
+            }
+
+        assertEquals("Action property 'adres' is required", exception.message)
     }
 
     // Delete actions

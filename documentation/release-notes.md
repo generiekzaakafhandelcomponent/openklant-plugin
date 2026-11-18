@@ -34,6 +34,15 @@ Overzicht van wijzigingen per versie van de Open Klant-plugin.
   identificator voorheen ook als treffer gold. Maken twee processen tegelijk dezelfde partij aan, dan krijgen ze
   allebei dezelfde partij in plaats van een fout. `OpenKlantService` heeft de nieuwe methode `getOrCreateOrganisatie`
   (met een standaardimplementatie).
+- **Nieuwe actie `get-or-create-digitaal-adres`.** Geeft het bestaande adres van de partij (of betrokkene) terug of
+  maakt het aan, en vergelijkt na normaliseren: hoofdletters in e-mail en de schrijfwijze van telefoonnummers
+  (`06 12 34 56 78`, `+31612345678`, `612345678`) leveren geen dubbel adres meer op. Een nieuw telefoonnummer wordt
+  zonder scheidingstekens bewaard, een buitenlands nummer met `+` (E.164). GZAC-processen zoeken en maken hetzelfde
+  adres na elkaar aan, onder een slot in de GZAC-database (PostgreSQL advisory lock), ook met meerdere
+  GZAC-instanties; op MySQL alleen binnen één instantie.
+  Een dubbel door een systeem buiten GZAC wordt achteraf opgeruimd. De plugin gebruikt hiervoor de `DataSource` van
+  GZAC.
+  `OpenKlantService` heeft de nieuwe methode `getOrCreateDigitaalAdres` (met een standaardimplementatie).
 
 ## 2.8.2
 

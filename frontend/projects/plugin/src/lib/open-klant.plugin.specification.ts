@@ -9,6 +9,7 @@ import {GetOrCreatePartijComponent} from './components/get-or-create-partij/get-
 import {RegisterKlantcontactComponent} from './components/open-klant-register-klantcontact/open-klant-register-klantcontact.component';
 import {SetDefaultDigitaalAdresComponent} from './components/set-default-digitaal-adres/set-default-digitaal-adres.component';
 import {CreateDigitaalAdresComponent} from './components/create-digitaal-adres/create-digitaal-adres.component';
+import {GetOrCreateDigitaalAdresComponent} from './components/get-or-create-digitaal-adres/get-or-create-digitaal-adres.component';
 import {GetDigitaleAdressenComponent} from './components/get-digitale-adressen/get-digitale-adressen.component';
 import {UpdateDigitaalAdresComponent} from './components/update-digitaal-adres/update-digitaal-adres.component';
 import {ResourceQueryComponent} from './components/resource-query/resource-query.component';
@@ -53,6 +54,7 @@ const openKlantPluginSpecification: PluginSpecification = {
         'register-klantcontact': RegisterKlantcontactComponent,
         'set-default-digitaal-adres': SetDefaultDigitaalAdresComponent,
         'create-digitaal-adres': CreateDigitaalAdresComponent,
+        'get-or-create-digitaal-adres': GetOrCreateDigitaalAdresComponent,
         'get-digitale-adressen': GetDigitaleAdressenComponent,
         'update-digitaal-adres': UpdateDigitaalAdresComponent,
         'get-actoren': ResourceQueryComponent,
@@ -193,6 +195,12 @@ const openKlantPluginSpecification: PluginSpecification = {
             // Create digitaal adres
             'create-digitaal-adres': 'Maak een digitaal adres aan',
             'create-digitaal-adresDescription': 'Maakt een digitaal adres aan. Vul de partij, de betrokkene of allebei in: een adres van alleen een betrokkene is bijvoorbeeld het e-mailadres dat iemand zonder BSN of KVK-nummer bij een klantcontact opgaf. \'Is standaard adres\' kan alleen bij een adres van een partij.',
+            'get-or-create-digitaal-adres': 'Haal een digitaal adres op of maak het aan',
+            'get-or-create-digitaal-adresDescription': 'Geeft het digitale adres terug dat de partij al heeft, of maakt het aan. Zonder partij wordt gekeken naar de adressen van de betrokkene. Adressen worden na normaliseren vergeleken: e-mail zonder verschil in hoofdletters, telefoonnummers zonder spaties en streepjes en met +31 en 0031 gelezen als 0. Zo ontstaan er geen dubbele adressen als iemand hetzelfde adres anders schrijft. Een bestaand adres wordt niet gewijzigd.',
+            createdPvName: 'Naam van procesvariabele voor \'aangemaakt\' (optioneel)',
+            createdPvNameTooltip: 'Krijgt true als het adres nieuw is aangemaakt en false als het al bestond.',
+            getOrCreateDigitaalAdresResultTooltip: 'De procesvariabele waarin de UUID van het gevonden of aangemaakte adres komt.',
+            getOrCreateReferentieTooltip: 'Wordt alleen gebruikt bij het aanmaken. Let op: Open Klant staat per partij en soort maar één adres met dezelfde referentie toe.',
             verstrektDoorBetrokkene: 'UUID van digitaal adres verstrekt door betrokkene',
             verstrektDoorBetrokkeneTooltip:
                 "Verwijzing naar de UUID van de betrokkene die het digitale adres verstrekt, bijvoorbeeld 'pv:/betrokkeneUuid'",
@@ -437,6 +445,12 @@ const openKlantPluginSpecification: PluginSpecification = {
             // Create digital address
             'create-digitaal-adres': 'Create a digital address',
             'create-digitaal-adresDescription': 'Creates a digital address. Fill in the partij, the betrokkene or both: an address of only a betrokkene is, for example, the e-mail address someone without a BSN or KVK number gave during a klantcontact. \'Is default address\' only applies to an address of a partij.',
+            'get-or-create-digitaal-adres': 'Get or create a digital address',
+            'get-or-create-digitaal-adresDescription': 'Returns the digital address the partij already has, or creates it. Without a partij the addresses of the betrokkene are used. Addresses are compared after normalising: e-mail ignoring case, phone numbers ignoring spaces and dashes and with +31 and 0031 read as 0. This prevents duplicate addresses when someone writes the same address differently. An existing address is not changed.',
+            createdPvName: 'Name of the process variable for \'created\' (optional)',
+            createdPvNameTooltip: 'Set to true when the address was created, and false when it already existed.',
+            getOrCreateDigitaalAdresResultTooltip: 'The process variable that receives the UUID of the found or created address.',
+            getOrCreateReferentieTooltip: 'Only used when creating. Note: Open Klant allows only one address with the same referentie per partij and soort.',
             verstrektDoorBetrokkene: 'UUID of digital address provided by individual',
             verstrektDoorBetrokkeneTooltip:
                 "Reference to the UUID of the individual providing the digital address, for example 'pv:/betrokkeneUuid'",
