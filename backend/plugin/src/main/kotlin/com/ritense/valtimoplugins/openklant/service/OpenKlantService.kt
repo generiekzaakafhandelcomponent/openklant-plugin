@@ -23,6 +23,17 @@ interface OpenKlantService {
         properties: OpenKlantProperties,
     ): Partij
 
+    /**
+     * Finds the partij with this KVK-nummer (usually an organisatie, but Open Klant also accepts it on another soort
+     * partij), or creates an organisatie with [naam] when there is none yet. Has a default so that other
+     * implementations of this interface keep compiling.
+     */
+    fun getOrCreateOrganisatie(
+        kvkNummer: String,
+        naam: String?,
+        properties: OpenKlantProperties,
+    ): Partij = throw UnsupportedOperationException("getOrCreateOrganisatie is not implemented by ${javaClass.name}")
+
     fun getAllDigitaleAdressen(
         query: DigitaalAdresQuery,
         properties: OpenKlantProperties,

@@ -131,33 +131,53 @@ class OpenKlantPlugin(
     @PluginAction(
         key = "get-or-create-partij",
         title = "Get or create Partij",
-        description = "Create partij in Open Klant or gets the partij if already exists",
+        description =
+            "Gets the partij with the given BSN (a persoon) or KVK-nummer (an organisatie) from Open Klant, " +
+                "or creates it when it does not exist yet",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getOrCreatePartij(
         execution: DelegateExecution,
-        @PluginActionProperty bsn: String,
-        @PluginActionProperty voorletters: String,
-        @PluginActionProperty voornaam: String,
-        @PluginActionProperty voorvoegselAchternaam: String,
-        @PluginActionProperty achternaam: String,
+        @PluginActionProperty bsn: String? = null,
+        @PluginActionProperty kvkNummer: String? = null,
+        @PluginActionProperty organisatienaam: String? = null,
+        @PluginActionProperty voorletters: String? = null,
+        @PluginActionProperty voornaam: String? = null,
+        @PluginActionProperty voorvoegselAchternaam: String? = null,
+        @PluginActionProperty achternaam: String? = null,
         @PluginActionProperty resultPvName: String? = null,
     ) {
+        // Both can point to a process variable, so one process link serves inwoners and ondernemers alike:
+        // whichever of the two has a value at runtime decides what is looked up.
+        val bsnValue = bsn.trimToNull()
+        val kvkValue = kvkNummer.trimToNull()
+        require((bsnValue == null) != (kvkValue == null)) {
+            "get-or-create-partij needs exactly one of 'bsn' and 'kvkNummer', " +
+                "but ${if (bsnValue == null) "neither" else "both"} had a value"
+        }
+
         logger.debug { "Getting or otherwise creating partij in Open Klant..." }
 
-        val partijInformation =
-            PartijInformationImpl.fromActionProperties(
-                bsn = bsn,
-                voorletters = voorletters,
-                voornaam = voornaam,
-                voorvoegselAchternaam = voorvoegselAchternaam,
-                achternaam = achternaam,
-            )
         val partij =
-            openKlantPluginService.getOrCreatePartij(
-                partijInformation = partijInformation,
-                properties = openKlantProperties,
-            )
+            if (kvkValue != null) {
+                openKlantPluginService.getOrCreateOrganisatie(
+                    kvkNummer = kvkValue,
+                    naam = organisatienaam.trimToNull(),
+                    properties = openKlantProperties,
+                )
+            } else {
+                openKlantPluginService.getOrCreatePartij(
+                    partijInformation =
+                        PartijInformationImpl.fromActionProperties(
+                            bsn = checkNotNull(bsnValue),
+                            voorletters = voorletters.orEmpty(),
+                            voornaam = voornaam.orEmpty(),
+                            voorvoegselAchternaam = voorvoegselAchternaam.orEmpty(),
+                            achternaam = achternaam.orEmpty(),
+                        ),
+                    properties = openKlantProperties,
+                )
+            }
 
         execution.setVariable(resultPvName.trimToNull() ?: OUTPUT_PARTIJ_UUID, partij.uuid.toString())
 

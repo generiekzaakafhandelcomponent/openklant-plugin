@@ -20,7 +20,10 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 import java.net.URI
 import java.util.UUID
 
@@ -293,6 +296,114 @@ class OpenKlantServiceTest {
 
         // ASSERT:
         assertEquals("39bc3ca9-3672-4c68-a34a-fe1152c5dfec", resultPartij.uuid.toString())
+    }
+
+    @Test
+    fun `getOrCreatePartij returns the partij another process created concurrently`() {
+        val concurrent = defaultPartij.copy(uuid = UUID.fromString("5a5a0001-0000-4000-8000-000000000001"))
+        every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returnsMany listOf(null, concurrent)
+        every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
+        every { client.createPartij(defaultCreatePartijRequest, testProperties) } throws
+            ResponseStatusException(HttpStatus.BAD_REQUEST, "PartijIdentificator moet uniek zijn")
+
+        val result = service.getOrCreatePartij(partijInformation, testProperties)
+
+        assertEquals(concurrent.uuid, result.uuid)
+    }
+
+    @Test
+    fun `getOrCreatePartij rethrows a failed create when the partij still does not exist`() {
+        every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returns null
+        every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
+        every { client.createPartij(defaultCreatePartijRequest, testProperties) } throws
+            ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid")
+
+        assertThrows<ResponseStatusException> { service.getOrCreatePartij(partijInformation, testProperties) }
+    }
+
+    @Test
+    fun `getOrCreatePartij also falls back when the two creates collide in the database`() {
+        val concurrent = defaultPartij.copy(uuid = UUID.fromString("5a5a0002-0000-4000-8000-000000000002"))
+        every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returnsMany listOf(null, concurrent)
+        every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
+        every { client.createPartij(defaultCreatePartijRequest, testProperties) } throws
+            ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "IntegrityError")
+
+        val result = service.getOrCreatePartij(partijInformation, testProperties)
+
+        assertEquals(concurrent.uuid, result.uuid)
+    }
+
+    @Test
+    fun `getOrCreatePartij does not look again after an error that is not about a concurrent create`() {
+        every { client.getPartijByBsn(partijInformation.bsn, testProperties) } returns null
+        every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
+        every { client.createPartij(defaultCreatePartijRequest, testProperties) } throws
+            ResponseStatusException(HttpStatus.FORBIDDEN, "no access")
+
+        val exception =
+            assertThrows<ResponseStatusException> { service.getOrCreatePartij(partijInformation, testProperties) }
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.statusCode)
+        verify(exactly = 1) { client.getPartijByBsn(any(), any()) }
+    }
+
+    @Test
+    fun `getOrCreatePartij keeps the error of the create when the second lookup fails`() {
+        val lookupError = ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Open Klant is down")
+        var lookups = 0
+        every { client.getPartijByBsn(partijInformation.bsn, testProperties) } answers {
+            if (lookups++ == 0) null else throw lookupError
+        }
+        every { partijFactory.createFromBsn(partijInformation) } returns defaultCreatePartijRequest
+        every { client.createPartij(defaultCreatePartijRequest, testProperties) } throws
+            ResponseStatusException(HttpStatus.BAD_REQUEST, "PartijIdentificator moet uniek zijn")
+
+        val exception =
+            assertThrows<ResponseStatusException> { service.getOrCreatePartij(partijInformation, testProperties) }
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
+        assertEquals(listOf(lookupError), exception.suppressed.toList())
+    }
+
+    @Test
+    fun `getOrCreatePartij refuses a blank bsn instead of matching an arbitrary partij`() {
+        assertThrows<IllegalArgumentException> {
+            service.getOrCreatePartij(partijInformation.copy(bsn = " "), testProperties)
+        }
+        verify(exactly = 0) { client.getPartijByBsn(any(), any()) }
+    }
+
+    @Test
+    fun `getOrCreateOrganisatie returns the existing organisatie for the kvk-nummer`() {
+        val existing = defaultPartij.copy(soortPartij = Partij.SoortPartij.ORGANISATIE)
+        every { client.getPartijByKvkNummer("12345678", testProperties) } returns existing
+
+        val result = service.getOrCreateOrganisatie("12345678", "Ritense", testProperties)
+
+        assertEquals(existing.uuid, result.uuid)
+        verify(exactly = 0) { client.createPartij(any(), any()) }
+    }
+
+    @Test
+    fun `getOrCreateOrganisatie creates the organisatie when there is none`() {
+        val request = defaultCreatePartijRequest.copy(soortPartij = Partij.SoortPartij.ORGANISATIE)
+        val created = defaultPartij.copy(soortPartij = Partij.SoortPartij.ORGANISATIE)
+        every { client.getPartijByKvkNummer("12345678", testProperties) } returns null
+        every { partijFactory.createOrganisatie("12345678", "Ritense") } returns request
+        every { client.createPartij(request, testProperties) } returns created
+
+        val result = service.getOrCreateOrganisatie("12345678", "Ritense", testProperties)
+
+        assertEquals(created.uuid, result.uuid)
+    }
+
+    @Test
+    fun `getOrCreateOrganisatie rejects a kvk-nummer that is not 8 digits`() {
+        listOf("1234567", "123456789", "1234567a").forEach { kvk ->
+            assertThrows<IllegalArgumentException>(kvk) { service.getOrCreateOrganisatie(kvk, null, testProperties) }
+        }
+        verify(exactly = 0) { client.getPartijByKvkNummer(any(), any()) }
     }
 
     @Test

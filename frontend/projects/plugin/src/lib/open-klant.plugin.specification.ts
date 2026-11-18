@@ -148,6 +148,11 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Get or create Partij
             'get-or-create-partij': 'Haal Partij op of maak een Partij aan',
+            'get-or-create-partijDescription': 'Zoekt de partij op BSN (een persoon) of KVK-nummer (een organisatie) en maakt hem aan als hij nog niet bestaat. Vul één van beide in, of verwijs met allebei naar een procesvariabele: bij het uitvoeren moet precies één van de twee een waarde hebben. Een bestaande partij wordt niet bijgewerkt.',
+            kvkNummer: 'KVK-nummer',
+            getOrCreateBsnTooltip: "BSN van de persoon, bijvoorbeeld 'pv:bsn'. Laat leeg of laat naar een lege variabele verwijzen voor een organisatie.",
+            getOrCreateKvkNummerTooltip: "KVK-nummer (8 cijfers) van de organisatie, bijvoorbeeld 'pv:kvkNummer'. Laat leeg of laat naar een lege variabele verwijzen voor een persoon.",
+            getOrCreateOrganisatienaamTooltip: 'Naam van een nieuwe organisatie. Wordt alleen gebruikt bij een KVK-nummer en alleen bij het aanmaken.',
 
             // Get contact moments by BSN
             'get-contact-moments-by-bsn': 'Contactgeschiedenis ophalen op basis van BSN',
@@ -387,6 +392,11 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Get or create Partij
             'get-or-create-partij': 'Get Partij or create a Partij',
+            'get-or-create-partijDescription': 'Looks the partij up by BSN (a persoon) or KVK number (an organisatie) and creates it when it does not exist yet. Fill in one of the two, or point both to a process variable: at runtime exactly one of them must have a value. An existing partij is not updated.',
+            kvkNummer: 'KVK number',
+            getOrCreateBsnTooltip: "BSN of the person, for example 'pv:bsn'. Leave empty, or point to an empty variable, for an organisation.",
+            getOrCreateKvkNummerTooltip: "KVK number (8 digits) of the organisation, for example 'pv:kvkNummer'. Leave empty, or point to an empty variable, for a person.",
+            getOrCreateOrganisatienaamTooltip: 'Name of a new organisation. Only used with a KVK number, and only when creating.',
 
             // Get contact moments by BSN
             'get-contact-moments-by-bsn': 'Retrieve contact history based on BSN',

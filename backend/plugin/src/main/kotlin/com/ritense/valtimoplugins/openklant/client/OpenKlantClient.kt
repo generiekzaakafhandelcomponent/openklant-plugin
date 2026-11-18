@@ -40,6 +40,7 @@ import com.ritense.valtimoplugins.openklant.dto.Vertegenwoordiging
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQueryParamNames
+import com.ritense.valtimoplugins.openklant.model.KvkIdentificator
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.OpenKlantQuery
@@ -65,25 +66,51 @@ class OpenKlantClient(
 ) {
     // Partijen
 
+    /**
+     * The persoon whose partij-identificator is this BSN. Open Klant filters each identificator field separately, so,
+     * as for [getPartijByKvkNummer], the match on one and the same identificator is checked here.
+     */
     fun getPartijByBsn(
         bsn: String,
         properties: OpenKlantProperties,
     ): Partij? =
-        execute("fetching Partij") {
-            restClient(properties = properties)
-                .get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .path(OK_PARTIJEN_PATH)
-                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value, "bsn")
-                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value, bsn)
-                        .queryParam(KlantcontactQueryParamNames.SOORTPARTIJ.value, "persoon")
-                        .build()
-                }.accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .body<Page<Partij>>()
-                ?.results
-                ?.firstOrNull()
+        listPage<Partij>(
+            OK_PARTIJEN_PATH,
+            OpenKlantQuery.of(
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value to CODE_SOORT_OBJECT_ID_BSN,
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value to bsn,
+                KlantcontactQueryParamNames.SOORTPARTIJ.value to Partij.SoortPartij.PERSOON.value,
+            ),
+            properties,
+        ).results.firstOrNull { partij -> partij.hasIdentificator(CODE_SOORT_OBJECT_ID_BSN, bsn) }
+
+    /**
+     * The partij whose partij-identificator is this KVK-nummer. Open Klant filters each identificator field
+     * separately, so the match on one and the same identificator is checked here. The soort partij is not filtered
+     * on: Open Klant keeps a KVK-nummer unique over all partijen and also accepts it on, for example, a persoon (an
+     * eenmanszaak). Filtering would miss that partij, and creating an organisatie would then fail every time.
+     */
+    fun getPartijByKvkNummer(
+        kvkNummer: String,
+        properties: OpenKlantProperties,
+    ): Partij? {
+        val kvk = KvkIdentificator.CODE_SOORT_OBJECT_ID
+        return listPage<Partij>(
+            OK_PARTIJEN_PATH,
+            OpenKlantQuery.of(
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value to kvk,
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value to kvkNummer,
+            ),
+            properties,
+        ).results.firstOrNull { partij -> partij.hasIdentificator(kvk, kvkNummer) }
+    }
+
+    private fun Partij.hasIdentificator(
+        codeSoortObjectId: String,
+        objectId: String,
+    ): Boolean =
+        partijIdentificatoren.orEmpty().any {
+            it.partijIdentificator.codeSoortObjectId == codeSoortObjectId && it.partijIdentificator.objectId == objectId
         }
 
     fun getPartijen(
@@ -701,6 +728,7 @@ class OpenKlantClient(
         const val OK_VERTEGENWOORDIGINGEN_PATH = "vertegenwoordigingen"
 
         const val PAGE_PARAM = "page"
+        private const val CODE_SOORT_OBJECT_ID_BSN = "bsn"
         const val MAX_PAGES = 100
         private val PAGING_PARAMS = setOf(PAGE_PARAM, "pageSize")
 

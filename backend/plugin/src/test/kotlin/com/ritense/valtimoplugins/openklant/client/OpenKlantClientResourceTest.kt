@@ -557,6 +557,54 @@ internal class OpenKlantClientResourceTest {
     // Partijen and partij-identificatoren
 
     @Test
+    fun `getPartijByKvkNummer filters on the kvk identificator, of any soort partij`() {
+        enqueueBody("""{"count":1,"next":null,"previous":null,"results":[${organisatieJson("12345678")}]}""")
+
+        val partij = client.getPartijByKvkNummer("12345678", properties)
+
+        assertEquals(PARTIJ_UUID, partij?.uuid.toString())
+        val url = server.takeRequest().requestUrl!!
+        assertEquals("/klantinteracties/api/v1/partijen", url.encodedPath)
+        assertEquals("kvk_nummer", url.queryParameter("partijIdentificator__codeSoortObjectId"))
+        assertEquals("12345678", url.queryParameter("partijIdentificator__objectId"))
+        // A KVK-nummer is unique over all partijen, also when it is registered on a persoon (an eenmanszaak)
+        assertNull(url.queryParameter("soortPartij"))
+    }
+
+    @Test
+    fun `getPartijByKvkNummer ignores a partij where the number belongs to another identificator`() {
+        // Open Klant applies each identificator filter separately, so the digits may belong to another identificator
+        enqueueBody(
+            """{"count":1,"next":null,"previous":null,"results":[${organisatieJson("87654321", rsin = "12345678")}]}""",
+        )
+
+        assertNull(client.getPartijByKvkNummer("12345678", properties))
+    }
+
+    @Test
+    fun `getPartijByBsn filters on the bsn identificator of a persoon`() {
+        enqueueBody("""{"count":1,"next":null,"previous":null,"results":[${persoonJson("bsn" to "999990676")}]}""")
+
+        val partij = client.getPartijByBsn("999990676", properties)
+
+        assertEquals(PARTIJ_UUID, partij?.uuid.toString())
+        val url = server.takeRequest().requestUrl!!
+        assertEquals("/klantinteracties/api/v1/partijen", url.encodedPath)
+        assertEquals("bsn", url.queryParameter("partijIdentificator__codeSoortObjectId"))
+        assertEquals("999990676", url.queryParameter("partijIdentificator__objectId"))
+        assertEquals("persoon", url.queryParameter("soortPartij"))
+    }
+
+    @Test
+    fun `getPartijByBsn ignores a persoon where the number belongs to another identificator`() {
+        // Open Klant applies each identificator filter separately, so the digits may belong to another identificator
+        val anderePersoon = persoonJson("bsn" to "111222333", "vreemdelingennummer" to "999990676")
+        enqueueBody("""{"count":1,"next":null,"previous":null,"results":[$anderePersoon]}""")
+
+        assertNull(client.getPartijByBsn("999990676", properties))
+    }
+
+    @Test
     fun `getPartij retrieves a single partij`() {
         enqueueBody(PARTIJ_JSON)
         val uuid = UUID.fromString(PARTIJ_UUID)
@@ -674,6 +722,37 @@ internal class OpenKlantClientResourceTest {
     private fun rekeningnummerJson(iban: String): String {
         val uuid = UUID.nameUUIDFromBytes(iban.toByteArray())
         return """{"uuid":"$uuid","url":"http://ok/rekeningnummers/$uuid","iban":"$iban","bic":null}"""
+    }
+
+    private fun organisatieJson(
+        kvkNummer: String,
+        rsin: String? = null,
+    ): String {
+        fun identificator(
+            soort: String,
+            objectId: String,
+        ) = """{"uuid":"${UUID.randomUUID()}","url":"http://ok/partij-identificatoren/x",""" +
+            """"identificeerdePartij":{"uuid":"$PARTIJ_UUID","url":"http://ok/partijen/$PARTIJ_UUID"},""" +
+            """"partijIdentificator":{"codeObjecttype":"niet_natuurlijk_persoon","codeSoortObjectId":"$soort",""" +
+            """"objectId":"$objectId","codeRegister":"hr"},"subIdentificatorVan":null}"""
+        val identificatoren =
+            listOfNotNull(identificator("kvk_nummer", kvkNummer), rsin?.let { identificator("rsin", it) })
+                .joinToString(",")
+        return PARTIJ_JSON
+            .replace(""""partijIdentificatoren":[]""", """"partijIdentificatoren":[$identificatoren]""")
+            .replace(""""soortPartij":"persoon"""", """"soortPartij":"organisatie"""")
+            .replace(""""partijIdentificatie":null""", """"partijIdentificatie":{"naam":"Ritense"}""")
+    }
+
+    private fun persoonJson(vararg identificatoren: Pair<String, String>): String {
+        val json =
+            identificatoren.joinToString(",") { (soort, objectId) ->
+                """{"uuid":"${UUID.randomUUID()}","url":"http://ok/partij-identificatoren/x",""" +
+                    """"identificeerdePartij":{"uuid":"$PARTIJ_UUID","url":"http://ok/partijen/$PARTIJ_UUID"},""" +
+                    """"partijIdentificator":{"codeObjecttype":"natuurlijk_persoon","codeSoortObjectId":"$soort",""" +
+                    """"objectId":"$objectId","codeRegister":"brp"},"subIdentificatorVan":null}"""
+            }
+        return PARTIJ_JSON.replace(""""partijIdentificatoren":[]""", """"partijIdentificatoren":[$json]""")
     }
 
     private fun digitaalAdresJson(adres: String): String {

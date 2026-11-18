@@ -374,6 +374,28 @@ Open Klant kent geen `If-Match`/`ETag` (nagekeken in de broncode van 2.16.0 tot 
 het ophalen en het bijwerken (milliseconden), dan overschrijft `update-partij` die wijziging met de naamdelen die het
 net had opgehaald.
 
+`get-or-create-partij` werkt met een BSN (een persoon) of een KVK-nummer (een organisatie, met `organisatienaam`
+als naam bij het aanmaken). Bij het uitvoeren moet precies één van de twee een waarde hebben. Beide mogen naar een
+procesvariabele verwijzen, zodat één proceskoppeling inwoners en ondernemers bedient:
+
+```json
+"actionProperties": {
+    "bsn": "pv:bsn",
+    "kvkNummer": "pv:kvkNummer",
+    "organisatienaam": "pv:bedrijfsnaam",
+    "voornaam": "pv:voornaam",
+    "achternaam": "pv:achternaam",
+    "resultPvName": "partijUuid"
+}
+```
+
+Een lege BSN geeft een fout; voorheen werd dan een willekeurige partij gevonden. Een KVK-nummer bestaat uit 8 cijfers.
+De plugin zoekt het KVK-nummer bij elke soort partij: Open Klant houdt een KVK-nummer uniek over alle partijen en
+staat het bijvoorbeeld ook toe bij een persoon (een eenmanszaak). Is er geen partij, dan wordt een organisatie
+aangemaakt. Een bestaande partij wordt niet bijgewerkt. Maken twee processen tegelijk dezelfde partij aan, dan
+weigert Open Klant de tweede; de plugin zoekt dan opnieuw en geeft de bestaande partij terug. Bij een andere fout
+(bijvoorbeeld geen toegang) gebeurt dat niet. Vestigingen (`vestigingsnummer`) worden niet ondersteund.
+
 ### Velden die naar een ander object verwijzen
 
 * UUID-verwijzingen (`partijUuid`, `klantcontactUuid`, ...) vul je met een enkele UUID.

@@ -1,3 +1,6 @@
+<v-paragraph [margin]="true" [italic]="true">
+    {{ 'get-or-create-partijDescription' | pluginTranslate : pluginId | async }}
+</v-paragraph>
 <v-form
         (valueChange)="formValueChange($event)"
         *ngIf="{
@@ -8,10 +11,26 @@
     <v-input
             name="bsn"
             [title]="'bsn' | pluginTranslate : pluginId | async"
-            [tooltip]="'variableFieldTooltip' | pluginTranslate : pluginId | async"
+            [tooltip]="'getOrCreateBsnTooltip' | pluginTranslate : pluginId | async"
             [defaultValue]="obs.prefill?.bsn"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
+    ></v-input>
+    <v-input
+            name="kvkNummer"
+            [title]="'kvkNummer' | pluginTranslate : pluginId | async"
+            [tooltip]="'getOrCreateKvkNummerTooltip' | pluginTranslate : pluginId | async"
+            [defaultValue]="obs.prefill?.kvkNummer"
+            [disabled]="obs.disabled"
+            [required]="false"
+    ></v-input>
+    <v-input
+            name="organisatienaam"
+            [title]="'organisatienaam' | pluginTranslate : pluginId | async"
+            [tooltip]="'getOrCreateOrganisatienaamTooltip' | pluginTranslate : pluginId | async"
+            [defaultValue]="obs.prefill?.organisatienaam"
+            [disabled]="obs.disabled"
+            [required]="false"
     ></v-input>
     <v-input
             name="voorletters"
@@ -19,7 +38,7 @@
             [tooltip]="'variableFieldTooltip' | pluginTranslate : pluginId | async"
             [defaultValue]="obs.prefill?.voorletters"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
     ></v-input>
     <v-input
             name="voornaam"
@@ -27,7 +46,7 @@
             [tooltip]="'variableFieldTooltip' | pluginTranslate : pluginId | async"
             [defaultValue]="obs.prefill?.voornaam"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
     ></v-input>
     <v-input
             name="voorvoegselAchternaam"
@@ -35,7 +54,7 @@
             [tooltip]="'variableFieldTooltip' | pluginTranslate : pluginId | async"
             [defaultValue]="obs.prefill?.voorvoegselAchternaam"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
     ></v-input>
     <v-input
             name="achternaam"
@@ -43,7 +62,7 @@
             [tooltip]="'variableFieldTooltip' | pluginTranslate : pluginId | async"
             [defaultValue]="obs.prefill?.achternaam"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
     ></v-input>
 
     <v-input

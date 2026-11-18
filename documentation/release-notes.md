@@ -26,6 +26,14 @@ Overzicht van wijzigingen per versie van de Open Klant-plugin.
 - **Digitaal adres zonder partij.** `create-digitaal-adres` vraagt een partij, een betrokkene of allebei; voorheen
   was de partij verplicht. `isStandaardAdres` zonder partij geeft vooraf een duidelijke fout. In het
   configuratiescherm zijn de velden die Open Klant optioneel vindt nu ook optioneel.
+- **`get-or-create-partij` voor organisaties.** Nieuwe eigenschappen `kvkNummer` en `organisatienaam`; precies één
+  van `bsn` en `kvkNummer` moet een waarde hebben. Een KVK-nummer wordt bij elke soort partij gezocht, ook bij een
+  persoon (eenmanszaak); zonder treffer wordt een organisatie aangemaakt. Let op: een lege BSN geeft nu een fout.
+  Voorheen gaf Open Klant dan alle personen terug en nam de plugin de eerste. Een BSN of KVK-nummer moet bij één en
+  dezelfde identificator horen; Open Klant filtert de velden los, waardoor een partij met die cijfers in een andere
+  identificator voorheen ook als treffer gold. Maken twee processen tegelijk dezelfde partij aan, dan krijgen ze
+  allebei dezelfde partij in plaats van een fout. `OpenKlantService` heeft de nieuwe methode `getOrCreateOrganisatie`
+  (met een standaardimplementatie).
 
 ## 2.8.2
 

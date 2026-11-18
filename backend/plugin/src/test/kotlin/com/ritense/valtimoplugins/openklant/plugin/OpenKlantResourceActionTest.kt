@@ -770,6 +770,41 @@ internal class OpenKlantResourceActionTest {
         verify(exactly = 0) { client.getPartij(any(), any()) }
     }
 
+    @Test
+    fun `get-or-create-partij gets or creates an organisatie by kvk-nummer`() {
+        every { openKlantService.getOrCreateOrganisatie("12345678", "Ritense", any()) } returns partij()
+
+        invoke(
+            "get-or-create-partij",
+            mapOf("bsn" to "", "kvkNummer" to " 12345678 ", "organisatienaam" to "Ritense", "voornaam" to "Jan"),
+        )
+
+        assertEquals(UUID_B, storedVariables["partijUuid"])
+        verify(exactly = 0) { openKlantService.getOrCreatePartij(any(), any()) }
+    }
+
+    @Test
+    fun `get-or-create-partij gets or creates a persoon by bsn without name fields`() {
+        every { openKlantService.getOrCreatePartij(any(), any()) } returns partij()
+
+        invoke("get-or-create-partij", mapOf("bsn" to "999990676", "kvkNummer" to "", "resultPvName" to "p"))
+
+        assertEquals(UUID_B, storedVariables["p"])
+        verify(exactly = 0) { openKlantService.getOrCreateOrganisatie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `get-or-create-partij needs exactly one of bsn and kvk-nummer`() {
+        val neither = assertThrows<IllegalArgumentException> { invoke("get-or-create-partij", mapOf("bsn" to " ")) }
+        val both =
+            assertThrows<IllegalArgumentException> {
+                invoke("get-or-create-partij", mapOf("bsn" to "999990676", "kvkNummer" to "12345678"))
+            }
+
+        assertTrue(neither.message!!.contains("neither"), neither.message)
+        assertTrue(both.message!!.contains("both"), both.message)
+    }
+
     // Delete actions
 
     @Test
