@@ -588,35 +588,7 @@ class OpenKlantClient(
     internal fun buildKlantcontactUri(
         builder: UriBuilder,
         query: KlantcontactQuery,
-    ): URI {
-        query.objectTypeId?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATORCODEOBJECTTYPE.value,
-                it,
-            )
-        }
-        query.bsn?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__PARTIJIDENTIFICATOR__OBJECTID.value,
-                it,
-            )
-        }
-        query.objectUuid?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATOROBJECTID.value,
-                it,
-            )
-        }
-        query.partijUuid?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value,
-                it,
-            )
-        }
-        return builder
-            .path(OK_KLANTCONTACTEN_PATH)
-            .build()
-    }
+    ): URI = buildCollectionUri(builder, OK_KLANTCONTACTEN_PATH, query.toOpenKlantQuery())
 
     @VisibleForTesting
     internal fun buildDigitaalAdresUri(
@@ -624,18 +596,25 @@ class OpenKlantClient(
         query: DigitaalAdresQuery,
     ): URI = buildCollectionUri(builder, OK_DIGITALE_ADRESSEN_PATH, OpenKlantQuery(query.queryParams))
 
+    /**
+     * Passes every filter value as a URI variable, so the client encodes it as opaque data ('+' becomes %2B, '&'
+     * becomes %26). Written into the template directly, '+' would arrive as a space, '&' would start a new parameter
+     * and '{' would be read as a template variable.
+     */
     @VisibleForTesting
     internal fun buildCollectionUri(
         builder: UriBuilder,
         path: String,
         query: OpenKlantQuery,
     ): URI {
+        val values = mutableListOf<String>()
         query.queryParams.forEach { (key, value) ->
-            builder.queryParam(key, value)
+            builder.queryParam(key, "{v${values.size}}")
+            values += value
         }
         return builder
             .path(path)
-            .build()
+            .build(*values.toTypedArray())
     }
 
     private fun handleInternalServerError(e: HttpServerErrorException.InternalServerError): Nothing {

@@ -19,6 +19,8 @@ import com.ritense.valtimoplugins.openklant.dto.InterneTaakStatus
 import com.ritense.valtimoplugins.openklant.dto.Onderwerpobjectidentificator
 import com.ritense.valtimoplugins.openklant.dto.PatchInterneTaakRequest
 import com.ritense.valtimoplugins.openklant.dto.PatchRekeningnummerRequest
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.OpenKlantQuery
@@ -124,6 +126,52 @@ internal class OpenKlantClientResourceTest {
         val path = server.takeRequest().path!!
         assertTrue(path.contains("wasPartij__uuid=8b0e0f0f-0000-4000-8000-000000000000"), path)
         assertTrue(path.contains("organisatienaam=Ritense%20BV") || path.contains("organisatienaam=Ritense+BV"), path)
+    }
+
+    @Test
+    fun `sends filter values with reserved characters unchanged to Open Klant`() {
+        enqueuePage()
+        val values =
+            mapOf(
+                "adres" to "jan+test@voorbeeld.nl",
+                "omschrijving" to "a&soortDigitaalAdres=email",
+                "referentie" to "a#b",
+                "verificatieDatum" to "100%",
+                "verstrektDoorPartij__uuid" to "a b",
+                "verstrektDoorBetrokkene__uuid" to "{uuid}",
+            )
+
+        client.getDigitaleAdressen(DigitaalAdresQuery(values.toMutableMap()), properties)
+
+        // OkHttp decodes the query the way Open Klant (Django) does, including '+' as a space.
+        val url = server.takeRequest().requestUrl!!
+        assertEquals(values.keys, url.queryParameterNames)
+        values.forEach { (name, value) -> assertEquals(listOf(value), url.queryParameterValues(name), name) }
+    }
+
+    @Test
+    fun `encodes a plus sign in a filter value`() {
+        enqueuePage()
+
+        client.getBetrokkenen(OpenKlantQuery.of("organisatienaam" to "A+B"), properties)
+
+        val path = server.takeRequest().path!!
+        assertTrue(path.contains("organisatienaam=A%2BB"), path)
+    }
+
+    @Test
+    fun `encodes the klantcontact filters as well`() {
+        enqueuePage()
+
+        client.getKlantcontacten(KlantcontactQuery(objectTypeId = "zaak+x", objectUuid = "a&b"), properties)
+
+        val url = server.takeRequest().requestUrl!!
+        assertEquals(
+            listOf("zaak+x"),
+            url.queryParameterValues("onderwerpobject__onderwerpobjectidentificatorCodeObjecttype"),
+        )
+        assertEquals(listOf("a&b"), url.queryParameterValues("onderwerpobject__onderwerpobjectidentificatorObjectId"))
+        assertEquals(2, url.querySize)
     }
 
     @Test
