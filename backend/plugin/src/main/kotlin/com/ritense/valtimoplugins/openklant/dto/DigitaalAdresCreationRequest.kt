@@ -9,8 +9,11 @@ import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
 data class DigitaalAdresCreationRequest(
     @JsonProperty("verstrektDoorBetrokkene")
     val verstrektDoorBetrokkene: NestedUuid? = null,
+    // Always sent, also as null: Open Klant 2.19 requires the key because of its unique constraint on
+    // partij and soortDigitaalAdres, and answers 400 when an adres of only a betrokkene leaves it out
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("verstrektDoorPartij")
-    val verstrektDoorPartij: NestedUuid,
+    val verstrektDoorPartij: NestedUuid? = null,
     @JsonProperty("adres")
     val adres: String,
     @JsonProperty("soortDigitaalAdres")

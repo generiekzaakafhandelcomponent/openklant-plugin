@@ -204,7 +204,7 @@ class OpenKlantServiceTest {
         verify {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
-                    it.verstrektDoorPartij.uuid == defaultPartij.uuid &&
+                    it.verstrektDoorPartij?.uuid == defaultPartij.uuid &&
                         it.adres == contactInformation.emailadres &&
                         it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
                         it.referentie == contactInformation.zaaknummer
@@ -240,7 +240,7 @@ class OpenKlantServiceTest {
         verify {
             client.createDigitaalAdres(
                 match<DigitaalAdresCreationRequest> {
-                    it.verstrektDoorPartij.uuid == newPartij.uuid &&
+                    it.verstrektDoorPartij?.uuid == newPartij.uuid &&
                         it.adres == contactInformation.emailadres &&
                         it.soortDigitaalAdres == SoortDigitaalAdres.EMAIL &&
                         it.referentie == contactInformation.zaaknummer
@@ -340,7 +340,7 @@ class OpenKlantServiceTest {
             client.createDigitaalAdres(
                 request =
                     match {
-                        it.verstrektDoorPartij.uuid == digitaalAdres.verstrektDoorPartijUuid &&
+                        it.verstrektDoorPartij?.uuid == digitaalAdres.verstrektDoorPartijUuid &&
                             it.adres == digitaalAdres.adres &&
                             it.soortDigitaalAdres == digitaalAdres.soortDigitaalAdres &&
                             it.referentie == digitaalAdres.referentie

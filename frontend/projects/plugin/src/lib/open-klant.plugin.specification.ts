@@ -187,6 +187,7 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Create digitaal adres
             'create-digitaal-adres': 'Maak een digitaal adres aan',
+            'create-digitaal-adresDescription': 'Maakt een digitaal adres aan. Vul de partij, de betrokkene of allebei in: een adres van alleen een betrokkene is bijvoorbeeld het e-mailadres dat iemand zonder BSN of KVK-nummer bij een klantcontact opgaf. \'Is standaard adres\' kan alleen bij een adres van een partij.',
             verstrektDoorBetrokkene: 'UUID van digitaal adres verstrekt door betrokkene',
             verstrektDoorBetrokkeneTooltip:
                 "Verwijzing naar de UUID van de betrokkene die het digitale adres verstrekt, bijvoorbeeld 'pv:/betrokkeneUuid'",
@@ -425,6 +426,7 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Create digital address
             'create-digitaal-adres': 'Create a digital address',
+            'create-digitaal-adresDescription': 'Creates a digital address. Fill in the partij, the betrokkene or both: an address of only a betrokkene is, for example, the e-mail address someone without a BSN or KVK number gave during a klantcontact. \'Is default address\' only applies to an address of a partij.',
             verstrektDoorBetrokkene: 'UUID of digital address provided by individual',
             verstrektDoorBetrokkeneTooltip:
                 "Reference to the UUID of the individual providing the digital address, for example 'pv:/betrokkeneUuid'",

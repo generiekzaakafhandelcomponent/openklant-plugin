@@ -842,6 +842,25 @@ internal class OpenKlantResourceActionTest {
     }
 
     @Test
+    fun `create-digitaal-adres accepts an adres provided only by a betrokkene`() {
+        val request = slot<DigitaalAdres>()
+        every { openKlantService.createDigitaalAdres(capture(request), any()) } returns digitaalAdres()
+
+        invoke(
+            "create-digitaal-adres",
+            mapOf(
+                "resultPvName" to "digitaalAdres",
+                "verstrektDoorBetrokkene" to UUID_C,
+                "adres" to "jamie@example.com",
+                "soortDigitaalAdres" to "email",
+            ),
+        )
+
+        assertNull(request.captured.verstrektDoorPartijUuid)
+        assertEquals(UUID.fromString(UUID_C), request.captured.verstrektDoorBetrokkeneUuid)
+    }
+
+    @Test
     fun `update-digitaal-adres keeps publishing the whole object, not just its uuid`() {
         every { openKlantService.updateDigitaalAdres(any(), any(), any()) } returns digitaalAdres()
 

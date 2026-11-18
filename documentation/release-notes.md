@@ -23,6 +23,9 @@ Overzicht van wijzigingen per versie van de Open Klant-plugin.
   `update-partij` bij een naamwijziging of een `soortPartij` eerst de partij op (één extra verzoek). Een wissel tussen
   persoon en contactpersoon neemt de naam mee; een wissel van of naar organisatie zonder nieuwe naam geeft een fout,
   omdat Open Klant de naam per soort partij bewaart en de huidige naam anders verloren gaat.
+- **Digitaal adres zonder partij.** `create-digitaal-adres` vraagt een partij, een betrokkene of allebei; voorheen
+  was de partij verplicht. `isStandaardAdres` zonder partij geeft vooraf een duidelijke fout. In het
+  configuratiescherm zijn de velden die Open Klant optioneel vindt nu ook optioneel.
 
 ## 2.8.2
 

@@ -40,13 +40,20 @@ fun DigitaalAdresResponse.toModel(): DigitaalAdres =
         verificatieDatum = verificatieDatum,
     )
 
-fun DigitaalAdres.toCreationRequest(): DigitaalAdresCreationRequest =
-    DigitaalAdresCreationRequest(
-        verstrektDoorBetrokkene = verstrektDoorBetrokkeneUuid?. let { NestedUuid(verstrektDoorBetrokkeneUuid) },
-        verstrektDoorPartij =
-            NestedUuid(
-                verstrektDoorPartijUuid ?: error("verstrektDoorPartij is required"),
-            ),
+/**
+ * An adres must be traceable to whoever provided it: a partij, a betrokkene or both. Open Klant only accepts
+ * isStandaardAdres for an adres of a partij.
+ */
+fun DigitaalAdres.toCreationRequest(): DigitaalAdresCreationRequest {
+    require(verstrektDoorPartijUuid != null || verstrektDoorBetrokkeneUuid != null) {
+        "A digitaal adres needs verstrektDoorPartij, verstrektDoorBetrokkene or both"
+    }
+    require(isStandaardAdres != true || verstrektDoorPartijUuid != null) {
+        "isStandaardAdres can only be set for a digitaal adres with verstrektDoorPartij"
+    }
+    return DigitaalAdresCreationRequest(
+        verstrektDoorBetrokkene = verstrektDoorBetrokkeneUuid?.let { NestedUuid(it) },
+        verstrektDoorPartij = verstrektDoorPartijUuid?.let { NestedUuid(it) },
         adres = adres,
         soortDigitaalAdres = soortDigitaalAdres,
         isStandaardAdres = isStandaardAdres,
@@ -54,6 +61,7 @@ fun DigitaalAdres.toCreationRequest(): DigitaalAdresCreationRequest =
         referentie = referentie,
         verificatieDatum = verificatieDatum,
     )
+}
 
 fun DigitaalAdresPatchRequest.toModel(): DigitaalAdresPatch =
     DigitaalAdresPatch(

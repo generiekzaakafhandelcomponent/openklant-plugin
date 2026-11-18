@@ -202,6 +202,9 @@ Een nieuw digitaal adres kan worden aangemaakt met de onderstaande proceskoppeli
 - `resultPvName` (in deze procesvariabele wordt het resultaat opgeslagen)
 - `adres`
 - `soortDigitaalAdres` (`email`, `telefoonnummer` of `overig`)
+- `verstrektDoorPartij`, `verstrektDoorBetrokkene` of allebei. Een adres van alleen een betrokkene is bijvoorbeeld
+  het e-mailadres dat iemand zonder BSN of KVK-nummer bij een klantcontact opgaf. `isStandaardAdres` kan alleen bij
+  een adres van een partij; Open Klant weigert het anders.
 
 ```json
 {

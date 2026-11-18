@@ -197,11 +197,13 @@ class OpenKlantPlugin(
         execution: DelegateExecution,
         @PluginActionProperty resultPvName: String,
         @PluginActionProperty verstrektDoorBetrokkene: String? = null,
-        @PluginActionProperty verstrektDoorPartij: String,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
         @PluginActionProperty adres: String,
         @PluginActionProperty soortDigitaalAdres: String,
+        // The form leaves optional fields as an empty string, see update-digitaal-adres
+        @JsonDeserialize(using = StringToBooleanDeserializer::class)
         @PluginActionProperty isStandaardAdres: Boolean? = null,
-        @PluginActionProperty omschrijving: String = "",
+        @PluginActionProperty omschrijving: String? = null,
         @PluginActionProperty referentie: String? = null,
         @PluginActionProperty verificatieDatum: String? = null,
     ) {
@@ -212,7 +214,7 @@ class OpenKlantPlugin(
                 adres = adres.trim(),
                 soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
                 isStandaardAdres = isStandaardAdres,
-                omschrijving = omschrijving.trim(),
+                omschrijving = omschrijving?.trim() ?: "",
                 referentie = referentie.trimToNull(),
                 verificatieDatum = verificatieDatum.trimToNull(),
             )

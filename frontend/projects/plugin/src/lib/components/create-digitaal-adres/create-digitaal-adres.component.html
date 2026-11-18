@@ -1,3 +1,6 @@
+<v-paragraph [margin]="true" [italic]="true">
+  {{ 'create-digitaal-adresDescription' | pluginTranslate: pluginId | async }}
+</v-paragraph>
 <v-form
   (valueChange)="formValueChange($event)"
   *ngIf="{
@@ -11,7 +14,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.verstrektDoorBetrokkene"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="verstrektDoorPartij"
@@ -20,7 +23,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.verstrektDoorPartij"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="adres"
@@ -45,7 +48,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.isStandaardAdres"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="omschrijving"
@@ -53,7 +56,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.omschrijving"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="referentie"
@@ -61,7 +64,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.referentie"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="verificatieDatum"
@@ -70,7 +73,7 @@
     [margin]="true"
     [defaultValue]="obs.prefill?.verificatieDatum"
     [disabled]="obs.disabled"
-    [required]="true"
+    [required]="false"
   ></v-input
   ><v-input
     name="resultPvName"
