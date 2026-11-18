@@ -17,6 +17,12 @@ Overzicht van wijzigingen per versie van de Open Klant-plugin.
   rekende een proces verder met een onvolledige lijst. Filter verder, of haal met `page` één pagina op. Een resultaat
   dat tijdens het ophalen naar de volgende pagina verschuift (doordat er intussen iets is aangemaakt), komt nu één keer
   terug in plaats van twee keer.
+- **Organisatienaam en naamwijzigingen.** `create-partij` en `update-partij` hebben de nieuwe eigenschap
+  `organisatienaam`. `update-partij` met een naam stuurt nu de soort partij mee; zonder soort negeerde Open Klant een
+  naamwijziging stil. Lege naamdelen en `werkteVoorPartij` van een contactpersoon blijven behouden. Daarvoor haalt
+  `update-partij` bij een naamwijziging of een `soortPartij` eerst de partij op (één extra verzoek). Een wissel tussen
+  persoon en contactpersoon neemt de naam mee; een wissel van of naar organisatie zonder nieuwe naam geeft een fout,
+  omdat Open Klant de naam per soort partij bewaart en de huidige naam anders verloren gaat.
 
 ## 2.8.2
 

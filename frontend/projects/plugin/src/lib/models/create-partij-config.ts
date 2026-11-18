@@ -19,5 +19,6 @@ export interface CreatePartijConfig {
     voornaam?: string;
     voorvoegselAchternaam?: string;
     achternaam?: string;
+    organisatienaam?: string;
     resultPvName: string;
 }
