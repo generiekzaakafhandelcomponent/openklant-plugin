@@ -114,7 +114,7 @@ class DefaultOpenKlantService(
     override fun getAllKlantcontacten(
         query: KlantcontactQuery,
         properties: OpenKlantProperties,
-    ): List<Klantcontact> = openKlantClient.getKlantcontacten(query, properties).results
+    ): List<Klantcontact> = openKlantClient.getAllKlantcontacten(query, properties)
 
     override fun postKlantcontact(
         klantcontactCreationInformation: KlantcontactCreationInformation,
@@ -137,9 +137,13 @@ class DefaultOpenKlantService(
 
         val query = DigitaalAdresQuery()
 
+        val partij =
+            requireNotNull(adresInformation.verstrektDoorPartij) {
+                "Cannot clear the referentie of the current digitale adressen without a partij"
+            }
         query.add(
             paramName = DigitaalAdresQueryParamNames.VERSTREKTDOORPARTIJ_UUID.value,
-            value = adresInformation.verstrektDoorPartij.toString(),
+            value = partij.toString(),
         )
         query.add(
             paramName = DigitaalAdresQueryParamNames.SOORTDIGITAALADRES.value,

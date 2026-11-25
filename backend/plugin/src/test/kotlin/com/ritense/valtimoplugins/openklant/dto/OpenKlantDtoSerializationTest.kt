@@ -166,6 +166,51 @@ internal class OpenKlantDtoSerializationTest {
     }
 
     @Test
+    fun `reads the naam of an organisatie`() {
+        val partij =
+            objectMapper.readValue<Partij>(
+                """
+                {"uuid":"$UUID_A","url":"http://ok/partijen/$UUID_A","nummer":"1","interneNotitie":"",
+                 "betrokkenen":[],"categorieRelaties":[],"digitaleAdressen":[],"voorkeursDigitaalAdres":null,
+                 "vertegenwoordigden":[],"rekeningnummers":[],"voorkeursRekeningnummer":null,
+                 "partijIdentificatoren":[],"soortPartij":"organisatie","indicatieGeheimhouding":false,
+                 "voorkeurstaal":"nld","indicatieActief":true,"bezoekadres":null,"correspondentieadres":null,
+                 "partijIdentificatie":{"naam":"Ritense B.V."}}
+                """.trimIndent(),
+            )
+
+        assertEquals("Ritense B.V.", partij.partijIdentificatie?.naam)
+        assertNull(partij.partijIdentificatie?.contactnaam)
+    }
+
+    @Test
+    fun `reads and writes the werkteVoorPartij of a contactpersoon`() {
+        val identificatie =
+            objectMapper.readValue<Partij.PartijIdentificatie>(
+                """
+                {"uuid":"$UUID_B","werkteVoorPartij":{"uuid":"$UUID_A","url":"http://ok/partijen/$UUID_A"},
+                 "contactnaam":{"voorletters":"","voornaam":"Jan","voorvoegselAchternaam":"","achternaam":"Dijk"},
+                 "volledigeNaam":"Jan Dijk"}
+                """.trimIndent(),
+            )
+
+        assertEquals(UUID.fromString(UUID_A), identificatie.werkteVoorPartij?.uuid)
+        val json = objectMapper.writeValueAsString(identificatie.copy(volledigeNaam = null))
+        // Contactnaam leaves out empty parts (NON_EMPTY); Open Klant fills them in as empty again
+        assertEquals(
+            """{"contactnaam":{"voornaam":"Jan","achternaam":"Dijk"},"werkteVoorPartij":{"uuid":"$UUID_A"}}""",
+            json,
+        )
+    }
+
+    @Test
+    fun `writes only the naam for an organisatie`() {
+        val json = objectMapper.writeValueAsString(Partij.PartijIdentificatie(naam = "Ritense B.V."))
+
+        assertEquals("""{"naam":"Ritense B.V."}""", json)
+    }
+
+    @Test
     fun `nested references are written as an object holding the uuid`() {
         val json =
             objectMapper.writeValueAsString(

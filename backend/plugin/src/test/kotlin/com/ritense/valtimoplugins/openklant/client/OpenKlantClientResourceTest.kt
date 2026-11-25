@@ -19,9 +19,12 @@ import com.ritense.valtimoplugins.openklant.dto.InterneTaakStatus
 import com.ritense.valtimoplugins.openklant.dto.Onderwerpobjectidentificator
 import com.ritense.valtimoplugins.openklant.dto.PatchInterneTaakRequest
 import com.ritense.valtimoplugins.openklant.dto.PatchRekeningnummerRequest
+import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
+import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.OpenKlantQuery
+import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
@@ -95,6 +98,43 @@ internal class OpenKlantClientResourceTest {
     }
 
     @Test
+    fun `keeps a result once when it comes back on the next page`() {
+        // Open Klant pages on offset, newest first: a rekeningnummer created while paging shifts 'Twee' to page 2
+        val next = server.url("/klantinteracties/api/v1/rekeningnummers?page=2").toString()
+        val een = rekeningnummerJson("Een")
+        val twee = rekeningnummerJson("Twee")
+        enqueueBody("""{"count":3,"next":"$next","previous":null,"results":[$een,$twee]}""")
+        enqueueBody("""{"count":4,"next":null,"previous":null,"results":[$twee,${rekeningnummerJson("Drie")}]}""")
+
+        val rekeningnummers = client.getRekeningnummers(OpenKlantQuery(), properties)
+
+        assertEquals(listOf("Een", "Twee", "Drie"), rekeningnummers.map { it.iban })
+    }
+
+    @Test
+    fun `fails rather than returning a shortened list after the page limit`() {
+        server.dispatcher =
+            object : Dispatcher() {
+                override fun dispatch(request: RecordedRequest): MockResponse {
+                    val next = server.url("/klantinteracties/api/v1/rekeningnummers?page=next").toString()
+                    val een = rekeningnummerJson("Een")
+                    return MockResponse()
+                        .setResponseCode(200)
+                        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .setBody("""{"count":5000,"next":"$next","previous":null,"results":[$een]}""")
+                }
+            }
+
+        val exception =
+            assertThrows<IllegalStateException> {
+                client.getRekeningnummers(OpenKlantQuery(), properties)
+            }
+
+        assertEquals(OpenKlantClient.MAX_PAGES, server.requestCount)
+        assertTrue(exception.message!!.contains("more than ${OpenKlantClient.MAX_PAGES} pages"), exception.message)
+    }
+
+    @Test
     fun `does not paginate when the caller pinned a page`() {
         enqueueBody(
             """{"count":3,"next":"http://irrelevant/next","previous":null,"results":[${rekeningnummerJson("Een")}]}""",
@@ -124,6 +164,126 @@ internal class OpenKlantClientResourceTest {
         val path = server.takeRequest().path!!
         assertTrue(path.contains("wasPartij__uuid=8b0e0f0f-0000-4000-8000-000000000000"), path)
         assertTrue(path.contains("organisatienaam=Ritense%20BV") || path.contains("organisatienaam=Ritense+BV"), path)
+    }
+
+    @Test
+    fun `getDigitaleAdressen follows pagination until the last page`() {
+        val next = server.url("/klantinteracties/api/v1/digitaleadressen?page=2").toString()
+        enqueueBody("""{"count":3,"next":"$next","previous":null,"results":[${digitaalAdresJson("een@x.nl")}]}""")
+        enqueueBody(
+            """{"count":3,"next":null,"previous":null,"results":[${digitaalAdresJson(
+                "twee@x.nl",
+            )},${digitaalAdresJson("drie@x.nl")}]}""",
+        )
+
+        val query = DigitaalAdresQuery(mutableMapOf("verstrektDoorPartij__uuid" to PARTIJ_UUID))
+        val adressen = client.getDigitaleAdressen(query, properties)
+
+        assertEquals(listOf("een@x.nl", "twee@x.nl", "drie@x.nl"), adressen.map { it.adres })
+        val first = server.takeRequest().requestUrl!!
+        assertEquals("1", first.queryParameter("page"))
+        assertEquals(PARTIJ_UUID, first.queryParameter("verstrektDoorPartij__uuid"))
+        val second = server.takeRequest().requestUrl!!
+        assertEquals("2", second.queryParameter("page"))
+        assertEquals(PARTIJ_UUID, second.queryParameter("verstrektDoorPartij__uuid"))
+    }
+
+    @Test
+    fun `getDigitaleAdressen fetches only the pinned page`() {
+        val een = digitaalAdresJson("een@x.nl")
+        enqueueBody("""{"count":3,"next":"http://irrelevant/next","previous":null,"results":[$een]}""")
+
+        val adressen = client.getDigitaleAdressen(DigitaalAdresQuery(mutableMapOf("page" to "2")), properties)
+
+        assertEquals(listOf("een@x.nl"), adressen.map { it.adres })
+        assertEquals(1, server.requestCount)
+        assertEquals("2", server.takeRequest().requestUrl!!.queryParameter("page"))
+    }
+
+    @Test
+    fun `getDigitaleAdressen without a filter fetches only the first page`() {
+        val next = server.url("/klantinteracties/api/v1/digitaleadressen?page=2").toString()
+        enqueueBody("""{"count":3,"next":"$next","previous":null,"results":[${digitaalAdresJson("een@x.nl")}]}""")
+
+        val adressen = client.getDigitaleAdressen(DigitaalAdresQuery(mutableMapOf("pageSize" to "1")), properties)
+
+        assertEquals(listOf("een@x.nl"), adressen.map { it.adres })
+        assertEquals(1, server.requestCount)
+        val url = server.takeRequest().requestUrl!!
+        assertEquals("1", url.queryParameter("pageSize"))
+        assertNull(url.queryParameter("page"))
+    }
+
+    @Test
+    fun `getAllKlantcontacten follows pagination until the last page`() {
+        val next = server.url("/klantinteracties/api/v1/klantcontacten?page=2").toString()
+        val second = KLANTCONTACT_JSON.replace(KLANTCONTACT_UUID, OTHER_KLANTCONTACT_UUID)
+        enqueueBody("""{"count":2,"next":"$next","previous":null,"results":[$KLANTCONTACT_JSON]}""")
+        enqueueBody("""{"count":2,"next":null,"previous":null,"results":[$second]}""")
+
+        val klantcontacten = client.getAllKlantcontacten(KlantcontactQuery(partijUuid = PARTIJ_UUID), properties)
+
+        assertEquals(2, klantcontacten.size)
+        val first = server.takeRequest().requestUrl!!
+        assertEquals("/klantinteracties/api/v1/klantcontacten", first.encodedPath)
+        assertEquals("1", first.queryParameter("page"))
+        assertEquals(PARTIJ_UUID, first.queryParameter("hadBetrokkene__wasPartij__uuid"))
+        assertEquals("2", server.takeRequest().requestUrl!!.queryParameter("page"))
+    }
+
+    @Test
+    fun `getAllKlantcontacten does not call Open Klant without a bsn, object or partij`() {
+        val klantcontacten = client.getAllKlantcontacten(KlantcontactQuery(objectTypeId = "zaak"), properties)
+
+        assertTrue(klantcontacten.isEmpty())
+        assertEquals(0, server.requestCount)
+    }
+
+    @Test
+    fun `sends filter values with reserved characters unchanged to Open Klant`() {
+        enqueuePage()
+        val values =
+            mapOf(
+                "adres" to "jan+test@voorbeeld.nl",
+                "omschrijving" to "a&soortDigitaalAdres=email",
+                "referentie" to "a#b",
+                "verificatieDatum" to "100%",
+                "verstrektDoorPartij__uuid" to "a b",
+                "verstrektDoorBetrokkene__uuid" to "{uuid}",
+            )
+
+        client.getDigitaleAdressen(DigitaalAdresQuery(values.toMutableMap()), properties)
+
+        // OkHttp decodes the query the way Open Klant (Django) does, including '+' as a space.
+        val url = server.takeRequest().requestUrl!!
+        // 'page' is added by the pagination of getDigitaleAdressen
+        assertEquals(values.keys + "page", url.queryParameterNames)
+        values.forEach { (name, value) -> assertEquals(listOf(value), url.queryParameterValues(name), name) }
+    }
+
+    @Test
+    fun `encodes a plus sign in a filter value`() {
+        enqueuePage()
+
+        client.getBetrokkenen(OpenKlantQuery.of("organisatienaam" to "A+B"), properties)
+
+        val path = server.takeRequest().path!!
+        assertTrue(path.contains("organisatienaam=A%2BB"), path)
+    }
+
+    @Test
+    fun `encodes the klantcontact filters as well`() {
+        enqueuePage()
+
+        client.getKlantcontacten(KlantcontactQuery(objectTypeId = "zaak+x", objectUuid = "a&b"), properties)
+
+        val url = server.takeRequest().requestUrl!!
+        assertEquals(
+            listOf("zaak+x"),
+            url.queryParameterValues("onderwerpobject__onderwerpobjectidentificatorCodeObjecttype"),
+        )
+        assertEquals(listOf("a&b"), url.queryParameterValues("onderwerpobject__onderwerpobjectidentificatorObjectId"))
+        assertEquals(2, url.querySize)
     }
 
     @Test
@@ -516,6 +676,14 @@ internal class OpenKlantClientResourceTest {
         return """{"uuid":"$uuid","url":"http://ok/rekeningnummers/$uuid","iban":"$iban","bic":null}"""
     }
 
+    private fun digitaalAdresJson(adres: String): String {
+        val uuid = UUID.nameUUIDFromBytes(adres.toByteArray())
+        return """{"uuid":"$uuid","url":"http://ok/digitaleadressen/$uuid","verstrektDoorBetrokkene":null,""" +
+            """"verstrektDoorPartij":{"uuid":"$PARTIJ_UUID","url":"http://ok/partijen/$PARTIJ_UUID"},""" +
+            """"adres":"$adres","soortDigitaalAdres":"email","isStandaardAdres":false,"omschrijving":"",""" +
+            """"referentie":"","verificatieDatum":null}"""
+    }
+
     private companion object {
         const val ACTOR_UUID = "1c1c0001-0000-4000-8000-000000000001"
         const val ACTOR_KLANTCONTACT_UUID = "1c1c0002-0000-4000-8000-000000000002"
@@ -527,6 +695,7 @@ internal class OpenKlantClientResourceTest {
         const val PARTIJ_IDENTIFICATOR_UUID = "1c1c000a-0000-4000-8000-00000000000a"
         const val REKENINGNUMMER_UUID = "1c1c000b-0000-4000-8000-00000000000b"
         const val VERTEGENWOORDIGING_UUID = "1c1c000c-0000-4000-8000-00000000000c"
+        const val OTHER_KLANTCONTACT_UUID = "1c1c000e-0000-4000-8000-00000000000e"
 
         val MEDEWERKER_ACTOR_JSON =
             """

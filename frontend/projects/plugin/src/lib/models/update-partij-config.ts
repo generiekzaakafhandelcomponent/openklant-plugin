@@ -16,5 +16,6 @@ export interface UpdatePartijConfig {
     voornaam?: string;
     voorvoegselAchternaam?: string;
     achternaam?: string;
+    organisatienaam?: string;
     resultPvName: string;
 }
