@@ -1,6 +1,7 @@
 package com.ritense.valtimoplugins.openklant.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
@@ -82,11 +83,27 @@ data class Partij(
         }
     }
 
+    /**
+     * Open Klant fills contactnaam for a persoon or contactpersoon, and naam for an organisatie. A contactpersoon also
+     * has werkteVoorPartij, the organisatie it works for.
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class PartijIdentificatie(
         @JsonProperty("contactnaam")
-        val contactnaam: Contactnaam?,
+        val contactnaam: Contactnaam? = null,
         @JsonProperty("volledigeNaam")
         val volledigeNaam: String? = null,
+        @JsonProperty("naam")
+        val naam: String? = null,
+        @JsonProperty("werkteVoorPartij")
+        val werkteVoorPartij: PartijReference? = null,
+    )
+
+    /** A reference to another partij: Open Klant reads the uuid and also returns the url. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class PartijReference(
+        @JsonProperty("uuid")
+        val uuid: UUID,
     )
 }

@@ -152,9 +152,10 @@ Voorbeeld `*.processlink.json`
 
 Hiermee kan een lijst van digitale adressen opgehaald worden.
 
-Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. De response kan
-zonder `queryParams` erg groot kan worden. Om het verwerken van de response-data in Valtimo simpel om mee te werken te
-houden, wordt er namelijk geen paginatie toegepast door de plugin.
+Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. Met een filter
+haalt de plugin alle pagina's op, zodat ook een partij met meer dan 100 adressen volledig terugkomt. Zonder filter
+(alleen `page` of `pageSize`, of niets) haalt de plugin alleen de eerste pagina op, zoals voorheen: alle adressen uit
+Open Klant in één procesvariabele is nooit de bedoeling. Geef je zelf `page` mee, dan wordt precies die pagina opgehaald.
 
 `queryParams` moeten als volgt geformatteerd worden:
 
@@ -295,9 +296,15 @@ Welke filters zijn toegestaan verschilt per resource; zie
 <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml' target='_blank'>
 de Open-Klant-API-docs</a>.
 
-In tegenstelling tot `get-digitale-adressen` volgen deze acties standaard wél de paginatie en leveren ze alle
-pagina's op. Geef je zelf een `page`-parameter mee, dan wordt exact die pagina opgehaald. Filter waar mogelijk,
+Deze acties volgen standaard de paginatie en leveren alle pagina's op. Geef je zelf een `page`-parameter mee, dan
+wordt exact die pagina opgehaald. Filter waar mogelijk,
 of gebruik `page` en `pageSize`, om te voorkomen dat er een zeer groot resultaat in een procesvariabele belandt.
+
+Bij meer dan 100 pagina's geeft de actie een fout (een incident in het proces), in plaats van een afgekapte lijst.
+Open Klant pagineert op positie, nieuwste eerst. Wordt er tijdens het ophalen iets aangemaakt, dan schuift een
+resultaat door naar de volgende pagina; de plugin houdt elk resultaat één keer over (op `uuid`). Wordt er tijdens het
+ophalen iets verwijderd, dan kan een resultaat juist een pagina terugschuiven en ontbreken. Dat kan de plugin niet
+zien; het geldt alleen voor de korte tijd waarin de pagina's worden opgehaald.
 
 ### Bijwerken is een PATCH
 
@@ -310,7 +317,7 @@ adres of een identificatie — gedraagt Open Klant zich anders. Getest tegen kla
 | Actie                         | Samengesteld veld                                                              | Gedrag bij PATCH                                       |
 |-------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------|
 | `update-actor`                | `actorIdentificatie` (functie, e-mailadres, telefoonnummer, omschrijving, fax) | **genegeerd** — blijft ongewijzigd, zonder foutmelding |
-| `update-partij`               | `partijIdentificatie` (voorletters, voornaam, voorvoegsel, achternaam)         | **genegeerd** — blijft ongewijzigd, zonder foutmelding |
+| `update-partij`               | `partijIdentificatie` (naam of contactnaam)                                    | alleen samen met `soortPartij`; zie Partijen aanmaken  |
 | `update-actor`                | `actoridentificator` (de vier `code*`/`objectId`-velden)                       | vervangen in zijn geheel; weggelaten subvelden gewist  |
 | `update-bijlage`              | `bijlageidentificator`                                                         | vervangen in zijn geheel; weggelaten subvelden gewist  |
 | `update-betrokkene`           | `contactnaam`, `bezoekadres`, `correspondentieadres`                           | vervangen in zijn geheel; weggelaten subvelden gewist  |
@@ -318,8 +325,8 @@ adres of een identificatie — gedraagt Open Klant zich anders. Getest tegen kla
 | `update-partij-identificator` | `partijIdentificator`                                                          | 400 als niet alle vier de subvelden zijn meegegeven    |
 
 Vul een samengesteld veld dus altijd volledig in. De configuratieschermen van de betrokken acties
-tonen hier een waarschuwing. Voor `actorIdentificatie` en `partijIdentificatie` is er via een PATCH
-geen weg omheen: die velden zijn alleen bij het aanmaken te zetten.
+tonen hier een waarschuwing. Voor `actorIdentificatie` is er via een PATCH geen weg omheen: dat veld is
+alleen bij het aanmaken te zetten. De naam van een partij regelt `update-partij` zelf (zie hieronder).
 
 ### Verwijderen kan cascaderen
 
@@ -344,6 +351,25 @@ alleen een betrokkene wilt vastleggen en geen resultaat in een procesvariabele n
 `create-partij` vereist een partij-identificator (bijvoorbeeld een BSN). `get-or-create-partij` zoekt
 partijen namelijk op hun identificator op: zonder identificator is de partij later niet terug te vinden
 en ontstaan er dubbele partijen.
+
+De naam van een organisatie staat in `organisatienaam`; de naamvelden (voorletters tot en met achternaam)
+gelden voor een persoon of contactpersoon. Een `organisatienaam` bij een andere soort partij geeft een fout.
+
+Bij `update-partij` met een naam of een `soortPartij` haalt de plugin eerst de huidige partij op (één extra
+verzoek). Open Klant leest de naam alleen samen met `soortPartij`, bewaart de naam per soort partij en vervangt de
+hele partij-identificatie. Daarom:
+- stuurt de plugin de huidige soort partij mee als je die niet invult;
+- blijven naamdelen die je leeg laat zoals ze zijn: een nieuwe achternaam laat de voornaam staan. Een naamdeel
+  leegmaken kan dus niet met `update-partij`;
+- blijft bij een contactpersoon `werkteVoorPartij` behouden;
+- gaat de naam mee als een persoon contactpersoon wordt of andersom (`werkteVoorPartij` niet: die bestaat alleen bij
+  een contactpersoon);
+- geeft het een fout als een persoon of contactpersoon een organisatie wordt zonder `organisatienaam`, of andersom
+  zonder naamvelden. De huidige naam zou anders verloren gaan. Een partij zonder naam mag wel van soort veranderen.
+
+Open Klant kent geen `If-Match`/`ETag` (nagekeken in de broncode van 2.16.0 tot en met 2.19.2). Past een ander systeem de naam aan tussen
+het ophalen en het bijwerken (milliseconden), dan overschrijft `update-partij` die wijziging met de naamdelen die het
+net had opgehaald.
 
 ### Velden die naar een ander object verwijzen
 

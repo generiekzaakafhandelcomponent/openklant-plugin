@@ -229,6 +229,17 @@
     </v-input>
 
     <v-input
+        name="organisatienaam"
+        [title]="'organisatienaam' | pluginTranslate: pluginId | async"
+        [tooltip]="'organisatienaamTooltip' | pluginTranslate: pluginId | async"
+        [margin]="true"
+        [defaultValue]="obs.prefill?.organisatienaam"
+        [disabled]="obs.disabled"
+        [required]="false"
+    >
+    </v-input>
+
+    <v-input
         name="resultPvName"
         [title]="'resultPvName' | pluginTranslate: pluginId | async"
         [margin]="true"

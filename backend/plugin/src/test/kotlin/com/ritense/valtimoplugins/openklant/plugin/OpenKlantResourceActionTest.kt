@@ -8,6 +8,7 @@ import com.ritense.plugin.annotation.PluginActionProperty
 import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
 import com.ritense.valtimoplugins.openklant.dto.Actor
 import com.ritense.valtimoplugins.openklant.dto.Betrokkene
+import com.ritense.valtimoplugins.openklant.dto.Contactnaam
 import com.ritense.valtimoplugins.openklant.dto.CreateActorRequest
 import com.ritense.valtimoplugins.openklant.dto.CreateBetrokkeneRequest
 import com.ritense.valtimoplugins.openklant.dto.CreateInterneTaakRequest
@@ -536,6 +537,239 @@ internal class OpenKlantResourceActionTest {
         assertEquals(UUID.fromString(UUID_A), uuid.captured)
     }
 
+    @Test
+    fun `create-partij sends the organisatienaam as naam for an organisatie`() {
+        val request = slot<CreatePartijRequest>()
+        every { client.createPartij(capture(request), any()) } returns partij()
+
+        invoke(
+            "create-partij",
+            mapOf(
+                "soortPartij" to "organisatie",
+                "organisatienaam" to " Ritense B.V. ",
+                "objectId" to "12345678",
+                "codeObjecttype" to "niet_natuurlijk_persoon",
+                "codeRegister" to "hr",
+                "codeSoortObjectId" to "kvk_nummer",
+                "resultPvName" to "partij",
+            ),
+        )
+
+        assertEquals(Partij.PartijIdentificatie(naam = "Ritense B.V."), request.captured.partijIdentificatie)
+        assertEquals(Partij.SoortPartij.ORGANISATIE, request.captured.soortPartij)
+    }
+
+    @Test
+    fun `create-partij rejects an organisatienaam for a persoon`() {
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                invoke(
+                    "create-partij",
+                    mapOf(
+                        "soortPartij" to "persoon",
+                        "organisatienaam" to "Ritense",
+                        "objectId" to "999990676",
+                        "codeObjecttype" to "natuurlijk_persoon",
+                        "codeRegister" to "brp",
+                        "codeSoortObjectId" to "bsn",
+                        "resultPvName" to "partij",
+                    ),
+                )
+            }
+
+        assertTrue(exception.message!!.contains("organisatienaam"), exception.message)
+        verify(exactly = 0) { client.createPartij(any(), any()) }
+    }
+
+    @Test
+    fun `update-partij sends the current soortPartij along with a name, so Open Klant applies it`() {
+        val request = slot<PatchPartijRequest>()
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns partij()
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "achternaam" to "Puk", "resultPvName" to "partij"))
+
+        assertEquals(Partij.SoortPartij.PERSOON, request.captured.soortPartij)
+        val identificatie = request.captured.partijIdentificatie
+        assertEquals("Puk", identificatie?.contactnaam?.achternaam)
+    }
+
+    @Test
+    fun `update-partij keeps the parts of the name that are not configured`() {
+        val request = slot<PatchPartijRequest>()
+        val persoon = partij().copy(partijIdentificatie = identificatie(contactnaam("J.", "Jan", "van", "Dijk")))
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns persoon
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "achternaam" to "Puk", "resultPvName" to "partij"))
+
+        assertEquals(contactnaam("J.", "Jan", "van", "Puk"), request.captured.partijIdentificatie?.contactnaam)
+    }
+
+    @Test
+    fun `update-partij keeps werkteVoorPartij when the name of a contactpersoon changes`() {
+        val request = slot<PatchPartijRequest>()
+        val organisatie = Partij.PartijReference(UUID.fromString(UUID_C))
+        val contactpersoon =
+            partij().copy(
+                soortPartij = Partij.SoortPartij.CONTACTPERSOON,
+                partijIdentificatie =
+                    identificatie(contactnaam(null, "Jan", null, "Dijk")).copy(werkteVoorPartij = organisatie),
+            )
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns contactpersoon
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "achternaam" to "Puk", "resultPvName" to "partij"))
+
+        assertEquals(Partij.SoortPartij.CONTACTPERSOON, request.captured.soortPartij)
+        val sent = request.captured.partijIdentificatie
+        assertEquals(organisatie, sent?.werkteVoorPartij)
+        assertEquals(contactnaam(null, "Jan", null, "Puk"), sent?.contactnaam)
+    }
+
+    @Test
+    fun `update-partij uses the configured soortPartij`() {
+        val request = slot<PatchPartijRequest>()
+        val organisatie =
+            partij().copy(
+                soortPartij = Partij.SoortPartij.ORGANISATIE,
+                partijIdentificatie = Partij.PartijIdentificatie(naam = "Oud"),
+            )
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns organisatie
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke(
+            "update-partij",
+            mapOf(
+                "uuid" to UUID_A,
+                "soortPartij" to "organisatie",
+                "organisatienaam" to "Ritense",
+                "resultPvName" to "p",
+            ),
+        )
+
+        assertEquals(Partij.PartijIdentificatie(naam = "Ritense"), request.captured.partijIdentificatie)
+        assertEquals(Partij.SoortPartij.ORGANISATIE, request.captured.soortPartij)
+    }
+
+    @Test
+    fun `update-partij carries the contactnaam over from a contactpersoon to a persoon, without werkteVoorPartij`() {
+        val request = slot<PatchPartijRequest>()
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns contactpersoonVoor(UUID_C)
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke(
+            "update-partij",
+            mapOf("uuid" to UUID_A, "soortPartij" to "persoon", "achternaam" to "Puk", "resultPvName" to "p"),
+        )
+
+        assertEquals(Partij.SoortPartij.PERSOON, request.captured.soortPartij)
+        assertEquals(identificatie(contactnaam(null, "Jan", null, "Puk")), request.captured.partijIdentificatie)
+    }
+
+    @Test
+    fun `update-partij keeps the name when only the soort changes between persoon and contactpersoon`() {
+        val request = slot<PatchPartijRequest>()
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns contactpersoonVoor(UUID_C)
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "soortPartij" to "persoon", "resultPvName" to "p"))
+
+        assertEquals(Partij.SoortPartij.PERSOON, request.captured.soortPartij)
+        assertEquals(identificatie(contactnaam(null, "Jan", null, "Dijk")), request.captured.partijIdentificatie)
+    }
+
+    @Test
+    fun `update-partij refuses to change a persoon into an organisatie without an organisatienaam`() {
+        val persoon = partij().copy(partijIdentificatie = identificatie(contactnaam(null, "Jan", null, "Dijk")))
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns persoon
+
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                invoke("update-partij", mapOf("uuid" to UUID_A, "soortPartij" to "organisatie", "resultPvName" to "p"))
+            }
+
+        assertTrue(exception.message!!.contains("'organisatienaam'"), exception.message)
+        verify(exactly = 0) { client.patchPartij(any(), any(), any()) }
+    }
+
+    @Test
+    fun `update-partij does not carry a name over from an organisatie to a persoon`() {
+        val request = slot<PatchPartijRequest>()
+        val organisatie =
+            partij().copy(
+                soortPartij = Partij.SoortPartij.ORGANISATIE,
+                partijIdentificatie = Partij.PartijIdentificatie(naam = "Ritense"),
+            )
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns organisatie
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke(
+            "update-partij",
+            mapOf("uuid" to UUID_A, "soortPartij" to "persoon", "achternaam" to "Puk", "resultPvName" to "p"),
+        )
+
+        assertEquals(identificatie(contactnaam(null, null, null, "Puk")), request.captured.partijIdentificatie)
+    }
+
+    @Test
+    fun `update-partij changes the soort of a partij without a name without asking for one`() {
+        val request = slot<PatchPartijRequest>()
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns partij().copy(partijIdentificatie = null)
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "soortPartij" to "organisatie", "resultPvName" to "p"))
+
+        assertEquals(Partij.SoortPartij.ORGANISATIE, request.captured.soortPartij)
+        assertNull(request.captured.partijIdentificatie)
+    }
+
+    @Test
+    fun `update-partij with the same soort and no name leaves the name alone`() {
+        val request = slot<PatchPartijRequest>()
+        val persoon = partij().copy(partijIdentificatie = identificatie(contactnaam(null, "Jan", null, "Dijk")))
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns persoon
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "soortPartij" to "persoon", "resultPvName" to "p"))
+
+        assertEquals(Partij.SoortPartij.PERSOON, request.captured.soortPartij)
+        assertNull(request.captured.partijIdentificatie)
+    }
+
+    @Test
+    fun `update-partij treats an empty name part as unchanged`() {
+        val request = slot<PatchPartijRequest>()
+        val persoon = partij().copy(partijIdentificatie = identificatie(contactnaam("J.", "Jan", "van", "Dijk")))
+        every { client.getPartij(UUID.fromString(UUID_A), any()) } returns persoon
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke(
+            "update-partij",
+            mapOf(
+                "uuid" to UUID_A,
+                "voornaam" to "  ",
+                "voorletters" to "",
+                "achternaam" to "Puk",
+                "resultPvName" to "p",
+            ),
+        )
+
+        assertEquals(contactnaam("J.", "Jan", "van", "Puk"), request.captured.partijIdentificatie?.contactnaam)
+    }
+
+    @Test
+    fun `update-partij without a name neither looks the partij up nor sends soortPartij`() {
+        val request = slot<PatchPartijRequest>()
+        every { client.patchPartij(any(), capture(request), any()) } returns partij()
+
+        invoke("update-partij", mapOf("uuid" to UUID_A, "nummer" to "0000000001", "resultPvName" to "partij"))
+
+        assertNull(request.captured.soortPartij)
+        assertNull(request.captured.partijIdentificatie)
+        verify(exactly = 0) { client.getPartij(any(), any()) }
+    }
+
     // Delete actions
 
     @Test
@@ -789,6 +1023,23 @@ internal class OpenKlantResourceActionTest {
             url = "http://ok/rekeningnummers/$UUID_B",
             iban = "NL02ABNA0123456789",
         )
+
+    private fun contactpersoonVoor(organisatieUuid: String): Partij =
+        partij().copy(
+            soortPartij = Partij.SoortPartij.CONTACTPERSOON,
+            partijIdentificatie =
+                identificatie(contactnaam(null, "Jan", null, "Dijk"))
+                    .copy(werkteVoorPartij = Partij.PartijReference(UUID.fromString(organisatieUuid))),
+        )
+
+    private fun contactnaam(
+        voorletters: String?,
+        voornaam: String?,
+        voorvoegselAchternaam: String?,
+        achternaam: String?,
+    ) = Contactnaam(voorletters, voornaam, voorvoegselAchternaam, achternaam)
+
+    private fun identificatie(contactnaam: Contactnaam) = Partij.PartijIdentificatie(contactnaam = contactnaam)
 
     private fun partij() =
         Partij(
