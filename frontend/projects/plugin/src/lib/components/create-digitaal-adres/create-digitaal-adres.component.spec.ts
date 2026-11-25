@@ -41,4 +41,25 @@ describe('CreateDigitaalAdresComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    const base = {resultPvName: 'adres', adres: 'jan@example.com', soortDigitaalAdres: 'email'};
+
+    function validityOf(config: DigitaalAdresConfig): boolean[] {
+        const emitted: boolean[] = [];
+        component.valid.subscribe(valid => emitted.push(valid));
+        component.formValueChange(config);
+        return emitted;
+    }
+
+    it('should accept an adres provided only by a betrokkene', () => {
+        expect(validityOf({...base, verstrektDoorBetrokkene: 'pv:betrokkeneUuid'})).toEqual([true]);
+    });
+
+    it('should accept an adres provided only by a partij', () => {
+        expect(validityOf({...base, verstrektDoorPartij: 'pv:partijUuid'})).toEqual([true]);
+    });
+
+    it('should reject an adres without partij and betrokkene', () => {
+        expect(validityOf({...base})).toEqual([false]);
+    });
 });

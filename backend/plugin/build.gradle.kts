@@ -25,6 +25,8 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-security")
     compileOnly("org.springframework.boot:spring-boot-starter-validation")
     compileOnly("org.springframework.boot:spring-boot-starter-web")
+    // DataSourceUtils for the lock of get-or-create-digitaal-adres; GZAC provides it at runtime
+    compileOnly("org.springframework:spring-jdbc")
 
     // Testing
     testImplementation("com.ritense.valtimo:core")
@@ -39,6 +41,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
     testImplementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework:spring-jdbc")
 
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")

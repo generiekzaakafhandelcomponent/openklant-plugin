@@ -40,6 +40,7 @@ import com.ritense.valtimoplugins.openklant.dto.Vertegenwoordiging
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQueryParamNames
+import com.ritense.valtimoplugins.openklant.model.KvkIdentificator
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.OpenKlantQuery
@@ -65,31 +66,57 @@ class OpenKlantClient(
 ) {
     // Partijen
 
+    /**
+     * The persoon whose partij-identificator is this BSN. Open Klant filters each identificator field separately, so,
+     * as for [getPartijByKvkNummer], the match on one and the same identificator is checked here.
+     */
     fun getPartijByBsn(
         bsn: String,
         properties: OpenKlantProperties,
     ): Partij? =
-        execute("fetching Partij") {
-            restClient(properties = properties)
-                .get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .path(OK_PARTIJEN_PATH)
-                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value, "bsn")
-                        .queryParam(KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value, bsn)
-                        .queryParam(KlantcontactQueryParamNames.SOORTPARTIJ.value, "persoon")
-                        .build()
-                }.accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .body<Page<Partij>>()
-                ?.results
-                ?.firstOrNull()
+        listPage<Partij>(
+            OK_PARTIJEN_PATH,
+            OpenKlantQuery.of(
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value to CODE_SOORT_OBJECT_ID_BSN,
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value to bsn,
+                KlantcontactQueryParamNames.SOORTPARTIJ.value to Partij.SoortPartij.PERSOON.value,
+            ),
+            properties,
+        ).results.firstOrNull { partij -> partij.hasIdentificator(CODE_SOORT_OBJECT_ID_BSN, bsn) }
+
+    /**
+     * The partij whose partij-identificator is this KVK-nummer. Open Klant filters each identificator field
+     * separately, so the match on one and the same identificator is checked here. The soort partij is not filtered
+     * on: Open Klant keeps a KVK-nummer unique over all partijen and also accepts it on, for example, a persoon (an
+     * eenmanszaak). Filtering would miss that partij, and creating an organisatie would then fail every time.
+     */
+    fun getPartijByKvkNummer(
+        kvkNummer: String,
+        properties: OpenKlantProperties,
+    ): Partij? {
+        val kvk = KvkIdentificator.CODE_SOORT_OBJECT_ID
+        return listPage<Partij>(
+            OK_PARTIJEN_PATH,
+            OpenKlantQuery.of(
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__CODESOORTOBJECTID.value to kvk,
+                KlantcontactQueryParamNames.PARTIJIDENTIFICATOR__OBJECTID.value to kvkNummer,
+            ),
+            properties,
+        ).results.firstOrNull { partij -> partij.hasIdentificator(kvk, kvkNummer) }
+    }
+
+    private fun Partij.hasIdentificator(
+        codeSoortObjectId: String,
+        objectId: String,
+    ): Boolean =
+        partijIdentificatoren.orEmpty().any {
+            it.partijIdentificator.codeSoortObjectId == codeSoortObjectId && it.partijIdentificator.objectId == objectId
         }
 
     fun getPartijen(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Partij> = listAll(OK_PARTIJEN_PATH, query, properties)
+    ): List<Partij> = listAll(OK_PARTIJEN_PATH, query, properties, Partij::uuid)
 
     fun getPartij(
         uuid: UUID,
@@ -114,20 +141,21 @@ class OpenKlantClient(
 
     // Digitale adressen
 
+    /**
+     * Fetches every page of the digitale adressen matching [query]. Without a filter only the first page is fetched,
+     * as before: every adres in Open Klant in one process variable is never what a process needs.
+     */
     fun getDigitaleAdressen(
         query: DigitaalAdresQuery,
         properties: OpenKlantProperties,
-    ): List<DigitaalAdresResponse> =
-        execute("fetching adressen") {
-            restClient(properties = properties)
-                .get()
-                .uri { uriBuilder -> buildDigitaalAdresUri(uriBuilder, query) }
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .body<Page<DigitaalAdresResponse>>()
-                ?.results
-                ?: throw IllegalStateException("Error fetching DigitaalAdres(sen): response body was null")
+    ): List<DigitaalAdresResponse> {
+        val openKlantQuery = OpenKlantQuery(query.queryParams)
+        if (query.queryParams.keys.any { it !in PAGING_PARAMS }) {
+            return listAll(OK_DIGITALE_ADRESSEN_PATH, openKlantQuery, properties, DigitaalAdresResponse::uuid)
         }
+        logger.warn { "Fetching digitale adressen without a filter: only the first page is returned" }
+        return listPage<DigitaalAdresResponse>(OK_DIGITALE_ADRESSEN_PATH, openKlantQuery, properties).results
+    }
 
     fun createDigitaalAdres(
         request: DigitaalAdresCreationRequest,
@@ -152,14 +180,25 @@ class OpenKlantClient(
 
     // Klantcontacten
 
+    /**
+     * Fetches every page of klantcontacten matching [query]; nothing when it has no bsn, object or partij to filter on.
+     */
+    fun getAllKlantcontacten(
+        query: KlantcontactQuery,
+        properties: OpenKlantProperties,
+    ): List<Klantcontact> =
+        if (hasKlantcontactFilter(query)) {
+            listAll(OK_KLANTCONTACTEN_PATH, query.toOpenKlantQuery(), properties, Klantcontact::uuid)
+        } else {
+            emptyList()
+        }
+
+    /** Fetches only the first page; use [getAllKlantcontacten] for the complete list. */
     fun getKlantcontacten(
         query: KlantcontactQuery,
         properties: OpenKlantProperties,
     ): Page<Klantcontact> {
-        if (query.bsn.isNullOrBlank() &&
-            query.objectUuid.isNullOrBlank() &&
-            query.partijUuid.isNullOrBlank()
-        ) {
+        if (!hasKlantcontactFilter(query)) {
             return Page(count = 0, results = emptyList())
         }
 
@@ -198,7 +237,7 @@ class OpenKlantClient(
     fun searchKlantcontacten(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Klantcontact> = listAll(OK_KLANTCONTACTEN_PATH, query, properties)
+    ): List<Klantcontact> = listAll(OK_KLANTCONTACTEN_PATH, query, properties, Klantcontact::uuid)
 
     fun getKlantcontact(
         uuid: UUID,
@@ -221,7 +260,7 @@ class OpenKlantClient(
     fun getActoren(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Actor> = listAll(OK_ACTOREN_PATH, query, properties)
+    ): List<Actor> = listAll(OK_ACTOREN_PATH, query, properties, Actor::uuid)
 
     fun getActor(
         uuid: UUID,
@@ -249,7 +288,7 @@ class OpenKlantClient(
     fun getActorKlantcontacten(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<ActorKlantcontact> = listAll(OK_ACTORKLANTCONTACTEN_PATH, query, properties)
+    ): List<ActorKlantcontact> = listAll(OK_ACTORKLANTCONTACTEN_PATH, query, properties, ActorKlantcontact::uuid)
 
     fun getActorKlantcontact(
         uuid: UUID,
@@ -277,7 +316,7 @@ class OpenKlantClient(
     fun getBetrokkenen(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Betrokkene> = listAll(OK_BETROKKENEN_PATH, query, properties)
+    ): List<Betrokkene> = listAll(OK_BETROKKENEN_PATH, query, properties, Betrokkene::uuid)
 
     fun getBetrokkene(
         uuid: UUID,
@@ -305,7 +344,7 @@ class OpenKlantClient(
     fun getBijlagen(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Bijlage> = listAll(OK_BIJLAGEN_PATH, query, properties)
+    ): List<Bijlage> = listAll(OK_BIJLAGEN_PATH, query, properties, Bijlage::uuid)
 
     fun getBijlage(
         uuid: UUID,
@@ -333,7 +372,7 @@ class OpenKlantClient(
     fun getInterneTaken(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<InterneTaak> = listAll(OK_INTERNETAKEN_PATH, query, properties)
+    ): List<InterneTaak> = listAll(OK_INTERNETAKEN_PATH, query, properties, InterneTaak::uuid)
 
     fun getInterneTaak(
         uuid: UUID,
@@ -361,7 +400,7 @@ class OpenKlantClient(
     fun getOnderwerpobjecten(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Onderwerpobject> = listAll(OK_ONDERWERPOBJECTEN_PATH, query, properties)
+    ): List<Onderwerpobject> = listAll(OK_ONDERWERPOBJECTEN_PATH, query, properties, Onderwerpobject::uuid)
 
     fun getOnderwerpobject(
         uuid: UUID,
@@ -389,7 +428,7 @@ class OpenKlantClient(
     fun getPartijIdentificatoren(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<PartijIdentificator> = listAll(OK_PARTIJ_IDENTIFICATOREN_PATH, query, properties)
+    ): List<PartijIdentificator> = listAll(OK_PARTIJ_IDENTIFICATOREN_PATH, query, properties, PartijIdentificator::uuid)
 
     fun getPartijIdentificator(
         uuid: UUID,
@@ -417,7 +456,7 @@ class OpenKlantClient(
     fun getRekeningnummers(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Rekeningnummer> = listAll(OK_REKENINGNUMMERS_PATH, query, properties)
+    ): List<Rekeningnummer> = listAll(OK_REKENINGNUMMERS_PATH, query, properties, Rekeningnummer::uuid)
 
     fun getRekeningnummer(
         uuid: UUID,
@@ -445,7 +484,7 @@ class OpenKlantClient(
     fun getVertegenwoordigingen(
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
-    ): List<Vertegenwoordiging> = listAll(OK_VERTEGENWOORDIGINGEN_PATH, query, properties)
+    ): List<Vertegenwoordiging> = listAll(OK_VERTEGENWOORDIGINGEN_PATH, query, properties, Vertegenwoordiging::uuid)
 
     fun getVertegenwoordiging(
         uuid: UUID,
@@ -486,16 +525,20 @@ class OpenKlantClient(
                 ?: throw IllegalStateException("Error fetching $path: response body was null")
         }
 
-    /** Fetches every page of [path], unless the caller pinned a specific page through the 'page' parameter. */
+    /**
+     * Fetches every page of [path], unless the caller pinned a specific page through the 'page' parameter.
+     * See [collectPages] for duplicates and the page limit.
+     */
     private inline fun <reified T : Any> listAll(
         path: String,
         query: OpenKlantQuery,
         properties: OpenKlantProperties,
+        noinline uuidOf: (T) -> UUID,
     ): List<T> =
         if (query.queryParams.containsKey(PAGE_PARAM)) {
             listPage<T>(path, query, properties).results
         } else {
-            Page.getAll { pageNumber ->
+            collectPages(path, uuidOf) { pageNumber ->
                 val pagedQuery = OpenKlantQuery(query.queryParams.toMutableMap())
                 pagedQuery.add(PAGE_PARAM, pageNumber.toString())
                 listPage<T>(path, pagedQuery, properties)
@@ -577,6 +620,35 @@ class OpenKlantClient(
             handleResponseException(e, "Error $description")
         }
 
+    private fun hasKlantcontactFilter(query: KlantcontactQuery): Boolean =
+        !query.bsn.isNullOrBlank() || !query.objectUuid.isNullOrBlank() || !query.partijUuid.isNullOrBlank()
+
+    /**
+     * Collects the results of every page. Open Klant pages on offset, newest first: a resource created while paging
+     * pushes the next page one place on, so a result can come back twice. It is kept once, by uuid. More than
+     * [MAX_PAGES] pages is an error rather than a silently shortened list, so a process never acts on half the data.
+     */
+    private fun <T> collectPages(
+        path: String,
+        uuidOf: (T) -> UUID,
+        getPage: (Int) -> Page<T>,
+    ): List<T> {
+        val results = LinkedHashMap<UUID, T>()
+        var pageNumber = 1
+        while (true) {
+            val page = getPage(pageNumber)
+            page.results.forEach { results.putIfAbsent(uuidOf(it), it) }
+            if (page.next == null) {
+                return results.values.toList()
+            }
+            check(pageNumber < MAX_PAGES) {
+                "Error fetching $path: more than $MAX_PAGES pages (${page.count} results). Filter on more fields, " +
+                    "or fetch one page with the '$PAGE_PARAM' parameter."
+            }
+            pageNumber++
+        }
+    }
+
     private fun restClient(properties: OpenKlantProperties): RestClient =
         openKlantRestClientBuilder
             .clone()
@@ -588,35 +660,7 @@ class OpenKlantClient(
     internal fun buildKlantcontactUri(
         builder: UriBuilder,
         query: KlantcontactQuery,
-    ): URI {
-        query.objectTypeId?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATORCODEOBJECTTYPE.value,
-                it,
-            )
-        }
-        query.bsn?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__PARTIJIDENTIFICATOR__OBJECTID.value,
-                it,
-            )
-        }
-        query.objectUuid?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.ONDERWERPOBJECT__ONDERWERPOBJECTIDENTIFICATOROBJECTID.value,
-                it,
-            )
-        }
-        query.partijUuid?.let {
-            builder.queryParam(
-                KlantcontactQueryParamNames.HADBETROKKENE__WASPARTIJ__UUID.value,
-                it,
-            )
-        }
-        return builder
-            .path(OK_KLANTCONTACTEN_PATH)
-            .build()
-    }
+    ): URI = buildCollectionUri(builder, OK_KLANTCONTACTEN_PATH, query.toOpenKlantQuery())
 
     @VisibleForTesting
     internal fun buildDigitaalAdresUri(
@@ -624,18 +668,25 @@ class OpenKlantClient(
         query: DigitaalAdresQuery,
     ): URI = buildCollectionUri(builder, OK_DIGITALE_ADRESSEN_PATH, OpenKlantQuery(query.queryParams))
 
+    /**
+     * Passes every filter value as a URI variable, so the client encodes it as opaque data ('+' becomes %2B, '&'
+     * becomes %26). Written into the template directly, '+' would arrive as a space, '&' would start a new parameter
+     * and '{' would be read as a template variable.
+     */
     @VisibleForTesting
     internal fun buildCollectionUri(
         builder: UriBuilder,
         path: String,
         query: OpenKlantQuery,
     ): URI {
+        val values = mutableListOf<String>()
         query.queryParams.forEach { (key, value) ->
-            builder.queryParam(key, value)
+            builder.queryParam(key, "{v${values.size}}")
+            values += value
         }
         return builder
             .path(path)
-            .build()
+            .build(*values.toTypedArray())
     }
 
     private fun handleInternalServerError(e: HttpServerErrorException.InternalServerError): Nothing {
@@ -677,6 +728,9 @@ class OpenKlantClient(
         const val OK_VERTEGENWOORDIGINGEN_PATH = "vertegenwoordigingen"
 
         const val PAGE_PARAM = "page"
+        private const val CODE_SOORT_OBJECT_ID_BSN = "bsn"
+        const val MAX_PAGES = 100
+        private val PAGING_PARAMS = setOf(PAGE_PARAM, "pageSize")
 
         private val logger = KotlinLogging.logger { }
     }

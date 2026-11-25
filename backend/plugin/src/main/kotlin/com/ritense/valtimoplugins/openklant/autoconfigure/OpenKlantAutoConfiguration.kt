@@ -7,7 +7,9 @@ import com.ritense.valtimoplugins.openklant.client.OpenKlantClient
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.plugin.OpenKlantPluginFactory
 import com.ritense.valtimoplugins.openklant.resolver.OpenKlantValueResolverFactory
+import com.ritense.valtimoplugins.openklant.service.DatabaseDigitaalAdresLock
 import com.ritense.valtimoplugins.openklant.service.DefaultOpenKlantService
+import com.ritense.valtimoplugins.openklant.service.DigitaalAdresLock
 import com.ritense.valtimoplugins.openklant.service.KlantcontactFactory
 import com.ritense.valtimoplugins.openklant.service.OpenKlantService
 import com.ritense.valtimoplugins.openklant.service.PartijFactory
@@ -16,10 +18,12 @@ import com.ritense.valtimoplugins.openklant.util.trimToNull
 import com.ritense.zakenapi.service.ZaakDocumentService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestClient
 import java.net.URI
+import javax.sql.DataSource
 
 @AutoConfiguration
 @EnableConfigurationProperties
@@ -34,16 +38,23 @@ class OpenKlantAutoConfiguration {
     @Bean
     fun klantContactFactory(): KlantcontactFactory = KlantcontactFactory()
 
+    /** Serialises get-or-create-digitaal-adres over every GZAC instance, with a lock in the GZAC database. */
+    @Bean
+    @ConditionalOnMissingBean(DigitaalAdresLock::class)
+    fun openKlantDigitaalAdresLock(dataSource: DataSource): DigitaalAdresLock = DatabaseDigitaalAdresLock(dataSource)
+
     @Bean
     fun openKlantService(
         openKlantClient: OpenKlantClient,
         partijFactory: PartijFactory,
         klantcontactFactory: KlantcontactFactory,
+        digitaalAdresLock: DigitaalAdresLock,
     ): OpenKlantService =
         DefaultOpenKlantService(
             openKlantClient,
             partijFactory,
             klantcontactFactory,
+            digitaalAdresLock,
         )
 
     @Bean

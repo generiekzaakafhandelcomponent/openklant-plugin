@@ -9,6 +9,7 @@ import {GetOrCreatePartijComponent} from './components/get-or-create-partij/get-
 import {RegisterKlantcontactComponent} from './components/open-klant-register-klantcontact/open-klant-register-klantcontact.component';
 import {SetDefaultDigitaalAdresComponent} from './components/set-default-digitaal-adres/set-default-digitaal-adres.component';
 import {CreateDigitaalAdresComponent} from './components/create-digitaal-adres/create-digitaal-adres.component';
+import {GetOrCreateDigitaalAdresComponent} from './components/get-or-create-digitaal-adres/get-or-create-digitaal-adres.component';
 import {GetDigitaleAdressenComponent} from './components/get-digitale-adressen/get-digitale-adressen.component';
 import {UpdateDigitaalAdresComponent} from './components/update-digitaal-adres/update-digitaal-adres.component';
 import {ResourceQueryComponent} from './components/resource-query/resource-query.component';
@@ -53,6 +54,7 @@ const openKlantPluginSpecification: PluginSpecification = {
         'register-klantcontact': RegisterKlantcontactComponent,
         'set-default-digitaal-adres': SetDefaultDigitaalAdresComponent,
         'create-digitaal-adres': CreateDigitaalAdresComponent,
+        'get-or-create-digitaal-adres': GetOrCreateDigitaalAdresComponent,
         'get-digitale-adressen': GetDigitaleAdressenComponent,
         'update-digitaal-adres': UpdateDigitaalAdresComponent,
         'get-actoren': ResourceQueryComponent,
@@ -148,6 +150,11 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Get or create Partij
             'get-or-create-partij': 'Haal Partij op of maak een Partij aan',
+            'get-or-create-partijDescription': 'Zoekt de partij op BSN (een persoon) of KVK-nummer (een organisatie) en maakt hem aan als hij nog niet bestaat. Vul één van beide in, of verwijs met allebei naar een procesvariabele: bij het uitvoeren moet precies één van de twee een waarde hebben. Een bestaande partij wordt niet bijgewerkt.',
+            kvkNummer: 'KVK-nummer',
+            getOrCreateBsnTooltip: "BSN van de persoon, bijvoorbeeld 'pv:bsn'. Laat leeg of laat naar een lege variabele verwijzen voor een organisatie.",
+            getOrCreateKvkNummerTooltip: "KVK-nummer (8 cijfers) van de organisatie, bijvoorbeeld 'pv:kvkNummer'. Laat leeg of laat naar een lege variabele verwijzen voor een persoon.",
+            getOrCreateOrganisatienaamTooltip: 'Naam van een nieuwe organisatie. Wordt alleen gebruikt bij een KVK-nummer en alleen bij het aanmaken.',
 
             // Get contact moments by BSN
             'get-contact-moments-by-bsn': 'Contactgeschiedenis ophalen op basis van BSN',
@@ -187,6 +194,13 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Create digitaal adres
             'create-digitaal-adres': 'Maak een digitaal adres aan',
+            'create-digitaal-adresDescription': 'Maakt een digitaal adres aan. Vul de partij, de betrokkene of allebei in: een adres van alleen een betrokkene is bijvoorbeeld het e-mailadres dat iemand zonder BSN of KVK-nummer bij een klantcontact opgaf. \'Is standaard adres\' kan alleen bij een adres van een partij.',
+            'get-or-create-digitaal-adres': 'Haal een digitaal adres op of maak het aan',
+            'get-or-create-digitaal-adresDescription': 'Geeft het digitale adres terug dat de partij al heeft, of maakt het aan. Zonder partij wordt gekeken naar de adressen van de betrokkene. Adressen worden na normaliseren vergeleken: e-mail zonder verschil in hoofdletters, telefoonnummers zonder spaties en streepjes en met +31 en 0031 gelezen als 0. Zo ontstaan er geen dubbele adressen als iemand hetzelfde adres anders schrijft. Een bestaand adres wordt niet gewijzigd.',
+            createdPvName: 'Naam van procesvariabele voor \'aangemaakt\' (optioneel)',
+            createdPvNameTooltip: 'Krijgt true als het adres nieuw is aangemaakt en false als het al bestond.',
+            getOrCreateDigitaalAdresResultTooltip: 'De procesvariabele waarin de UUID van het gevonden of aangemaakte adres komt.',
+            getOrCreateReferentieTooltip: 'Wordt alleen gebruikt bij het aanmaken. Let op: Open Klant staat per partij en soort maar één adres met dezelfde referentie toe.',
             verstrektDoorBetrokkene: 'UUID van digitaal adres verstrekt door betrokkene',
             verstrektDoorBetrokkeneTooltip:
                 "Verwijzing naar de UUID van de betrokkene die het digitale adres verstrekt, bijvoorbeeld 'pv:/betrokkeneUuid'",
@@ -288,6 +302,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             rol: 'Rol',
             initiator: 'Initiator (true/false)',
             organisatienaam: 'Organisatienaam',
+            organisatienaamTooltip: 'Alleen voor soort partij \'organisatie\'. Voor een persoon of contactpersoon vul je de naamvelden hierboven in.',
             bezoekadres: 'Bezoekadres',
             correspondentieadres: 'Correspondentieadres',
             gevraagdeHandeling: 'Gevraagde handeling',
@@ -342,7 +357,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             'create-partijDescription': 'Maakt een nieuwe partij aan. De partij-identificator (bijvoorbeeld een BSN of KVK-nummer) is verplicht, omdat \'Haal Partij op of maak een Partij aan\' partijen op hun identificator opzoekt: zonder identificator is de partij later niet terug te vinden en ontstaan er dubbele partijen. Deze actie is nog in beta en kan in een toekomstige versie wijzigen.',
             'update-partijDescription': 'Werkt een bestaande partij bij. Alleen de losse velden die je invult worden verstuurd; de overige losse velden blijven ongewijzigd. Voor de samengestelde velden gelden de uitzonderingen hieronder. Partij-identificatoren kunnen hier niet worden gewijzigd; gebruik daarvoor de acties voor partij-identificatoren. Deze actie is nog in beta en kan in een toekomstige versie wijzigen.',
             'update-partijPatchWarning':
-                'Let op: Open Klant negeert bij het bijwerken elke wijziging aan de naam (voorletters, voornaam, voorvoegsel achternaam en achternaam). Die velden blijven ongewijzigd en je krijgt geen foutmelding. Vul bezoekadres en correspondentieadres altijd volledig in: Open Klant vervangt zo\'n adres in zijn geheel, dus ontbrekende velden worden gewist.',
+                'Let op: vul bezoekadres en correspondentieadres altijd volledig in. Open Klant vervangt zo\'n adres in zijn geheel, dus ontbrekende velden worden gewist. Bij een naam haalt de plugin eerst de huidige partij op: naamdelen die je leeg laat blijven zoals ze zijn, bij een contactpersoon blijft \'werkte voor partij\' behouden, en laat je soort partij leeg, dan gaat de huidige soort mee (zonder soort negeert Open Klant de naam). Van persoon naar contactpersoon of andersom gaat de naam mee; van of naar organisatie moet je de nieuwe naam invullen.',
             'create-partij-identificatorDescription': 'Legt een identificerend nummer vast bij een partij, bijvoorbeeld een BSN uit de BRP of een KVK-nummer uit het handelsregister. Een partij is hiermee op dat nummer op te zoeken. Deze actie is nog in beta en kan in een toekomstige versie wijzigen.',
             'update-partij-identificatorDescription': 'Werkt een bestaande partij-identificator bij. Alleen de velden die je invult worden verstuurd; de overige velden blijven ongewijzigd. Deze actie is nog in beta en kan in een toekomstige versie wijzigen.',
             'create-rekeningnummerDescription': 'Legt een rekeningnummer (IBAN, optioneel met BIC) vast bij een partij in Open Klant. Deze actie is nog in beta en kan in een toekomstige versie wijzigen.',
@@ -385,6 +400,11 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Get or create Partij
             'get-or-create-partij': 'Get Partij or create a Partij',
+            'get-or-create-partijDescription': 'Looks the partij up by BSN (a persoon) or KVK number (an organisatie) and creates it when it does not exist yet. Fill in one of the two, or point both to a process variable: at runtime exactly one of them must have a value. An existing partij is not updated.',
+            kvkNummer: 'KVK number',
+            getOrCreateBsnTooltip: "BSN of the person, for example 'pv:bsn'. Leave empty, or point to an empty variable, for an organisation.",
+            getOrCreateKvkNummerTooltip: "KVK number (8 digits) of the organisation, for example 'pv:kvkNummer'. Leave empty, or point to an empty variable, for a person.",
+            getOrCreateOrganisatienaamTooltip: 'Name of a new organisation. Only used with a KVK number, and only when creating.',
 
             // Get contact moments by BSN
             'get-contact-moments-by-bsn': 'Retrieve contact history based on BSN',
@@ -424,6 +444,13 @@ const openKlantPluginSpecification: PluginSpecification = {
 
             // Create digital address
             'create-digitaal-adres': 'Create a digital address',
+            'create-digitaal-adresDescription': 'Creates a digital address. Fill in the partij, the betrokkene or both: an address of only a betrokkene is, for example, the e-mail address someone without a BSN or KVK number gave during a klantcontact. \'Is default address\' only applies to an address of a partij.',
+            'get-or-create-digitaal-adres': 'Get or create a digital address',
+            'get-or-create-digitaal-adresDescription': 'Returns the digital address the partij already has, or creates it. Without a partij the addresses of the betrokkene are used. Addresses are compared after normalising: e-mail ignoring case, phone numbers ignoring spaces and dashes and with +31 and 0031 read as 0. This prevents duplicate addresses when someone writes the same address differently. An existing address is not changed.',
+            createdPvName: 'Name of the process variable for \'created\' (optional)',
+            createdPvNameTooltip: 'Set to true when the address was created, and false when it already existed.',
+            getOrCreateDigitaalAdresResultTooltip: 'The process variable that receives the UUID of the found or created address.',
+            getOrCreateReferentieTooltip: 'Only used when creating. Note: Open Klant allows only one address with the same referentie per partij and soort.',
             verstrektDoorBetrokkene: 'UUID of digital address provided by individual',
             verstrektDoorBetrokkeneTooltip:
                 "Reference to the UUID of the individual providing the digital address, for example 'pv:/betrokkeneUuid'",
@@ -525,6 +552,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             rol: 'Role',
             initiator: 'Initiator (true/false)',
             organisatienaam: 'Organisation name',
+            organisatienaamTooltip: 'Only for soort partij \'organisatie\'. For a persoon or contactpersoon, fill in the name fields above.',
             bezoekadres: 'Visiting address',
             correspondentieadres: 'Correspondence address',
             gevraagdeHandeling: 'Requested action',
@@ -579,7 +607,7 @@ const openKlantPluginSpecification: PluginSpecification = {
             'create-partijDescription': 'Creates a new partij. The partij identificator (for example a BSN or KVK number) is mandatory, because \'Get Partij or create a Partij\' looks partijen up by their identificator: without one the partij cannot be found later and duplicates will be created. This action is still in beta and may change in a future release.',
             'update-partijDescription': 'Updates an existing partij. Only the individual fields you fill in are sent; the remaining individual fields are left untouched. The composite fields are subject to the exceptions below. Partij identificatoren cannot be changed here; use the partij-identificator actions for that. This action is still in beta and may change in a future release.',
             'update-partijPatchWarning':
-                'Note: on update, Open Klant ignores every change to the name (initials, first name, surname prefix and surname). Those fields stay as they are and no error is reported. Always fill in the visiting and correspondence addresses completely: Open Klant replaces such an address as a whole, so any field you leave empty is cleared.',
+                'Note: always fill in the visiting and correspondence addresses completely. Open Klant replaces such an address as a whole, so any field you leave empty is cleared. With a name, the plugin first looks up the current partij: name parts you leave empty stay as they are, a contactpersoon keeps \'werkte voor partij\', and if you leave soort partij empty the current soort is sent along (without it Open Klant ignores the name). From persoon to contactpersoon or back, the name carries over; from or to organisatie, fill in the new name.',
             'create-partij-identificatorDescription': 'Records an identifying number for a partij, for example a BSN from the BRP or a KVK number from the trade register. This is what makes a partij findable by that number. This action is still in beta and may change in a future release.',
             'update-partij-identificatorDescription': 'Updates an existing partij identificator. Only the fields you fill in are sent; the remaining fields are left untouched. This action is still in beta and may change in a future release.',
             'create-rekeningnummerDescription': 'Records a bank account number (IBAN, optionally with a BIC) for a partij in Open Klant. This action is still in beta and may change in a future release.',

@@ -152,9 +152,10 @@ Voorbeeld `*.processlink.json`
 
 Hiermee kan een lijst van digitale adressen opgehaald worden.
 
-Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. De response kan
-zonder `queryParams` erg groot kan worden. Om het verwerken van de response-data in Valtimo simpel om mee te werken te
-houden, wordt er namelijk geen paginatie toegepast door de plugin.
+Het `resultPvName`-veld is verplicht, maar ook het gebruik van `queryParams` wordt sterk aangeraden. Met een filter
+haalt de plugin alle pagina's op, zodat ook een partij met meer dan 100 adressen volledig terugkomt. Zonder filter
+(alleen `page` of `pageSize`, of niets) haalt de plugin alleen de eerste pagina op, zoals voorheen: alle adressen uit
+Open Klant in één procesvariabele is nooit de bedoeling. Geef je zelf `page` mee, dan wordt precies die pagina opgehaald.
 
 `queryParams` moeten als volgt geformatteerd worden:
 
@@ -201,6 +202,9 @@ Een nieuw digitaal adres kan worden aangemaakt met de onderstaande proceskoppeli
 - `resultPvName` (in deze procesvariabele wordt het resultaat opgeslagen)
 - `adres`
 - `soortDigitaalAdres` (`email`, `telefoonnummer` of `overig`)
+- `verstrektDoorPartij`, `verstrektDoorBetrokkene` of allebei. Een adres van alleen een betrokkene is bijvoorbeeld
+  het e-mailadres dat iemand zonder BSN of KVK-nummer bij een klantcontact opgaf. `isStandaardAdres` kan alleen bij
+  een adres van een partij; Open Klant weigert het anders.
 
 ```json
 {
@@ -222,6 +226,67 @@ Een nieuw digitaal adres kan worden aangemaakt met de onderstaande proceskoppeli
     "processLinkType": "plugin"
 }
 ```
+
+## Digitaal adres ophalen of aanmaken
+
+`get-or-create-digitaal-adres` geeft het adres terug dat de partij al heeft, of maakt het aan. Zonder partij wordt
+gekeken naar de adressen van de betrokkene. Adressen worden na normaliseren vergeleken, zodat hetzelfde adres in een
+andere schrijfwijze geen dubbel adres oplevert:
+
+| Soort | Vergelijking |
+|---|---|
+| `email` | zonder spaties eromheen en zonder verschil in hoofdletters |
+| `telefoonnummer` | zonder spaties, streepjes, punten en haakjes; `+31` en `0031` (met of zonder `(0)`) gelezen als `0`; negen cijfers die met `6` beginnen krijgen een `0` ervoor (`612345678` wordt `0612345678`); een buitenlands nummer met `00` of `+` wordt geschreven met `+` (`0032470123456` wordt `+32470123456`), behalve een nummer van minder dan 9 cijfers, dat houdt `00` |
+| `overig` | zonder spaties eromheen |
+
+Een nieuw e-mailadres of overig adres wordt bewaard zoals het is ingevoerd. Een nieuw telefoonnummer wordt bewaard in
+de vergeleken vorm (bijvoorbeeld `0612345678` of `+32470123456`), omdat Open Klant geen spaties of streepjes in een
+telefoonnummer accepteert. Open Klant staat na `+` 9 tot 15 cijfers toe en na `00` 7 tot 13; met `+` past dus elk
+buitenlands nummer volgens E.164, en alleen een korter nummer krijgt `00`. Een bestaand adres wordt niet gewijzigd.
+De UUID van het adres komt in `resultPvName`; `createdPvName` (optioneel) krijgt `true` als het adres nieuw is.
+
+```json
+{
+    "activityId": "emailVastleggen",
+    "activityType": "bpmn:ServiceTask:start",
+    "pluginConfigurationId": "12023724-a4bd-431d-93c0-5ba52049e9cd",
+    "pluginActionDefinitionKey": "get-or-create-digitaal-adres",
+    "actionProperties": {
+        "verstrektDoorPartij": "pv:partijUuid",
+        "adres": "doc:/contactgegevens/email",
+        "soortDigitaalAdres": "email",
+        "resultPvName": "emailUuid",
+        "createdPvName": "emailAangemaakt"
+    },
+    "processLinkType": "plugin"
+}
+```
+
+Open Klant kent geen unieke sleutel op het adres zelf. Twee processen die tegelijk hetzelfde adres vastleggen, zouden
+het dus allebei kunnen aanmaken. Daarom zoekt en maakt de actie het adres aan onder een slot in de GZAC-database (een
+PostgreSQL advisory lock per partij of betrokkene, soort en genormaliseerd adres). Dat slot geldt voor alle GZAC-instanties
+die dezelfde database gebruiken. Het wordt in een processtap vastgehouden tot de transactie van die stap eindigt (tot
+de volgende wachttoestand of asynchrone voortzetting in het proces), en PostgreSQL geeft het altijd vrij, ook bij een
+fout of een verbroken verbinding. Een proces dat moet wachten, wacht in PostgreSQL zelf, tot 60 seconden
+(`lock_timeout`, alleen tijdens het wachten). Daarna faalt de stap en probeert Operaton de job opnieuw. Wachten twee
+transacties op elkaars slot (bijvoorbeeld twee processen die in één stap twee adressen in omgekeerde volgorde
+vastleggen), dan beëindigt PostgreSQL er één na `deadlock_timeout` (standaard 1 seconde), die dan opnieuw wordt
+geprobeerd.
+
+Valtimo ondersteunt naast PostgreSQL ook MySQL. Op MySQL (of een andere database) geldt het slot alleen binnen één
+GZAC-instantie en staat er bij de eerste aanroep een waarschuwing in de log. Draai je meerdere GZAC-instanties op
+MySQL, dan blijft het opruimen hieronder de enige bescherming.
+
+Welke weg de actie nam (bestaand adres gevonden, aangemaakt, slot binnen of buiten een transactie) staat op
+DEBUG-niveau in de log: `logging.level.com.ritense.valtimoplugins.openklant.service=DEBUG` (als omgevingsvariabele
+`LOGGING_LEVEL_COM_RITENSE_VALTIMOPLUGINS_OPENKLANT_SERVICE=DEBUG`).
+
+Systemen buiten GZAC (een portaal, een formulier) vallen niet onder het slot. Maakt zo'n systeem op hetzelfde moment
+hetzelfde adres aan, dan zoekt de actie na het aanmaken opnieuw, houdt zij het oudste adres en verwijdert zij het eigen,
+nieuwere adres. Mislukt dat verwijderen, dan gaat het proces verder met het oudste adres en staat er een waarschuwing
+in de log. Bestaande dubbele adressen worden niet opgeruimd.
+
+Een eigen implementatie van het slot is mogelijk met een bean van het type `DigitaalAdresLock`.
 
 ## Digitaal Adres aanpassen
 
@@ -295,9 +360,15 @@ Welke filters zijn toegestaan verschilt per resource; zie
 <a href='https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/maykinmedia/open-klant/2.16.0/src/openklant/components/klantinteracties/openapi.yaml' target='_blank'>
 de Open-Klant-API-docs</a>.
 
-In tegenstelling tot `get-digitale-adressen` volgen deze acties standaard wél de paginatie en leveren ze alle
-pagina's op. Geef je zelf een `page`-parameter mee, dan wordt exact die pagina opgehaald. Filter waar mogelijk,
+Deze acties volgen standaard de paginatie en leveren alle pagina's op. Geef je zelf een `page`-parameter mee, dan
+wordt exact die pagina opgehaald. Filter waar mogelijk,
 of gebruik `page` en `pageSize`, om te voorkomen dat er een zeer groot resultaat in een procesvariabele belandt.
+
+Bij meer dan 100 pagina's geeft de actie een fout (een incident in het proces), in plaats van een afgekapte lijst.
+Open Klant pagineert op positie, nieuwste eerst. Wordt er tijdens het ophalen iets aangemaakt, dan schuift een
+resultaat door naar de volgende pagina; de plugin houdt elk resultaat één keer over (op `uuid`). Wordt er tijdens het
+ophalen iets verwijderd, dan kan een resultaat juist een pagina terugschuiven en ontbreken. Dat kan de plugin niet
+zien; het geldt alleen voor de korte tijd waarin de pagina's worden opgehaald.
 
 ### Bijwerken is een PATCH
 
@@ -310,7 +381,7 @@ adres of een identificatie — gedraagt Open Klant zich anders. Getest tegen kla
 | Actie                         | Samengesteld veld                                                              | Gedrag bij PATCH                                       |
 |-------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------|
 | `update-actor`                | `actorIdentificatie` (functie, e-mailadres, telefoonnummer, omschrijving, fax) | **genegeerd** — blijft ongewijzigd, zonder foutmelding |
-| `update-partij`               | `partijIdentificatie` (voorletters, voornaam, voorvoegsel, achternaam)         | **genegeerd** — blijft ongewijzigd, zonder foutmelding |
+| `update-partij`               | `partijIdentificatie` (naam of contactnaam)                                    | alleen samen met `soortPartij`; zie Partijen aanmaken  |
 | `update-actor`                | `actoridentificator` (de vier `code*`/`objectId`-velden)                       | vervangen in zijn geheel; weggelaten subvelden gewist  |
 | `update-bijlage`              | `bijlageidentificator`                                                         | vervangen in zijn geheel; weggelaten subvelden gewist  |
 | `update-betrokkene`           | `contactnaam`, `bezoekadres`, `correspondentieadres`                           | vervangen in zijn geheel; weggelaten subvelden gewist  |
@@ -318,8 +389,8 @@ adres of een identificatie — gedraagt Open Klant zich anders. Getest tegen kla
 | `update-partij-identificator` | `partijIdentificator`                                                          | 400 als niet alle vier de subvelden zijn meegegeven    |
 
 Vul een samengesteld veld dus altijd volledig in. De configuratieschermen van de betrokken acties
-tonen hier een waarschuwing. Voor `actorIdentificatie` en `partijIdentificatie` is er via een PATCH
-geen weg omheen: die velden zijn alleen bij het aanmaken te zetten.
+tonen hier een waarschuwing. Voor `actorIdentificatie` is er via een PATCH geen weg omheen: dat veld is
+alleen bij het aanmaken te zetten. De naam van een partij regelt `update-partij` zelf (zie hieronder).
 
 ### Verwijderen kan cascaderen
 
@@ -344,6 +415,47 @@ alleen een betrokkene wilt vastleggen en geen resultaat in een procesvariabele n
 `create-partij` vereist een partij-identificator (bijvoorbeeld een BSN). `get-or-create-partij` zoekt
 partijen namelijk op hun identificator op: zonder identificator is de partij later niet terug te vinden
 en ontstaan er dubbele partijen.
+
+De naam van een organisatie staat in `organisatienaam`; de naamvelden (voorletters tot en met achternaam)
+gelden voor een persoon of contactpersoon. Een `organisatienaam` bij een andere soort partij geeft een fout.
+
+Bij `update-partij` met een naam of een `soortPartij` haalt de plugin eerst de huidige partij op (één extra
+verzoek). Open Klant leest de naam alleen samen met `soortPartij`, bewaart de naam per soort partij en vervangt de
+hele partij-identificatie. Daarom:
+- stuurt de plugin de huidige soort partij mee als je die niet invult;
+- blijven naamdelen die je leeg laat zoals ze zijn: een nieuwe achternaam laat de voornaam staan. Een naamdeel
+  leegmaken kan dus niet met `update-partij`;
+- blijft bij een contactpersoon `werkteVoorPartij` behouden;
+- gaat de naam mee als een persoon contactpersoon wordt of andersom (`werkteVoorPartij` niet: die bestaat alleen bij
+  een contactpersoon);
+- geeft het een fout als een persoon of contactpersoon een organisatie wordt zonder `organisatienaam`, of andersom
+  zonder naamvelden. De huidige naam zou anders verloren gaan. Een partij zonder naam mag wel van soort veranderen.
+
+Open Klant kent geen `If-Match`/`ETag` (nagekeken in de broncode van 2.16.0 tot en met 2.19.2). Past een ander systeem de naam aan tussen
+het ophalen en het bijwerken (milliseconden), dan overschrijft `update-partij` die wijziging met de naamdelen die het
+net had opgehaald.
+
+`get-or-create-partij` werkt met een BSN (een persoon) of een KVK-nummer (een organisatie, met `organisatienaam`
+als naam bij het aanmaken). Bij het uitvoeren moet precies één van de twee een waarde hebben. Beide mogen naar een
+procesvariabele verwijzen, zodat één proceskoppeling inwoners en ondernemers bedient:
+
+```json
+"actionProperties": {
+    "bsn": "pv:bsn",
+    "kvkNummer": "pv:kvkNummer",
+    "organisatienaam": "pv:bedrijfsnaam",
+    "voornaam": "pv:voornaam",
+    "achternaam": "pv:achternaam",
+    "resultPvName": "partijUuid"
+}
+```
+
+Een lege BSN geeft een fout; voorheen werd dan een willekeurige partij gevonden. Een KVK-nummer bestaat uit 8 cijfers.
+De plugin zoekt het KVK-nummer bij elke soort partij: Open Klant houdt een KVK-nummer uniek over alle partijen en
+staat het bijvoorbeeld ook toe bij een persoon (een eenmanszaak). Is er geen partij, dan wordt een organisatie
+aangemaakt. Een bestaande partij wordt niet bijgewerkt. Maken twee processen tegelijk dezelfde partij aan, dan
+weigert Open Klant de tweede; de plugin zoekt dan opnieuw en geeft de bestaande partij terug. Bij een andere fout
+(bijvoorbeeld geen toegang) gebeurt dat niet. Vestigingen (`vestigingsnummer`) worden niet ondersteund.
 
 ### Velden die naar een ander object verwijzen
 

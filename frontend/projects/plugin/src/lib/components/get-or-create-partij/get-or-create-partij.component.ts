@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {FunctionConfigurationComponent, FunctionConfigurationData, PluginTranslatePipeModule} from "@valtimo/plugin";
 import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription, take} from "rxjs";
 import {GetOrCreatePartijConfig} from "../../models/get-or-create-partij-config";
-import {FormModule, FormOutput, InputModule} from "@valtimo/components";
+import {FormModule, FormOutput, InputModule, ParagraphModule} from "@valtimo/components";
 import {AsyncPipe, NgIf} from "@angular/common";
 
 @Component({
@@ -11,6 +11,7 @@ import {AsyncPipe, NgIf} from "@angular/common";
   imports: [
     FormModule,
     InputModule,
+    ParagraphModule,
     PluginTranslatePipeModule,
     NgIf,
     AsyncPipe
@@ -46,12 +47,8 @@ export class GetOrCreatePartijComponent
   }
 
   private handleValid(formOutput: GetOrCreatePartijConfig): void {
-    const valid =
-      !!formOutput.bsn &&
-      !!formOutput.voorletters &&
-      !!formOutput.voornaam &&
-      !!formOutput.voorvoegselAchternaam &&
-      !!formOutput.achternaam
+    // Either may point to a process variable; at runtime exactly one of them must have a value.
+    const valid = !!formOutput.bsn || !!formOutput.kvkNummer;
 
     this.valid$.next(valid);
     this.valid.emit(valid);

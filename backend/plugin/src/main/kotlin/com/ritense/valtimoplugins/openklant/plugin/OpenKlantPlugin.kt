@@ -131,33 +131,53 @@ class OpenKlantPlugin(
     @PluginAction(
         key = "get-or-create-partij",
         title = "Get or create Partij",
-        description = "Create partij in Open Klant or gets the partij if already exists",
+        description =
+            "Gets the partij with the given BSN (a persoon) or KVK-nummer (an organisatie) from Open Klant, " +
+                "or creates it when it does not exist yet",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
     fun getOrCreatePartij(
         execution: DelegateExecution,
-        @PluginActionProperty bsn: String,
-        @PluginActionProperty voorletters: String,
-        @PluginActionProperty voornaam: String,
-        @PluginActionProperty voorvoegselAchternaam: String,
-        @PluginActionProperty achternaam: String,
+        @PluginActionProperty bsn: String? = null,
+        @PluginActionProperty kvkNummer: String? = null,
+        @PluginActionProperty organisatienaam: String? = null,
+        @PluginActionProperty voorletters: String? = null,
+        @PluginActionProperty voornaam: String? = null,
+        @PluginActionProperty voorvoegselAchternaam: String? = null,
+        @PluginActionProperty achternaam: String? = null,
         @PluginActionProperty resultPvName: String? = null,
     ) {
+        // Both can point to a process variable, so one process link serves inwoners and ondernemers alike:
+        // whichever of the two has a value at runtime decides what is looked up.
+        val bsnValue = bsn.trimToNull()
+        val kvkValue = kvkNummer.trimToNull()
+        require((bsnValue == null) != (kvkValue == null)) {
+            "get-or-create-partij needs exactly one of 'bsn' and 'kvkNummer', " +
+                "but ${if (bsnValue == null) "neither" else "both"} had a value"
+        }
+
         logger.debug { "Getting or otherwise creating partij in Open Klant..." }
 
-        val partijInformation =
-            PartijInformationImpl.fromActionProperties(
-                bsn = bsn,
-                voorletters = voorletters,
-                voornaam = voornaam,
-                voorvoegselAchternaam = voorvoegselAchternaam,
-                achternaam = achternaam,
-            )
         val partij =
-            openKlantPluginService.getOrCreatePartij(
-                partijInformation = partijInformation,
-                properties = openKlantProperties,
-            )
+            if (kvkValue != null) {
+                openKlantPluginService.getOrCreateOrganisatie(
+                    kvkNummer = kvkValue,
+                    naam = organisatienaam.trimToNull(),
+                    properties = openKlantProperties,
+                )
+            } else {
+                openKlantPluginService.getOrCreatePartij(
+                    partijInformation =
+                        PartijInformationImpl.fromActionProperties(
+                            bsn = checkNotNull(bsnValue),
+                            voorletters = voorletters.orEmpty(),
+                            voornaam = voornaam.orEmpty(),
+                            voorvoegselAchternaam = voorvoegselAchternaam.orEmpty(),
+                            achternaam = achternaam.orEmpty(),
+                        ),
+                    properties = openKlantProperties,
+                )
+            }
 
         execution.setVariable(resultPvName.trimToNull() ?: OUTPUT_PARTIJ_UUID, partij.uuid.toString())
 
@@ -197,11 +217,13 @@ class OpenKlantPlugin(
         execution: DelegateExecution,
         @PluginActionProperty resultPvName: String,
         @PluginActionProperty verstrektDoorBetrokkene: String? = null,
-        @PluginActionProperty verstrektDoorPartij: String,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
         @PluginActionProperty adres: String,
         @PluginActionProperty soortDigitaalAdres: String,
+        // The form leaves optional fields as an empty string, see update-digitaal-adres
+        @JsonDeserialize(using = StringToBooleanDeserializer::class)
         @PluginActionProperty isStandaardAdres: Boolean? = null,
-        @PluginActionProperty omschrijving: String = "",
+        @PluginActionProperty omschrijving: String? = null,
         @PluginActionProperty referentie: String? = null,
         @PluginActionProperty verificatieDatum: String? = null,
     ) {
@@ -212,7 +234,7 @@ class OpenKlantPlugin(
                 adres = adres.trim(),
                 soortDigitaalAdres = SoortDigitaalAdres.valueOf(soortDigitaalAdres.trim().uppercase()),
                 isStandaardAdres = isStandaardAdres,
-                omschrijving = omschrijving.trim(),
+                omschrijving = omschrijving?.trim() ?: "",
                 referentie = referentie.trimToNull(),
                 verificatieDatum = verificatieDatum.trimToNull(),
             )
@@ -225,6 +247,48 @@ class OpenKlantPlugin(
         logger.info {
             "Successfully created digitaal adres in Open Klant " +
                 "(uuid: '${digitaalAdres.uuid}', url: '${digitaalAdres.url}')"
+        }
+    }
+
+    @PluginAction(
+        key = "get-or-create-digitaal-adres",
+        title = "Get or create digitaal adres",
+        description =
+            "Returns the digitaal adres the partij (or betrokkene) already has, or creates it. Adressen are compared " +
+                "after normalising: e-mail ignoring case, telefoonnummers ignoring spaces and dashes and with " +
+                "+31 and 0031 read as 0. A new telefoonnummer is stored in that form. GZAC processes look up and " +
+                "create the same adres one at a time, under a lock in the GZAC database. Stores the uuid of the adres.",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getOrCreateDigitaalAdres(
+        execution: DelegateExecution,
+        @PluginActionProperty resultPvName: String? = null,
+        @PluginActionProperty verstrektDoorPartij: String? = null,
+        @PluginActionProperty verstrektDoorBetrokkene: String? = null,
+        @PluginActionProperty adres: String? = null,
+        @PluginActionProperty soortDigitaalAdres: String? = null,
+        @PluginActionProperty omschrijving: String? = null,
+        @PluginActionProperty referentie: String? = null,
+        @PluginActionProperty createdPvName: String? = null,
+    ) {
+        val request =
+            DigitaalAdres(
+                verstrektDoorPartijUuid = verstrektDoorPartij.toUuidIfPresent(),
+                verstrektDoorBetrokkeneUuid = verstrektDoorBetrokkene.toUuidIfPresent(),
+                adres = adres.toRequiredString("adres"),
+                soortDigitaalAdres =
+                    SoortDigitaalAdres.valueOf(soortDigitaalAdres.toRequiredString("soortDigitaalAdres").uppercase()),
+                omschrijving = omschrijving.trimToNull(),
+                referentie = referentie.trimToNull(),
+            )
+
+        val result = openKlantPluginService.getOrCreateDigitaalAdres(request, openKlantProperties)
+        resultPvName.trimToNull()?.let { execution.setVariable(it, result.value.uuid?.toString()) }
+        createdPvName.trimToNull()?.let { execution.setVariable(it, result.created) }
+
+        logger.info {
+            "Successfully ${if (result.created) "created" else "found"} digitaal adres in Open Klant " +
+                "(uuid: '${result.value.uuid}')"
         }
     }
 
@@ -1335,11 +1399,13 @@ class OpenKlantPlugin(
         @PluginActionProperty voornaam: String? = null,
         @PluginActionProperty voorvoegselAchternaam: String? = null,
         @PluginActionProperty achternaam: String? = null,
+        @PluginActionProperty organisatienaam: String? = null,
         @PluginActionProperty objectId: String? = null,
         @PluginActionProperty codeObjecttype: String? = null,
         @PluginActionProperty codeRegister: String? = null,
         @PluginActionProperty codeSoortObjectId: String? = null,
     ) = execution.storeReference(Operation.CREATE, "partij", resultPvName) {
+        val soort = Partij.SoortPartij.fromValue(soortPartij.toRequiredString("soortPartij"))
         openKlantClient.createPartij(
             CreatePartijRequest(
                 nummer = nummer.trimToNull(),
@@ -1360,15 +1426,18 @@ class OpenKlantPlugin(
                                 ),
                         ),
                     ),
-                soortPartij = Partij.SoortPartij.fromValue(soortPartij.toRequiredString("soortPartij")),
+                soortPartij = soort,
                 indicatieGeheimhouding = indicatieGeheimhouding,
                 voorkeurstaal = voorkeurstaal.trimToNull() ?: DEFAULT_VOORKEURSTAAL,
                 indicatieActief = indicatieActief ?: true,
                 bezoekadres = bezoekadres.toAdres(),
                 correspondentieadres = correspondentieadres.toAdres(),
                 partijIdentificatie =
-                    contactnaamOrNull(voorletters, voornaam, voorvoegselAchternaam, achternaam)
-                        ?.let { Partij.PartijIdentificatie(contactnaam = it) },
+                    partijIdentificatieOrNull(
+                        soortPartij = soort,
+                        organisatienaam = organisatienaam,
+                        contactnaam = contactnaamOrNull(voorletters, voornaam, voorvoegselAchternaam, achternaam),
+                    ),
             ),
             openKlantProperties,
         )
@@ -1402,9 +1471,23 @@ class OpenKlantPlugin(
         @PluginActionProperty voornaam: String? = null,
         @PluginActionProperty voorvoegselAchternaam: String? = null,
         @PluginActionProperty achternaam: String? = null,
+        @PluginActionProperty organisatienaam: String? = null,
     ) = execution.storeReference(Operation.UPDATE, "partij", resultPvName) {
+        val partijUuid = uuid.toRequiredUuid("uuid")
+        val contactnaam = contactnaamOrNull(voorletters, voornaam, voorvoegselAchternaam, achternaam)
+        val configuredSoort = soortPartij.trimToNull()?.let { Partij.SoortPartij.fromValue(it) }
+        val nameConfigured = contactnaam != null || organisatienaam.trimToNull() != null
+        // Open Klant keeps the name per soort partij and replaces it as a whole, so a change of the name or of the
+        // soort starts from the current partij
+        val current =
+            if (nameConfigured || configuredSoort != null) {
+                openKlantClient.getPartij(partijUuid, openKlantProperties)
+            } else {
+                null
+            }
+        val soort = configuredSoort ?: current?.soortPartij
         openKlantClient.patchPartij(
-            uuid.toRequiredUuid("uuid"),
+            partijUuid,
             PatchPartijRequest(
                 nummer = nummer.trimToNull(),
                 interneNotitie = interneNotitie.trimToNull(),
@@ -1412,15 +1495,21 @@ class OpenKlantPlugin(
                 voorkeursDigitaalAdres = voorkeursDigitaalAdres.toNestedUuidIfPresent(),
                 rekeningnummers = rekeningnummers.toNestedUuidList(),
                 voorkeursRekeningnummer = voorkeursRekeningnummer.toNestedUuidIfPresent(),
-                soortPartij = soortPartij.trimToNull()?.let { Partij.SoortPartij.fromValue(it) },
+                soortPartij = soort,
                 indicatieGeheimhouding = indicatieGeheimhouding,
                 voorkeurstaal = voorkeurstaal.trimToNull(),
                 indicatieActief = indicatieActief,
                 bezoekadres = bezoekadres.toAdres(),
                 correspondentieadres = correspondentieadres.toAdres(),
                 partijIdentificatie =
-                    contactnaamOrNull(voorletters, voornaam, voorvoegselAchternaam, achternaam)
-                        ?.let { Partij.PartijIdentificatie(contactnaam = it) },
+                    soort?.let {
+                        partijIdentificatieForUpdate(
+                            soortPartij = it,
+                            organisatienaam = organisatienaam,
+                            contactnaam = contactnaam,
+                            current = current,
+                        )
+                    },
             ),
             openKlantProperties,
         )
@@ -1854,6 +1943,99 @@ class OpenKlantPlugin(
         ).takeIf {
             listOfNotNull(it.voorletters, it.voornaam, it.voorvoegselAchternaam, it.achternaam).isNotEmpty()
         }
+
+    /**
+     * The partijIdentificatie for update-partij, or null when the name stays as it is. Open Klant only reads it
+     * together with soortPartij (without it a name change is silently ignored), keeps it per soort partij and replaces
+     * it as a whole. So a name part that is not configured is taken from the [current] partij, as is the
+     * werkteVoorPartij of a contactpersoon: an empty field leaves that part unchanged. A persoon and a contactpersoon
+     * both have a contactnaam, which carries over when one becomes the other. Between an organisatie and a persoon or
+     * contactpersoon nothing carries over, so that change needs the new name.
+     */
+    private fun partijIdentificatieForUpdate(
+        soortPartij: Partij.SoortPartij,
+        organisatienaam: String?,
+        contactnaam: Contactnaam?,
+        current: Partij?,
+    ): Partij.PartijIdentificatie? {
+        val soortChanges = current != null && current.soortPartij != soortPartij
+        val currentContactnaam =
+            if (current != null && current.soortPartij.hasContactnaam()) {
+                current.partijIdentificatie?.contactnaam
+            } else {
+                null
+            }
+        val carriedOver = currentContactnaam.takeIf { soortChanges && soortPartij.hasContactnaam() }
+        val identificatie =
+            partijIdentificatieOrNull(
+                soortPartij = soortPartij,
+                organisatienaam = organisatienaam,
+                contactnaam = contactnaam?.completedWith(currentContactnaam) ?: carriedOver,
+            )
+        if (identificatie == null) {
+            require(!soortChanges || current?.hasName() != true) {
+                val nieuweNaam = if (soortPartij.hasContactnaam()) "a contactnaam" else "'organisatienaam'"
+                "Changing soortPartij from '${current?.soortPartij?.value}' to '${soortPartij.value}' needs " +
+                    "$nieuweNaam: Open Klant keeps the name per soort partij, so the current name would be lost"
+            }
+            return null
+        }
+        return if (soortPartij == Partij.SoortPartij.CONTACTPERSOON && !soortChanges) {
+            identificatie.copy(werkteVoorPartij = current?.partijIdentificatie?.werkteVoorPartij)
+        } else {
+            identificatie
+        }
+    }
+
+    private fun Partij.SoortPartij.hasContactnaam(): Boolean =
+        this == Partij.SoortPartij.PERSOON || this == Partij.SoortPartij.CONTACTPERSOON
+
+    private fun Partij.hasName(): Boolean {
+        val identificatie = partijIdentificatie ?: return false
+        val naamdelen =
+            identificatie.contactnaam
+                ?.let { listOf(it.voorletters, it.voornaam, it.voorvoegselAchternaam, it.achternaam) }
+                .orEmpty()
+        return !identificatie.naam.isNullOrBlank() || naamdelen.any { !it.isNullOrBlank() }
+    }
+
+    /** The configured parts of a name, completed with the parts of the current name that were not configured. */
+    private fun Contactnaam.completedWith(current: Contactnaam?): Contactnaam =
+        if (current == null) {
+            this
+        } else {
+            Contactnaam(
+                voorletters = voorletters ?: current.voorletters,
+                voornaam = voornaam ?: current.voornaam,
+                voorvoegselAchternaam = voorvoegselAchternaam ?: current.voorvoegselAchternaam,
+                achternaam = achternaam ?: current.achternaam,
+            )
+        }
+
+    /**
+     * Open Klant reads partijIdentificatie according to soortPartij: a naam for an organisatie, a contactnaam for a
+     * persoon or contactpersoon. Anything else in partijIdentificatie is dropped by Open Klant without an error.
+     */
+    private fun partijIdentificatieOrNull(
+        soortPartij: Partij.SoortPartij,
+        organisatienaam: String?,
+        contactnaam: Contactnaam?,
+    ): Partij.PartijIdentificatie? {
+        val naam = organisatienaam.trimToNull()
+        if (soortPartij != Partij.SoortPartij.ORGANISATIE) {
+            require(naam == null) {
+                "Action property 'organisatienaam' only applies to soortPartij 'organisatie', " +
+                    "not '${soortPartij.value}'"
+            }
+            return contactnaam?.let { Partij.PartijIdentificatie(contactnaam = it) }
+        }
+        if (contactnaam != null) {
+            logger.warn {
+                "Ignoring the contactnaam for a partij of soort 'organisatie'; use 'organisatienaam' instead"
+            }
+        }
+        return naam?.let { Partij.PartijIdentificatie(naam = it) }
+    }
 
     private fun identificatorOrNull(
         objectId: String?,
