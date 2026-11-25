@@ -2,6 +2,13 @@
 
 Overzicht van wijzigingen per versie van de Open Klant-plugin.
 
+## Nog niet uitgebracht
+
+- **Zoekwaarden worden volledig gecodeerd.** Filterwaarden in `queryParams` (en de filters voor klantcontacten) gaan
+  als URI-variabele naar Open Klant. Een `+` kwam eerder aan als spatie, een `&` begon een nieuwe parameter en een `{`
+  gaf een fout. Let op: wie een waarde zelf al codeerde (bijvoorbeeld `%2B` voor `+`), moet dat weghalen; anders wordt
+  de waarde dubbel gecodeerd. Lege filters voor klantcontacten worden niet meer meegestuurd.
+
 ## 2.8.2
 
 Bugfix: updateDigitaleAdressenForPartij was overbodig & de patchPartij call resulteerde in een Bad Request vanuit 
