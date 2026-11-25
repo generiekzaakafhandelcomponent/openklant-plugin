@@ -114,7 +114,7 @@ class DefaultOpenKlantService(
     override fun getAllKlantcontacten(
         query: KlantcontactQuery,
         properties: OpenKlantProperties,
-    ): List<Klantcontact> = openKlantClient.getKlantcontacten(query, properties).results
+    ): List<Klantcontact> = openKlantClient.getAllKlantcontacten(query, properties)
 
     override fun postKlantcontact(
         klantcontactCreationInformation: KlantcontactCreationInformation,
