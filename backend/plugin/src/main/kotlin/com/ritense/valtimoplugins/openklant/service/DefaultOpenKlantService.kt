@@ -16,11 +16,15 @@ import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQuery
 import com.ritense.valtimoplugins.openklant.model.DigitaalAdresQueryParamNames
 import com.ritense.valtimoplugins.openklant.model.KlantcontactCreationInformation
 import com.ritense.valtimoplugins.openklant.model.KlantcontactQuery
+import com.ritense.valtimoplugins.openklant.model.KvkIdentificator
 import com.ritense.valtimoplugins.openklant.model.NestedUuid
 import com.ritense.valtimoplugins.openklant.model.OpenKlantProperties
 import com.ritense.valtimoplugins.openklant.model.PartijInformation
 import com.ritense.valtimoplugins.openklant.model.SoortDigitaalAdres
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class DefaultOpenKlantService(
@@ -55,11 +59,56 @@ class DefaultOpenKlantService(
     override fun getOrCreatePartij(
         partijInformation: PartijInformation,
         properties: OpenKlantProperties,
-    ): Partij =
-        openKlantClient.getPartijByBsn(partijInformation.bsn, properties) ?: createNewPartij(
-            partijInformation,
-            properties,
+    ): Partij {
+        require(partijInformation.bsn.isNotBlank()) { "A BSN is required to get or create a partij" }
+        return getOrCreate(
+            find = { openKlantClient.getPartijByBsn(partijInformation.bsn, properties) },
+            create = { createNewPartij(partijInformation, properties) },
         )
+    }
+
+    override fun getOrCreateOrganisatie(
+        kvkNummer: String,
+        naam: String?,
+        properties: OpenKlantProperties,
+    ): Partij {
+        require(KvkIdentificator.FORMAT.matches(kvkNummer)) {
+            "A KVK-nummer consists of 8 digits, but was '$kvkNummer'"
+        }
+        return getOrCreate(
+            find = { openKlantClient.getPartijByKvkNummer(kvkNummer, properties) },
+            create = { openKlantClient.createPartij(partijFactory.createOrganisatie(kvkNummer, naam), properties) },
+        )
+    }
+
+    /**
+     * Two processes can look up the same partij at the same time and both try to create it. Open Klant keeps a
+     * partij-identificator unique, so the second create fails: with 400 when Open Klant's own check sees the
+     * identificator, or with 500 when the two inserts collide in the database. The partij the first one created is
+     * then returned. Any other failure, or a failed second lookup, ends in the error of the create.
+     */
+    private fun getOrCreate(
+        find: () -> Partij?,
+        create: () -> Partij,
+    ): Partij {
+        find()?.let { return it }
+        return try {
+            create()
+        } catch (e: ResponseStatusException) {
+            if (e.statusCode.value() !in CONCURRENT_CREATE_STATUSES) {
+                throw e
+            }
+            val existing =
+                try {
+                    find()
+                } catch (lookupError: RuntimeException) {
+                    e.addSuppressed(lookupError)
+                    throw e
+                } ?: throw e
+            logger.info { "Partij was created concurrently, using the existing one (uuid: '${existing.uuid}')" }
+            existing
+        }
+    }
 
     override fun getAllDigitaleAdressen(
         query: DigitaalAdresQuery,
@@ -114,7 +163,7 @@ class DefaultOpenKlantService(
     override fun getAllKlantcontacten(
         query: KlantcontactQuery,
         properties: OpenKlantProperties,
-    ): List<Klantcontact> = openKlantClient.getKlantcontacten(query, properties).results
+    ): List<Klantcontact> = openKlantClient.getAllKlantcontacten(query, properties)
 
     override fun postKlantcontact(
         klantcontactCreationInformation: KlantcontactCreationInformation,
@@ -137,9 +186,13 @@ class DefaultOpenKlantService(
 
         val query = DigitaalAdresQuery()
 
+        val partij =
+            requireNotNull(adresInformation.verstrektDoorPartij) {
+                "Cannot clear the referentie of the current digitale adressen without a partij"
+            }
         query.add(
             paramName = DigitaalAdresQueryParamNames.VERSTREKTDOORPARTIJ_UUID.value,
-            value = adresInformation.verstrektDoorPartij.toString(),
+            value = partij.toString(),
         )
         query.add(
             paramName = DigitaalAdresQueryParamNames.SOORTDIGITAALADRES.value,
@@ -250,5 +303,11 @@ class DefaultOpenKlantService(
             createDigitalAddress(nieuwePartij, contactInformation, properties)
             nieuwePartij.uuid.toString()
         }
+    }
+
+    companion object {
+        private val CONCURRENT_CREATE_STATUSES =
+            setOf(HttpStatus.BAD_REQUEST.value(), HttpStatus.INTERNAL_SERVER_ERROR.value())
+        private val logger = KotlinLogging.logger { }
     }
 }

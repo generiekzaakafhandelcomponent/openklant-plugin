@@ -3,11 +3,11 @@ import {FunctionConfigurationComponent, FunctionConfigurationData, PluginTransla
 import {BehaviorSubject, combineLatest, Observable, Subscription, take} from 'rxjs';
 import {DigitaalAdresConfig} from '../../models/digitaal-adres-config';
 import {AsyncPipe, NgIf} from '@angular/common';
-import {FormModule, FormOutput, InputModule} from '@valtimo/components';
+import {FormModule, FormOutput, InputModule, ParagraphModule} from '@valtimo/components';
 
 @Component({
     selector: 'create-digitaal-adres',
-    imports: [AsyncPipe, FormModule, InputModule, NgIf, PluginTranslatePipeModule],
+    imports: [AsyncPipe, FormModule, InputModule, NgIf, ParagraphModule, PluginTranslatePipeModule],
     standalone: true,
     templateUrl: './create-digitaal-adres.component.html'
 })
@@ -37,17 +37,13 @@ export class CreateDigitaalAdresComponent implements FunctionConfigurationCompon
         this.handleValid(formOutput as DigitaalAdresConfig);
     }
 
+    /** An adres is provided by a partij, a betrokkene or both; the other fields are optional in Open Klant. */
     private handleValid(formOutput: DigitaalAdresConfig): void {
         const valid =
             !!formOutput.resultPvName &&
-            !!formOutput.verstrektDoorBetrokkene &&
-            !!formOutput.verstrektDoorPartij &&
+            (!!formOutput.verstrektDoorBetrokkene || !!formOutput.verstrektDoorPartij) &&
             !!formOutput.adres &&
-            !!formOutput.soortDigitaalAdres &&
-            !!formOutput.isStandaardAdres &&
-            !!formOutput.omschrijving &&
-            !!formOutput.referentie &&
-            !!formOutput.verificatieDatum;
+            !!formOutput.soortDigitaalAdres;
 
         this.valid$.next(valid);
         this.valid.emit(valid);

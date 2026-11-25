@@ -1,8 +1,10 @@
 export interface GetOrCreatePartijConfig {
-  bsn: string;
-  voorletters: string;
-  voornaam: string;
-  voorvoegselAchternaam: string;
-  achternaam: string;
+  bsn?: string;
+  kvkNummer?: string;
+  organisatienaam?: string;
+  voorletters?: string;
+  voornaam?: string;
+  voorvoegselAchternaam?: string;
+  achternaam?: string;
   resultPvName?: string;
 }
